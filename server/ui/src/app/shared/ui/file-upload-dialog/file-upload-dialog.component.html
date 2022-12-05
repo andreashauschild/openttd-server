@@ -1,0 +1,64 @@
+<div>
+  <h1>{{dialogTitle}}</h1>
+  <div class="mb-2">
+    <button mat-raised-button color="primary" (click)="openFileDialog()">Choose Files</button>
+  </div>
+
+
+  <p class="mb-2">Limit: {{limitHumanReadable}}</p>
+
+  <div class="mb-2">
+    <button mat-raised-button color="primary" (click)="uploadAll()">Upload All</button>
+  </div>
+  <div mat-dialog-content class="w-[830px] h-[620px] mat-typography">
+
+    <table class="mt-2 min-w-full divide-y divide-gray-300">
+      <thead class="bg-gray-50">
+      <tr>
+        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">File</th>
+        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Progress</th>
+        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Data Send</th>
+        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">%</th>
+        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Upload</th>
+        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Remove</th>
+
+      </tr>
+      </thead>
+      <tbody class="bg-white">
+      <!-- Odd row -->
+      <tr *ngFor="let file of files ">
+        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"> {{file.name}}</td>
+        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+            *ngIf="file.currentChunk"> {{file.currentChunk.chunk.index}}/{{file.totalChunks}}</td>
+        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"> {{file.currentChunk.loadedHumanReadable}}
+          / {{file.sizeHumanReadable}}</td>
+        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"> {{file.currentChunk.loadedPercent}}</td>
+        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+          {{file.state}}
+        </td>
+        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+          <!--      <input *ngIf="file.state!==STATES.SIZE_LIMIT_EXCEEDED"-->
+          <!--             (click)="chunkedUpload?.uploadFile(file)"-->
+          <!--             value="upload" type="button">-->
+          <button *ngIf="file.state!==STATES.SIZE_LIMIT_EXCEEDED" mat-icon-button
+                  matTooltip="Removes file from upload list"
+                  (click)="chunkedUpload?.uploadFile(file)">
+            <mat-icon>upload_file</mat-icon>
+          </button>
+        </td>
+        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+          <!--      <input (click)="remove(file)" value="remove" type="button">-->
+          <button mat-icon-button matTooltip="Removes file from upload list" (click)="remove(file)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+
+      <!-- More people... -->
+      </tbody>
+    </table>
+    <input style="display:none" id="uploadInput" #fileUpload type="file">
+  </div>
+
+</div>

@@ -1,12 +1,27 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {ManagementViewComponent} from './views/management-view/management-view.component';
-import {LoginViewComponent} from './views/login-view/login-view.component';
 
 const routes: Routes = [
-  {path: '', component: ManagementViewComponent},
-  {path: 'manager', component: ManagementViewComponent},
-  {path: 'login', component: LoginViewComponent},
+  {
+    path: 'servers',
+    loadChildren: () =>
+      import('./servers/feature/servers-overview/servers-overview.module').then((m) => m.ServersOverviewModule),
+  },
+  {
+    path: 'login',
+    loadChildren: () =>
+      import('./auth/feature/login/login.module').then((m) => m.LoginModule),
+  },
+  {
+    path: 'logout',
+    loadChildren: () =>
+      import('./auth/feature/logout/logout.module').then((m) => m.LogoutModule),
+  },
+  {
+    path: '',
+    redirectTo: 'servers',
+    pathMatch: 'full',
+  },
 ];
 
 @NgModule({

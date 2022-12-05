@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import SunsetTheme from 'highcharts/themes/dark-unica.js';
 import * as Highcharts from 'highcharts';
 import * as HighchartsStock from 'highcharts/highstock';
-import {BackendWebsocketService} from './service/backend-websocket.service';
+import {BackendWebsocketService} from './shared/services/backend-websocket.service';
 
 SunsetTheme(Highcharts);
 SunsetTheme(HighchartsStock);
