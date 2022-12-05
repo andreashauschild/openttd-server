@@ -1,0 +1,52 @@
+dbg: [net] Starting dedicated server, version 12.2
+dbg: [net] Starting network
+dbg: [net] Initializing UDP listeners
+dbg: [net] Network online, multiplayer available
+dbg: [net] Detected broadcast addresses:
+dbg: [net]   0) 10.0.2.255
+OpenTTD Game Console Revision 7 - 12.2
+------------------------------------
+use "help" for more information.
+
+dbg: [net] No "client_name" has been set, using "Unnamed Client" instead. Please set this now using the "name <new name>" command
+dbg: [net] No "server_name" has been set, using "Unnamed Server" instead. Please set this now using the "server_name <new name>" command
+dbg: [net] Initializing UDP listeners
+dbg: [net] Initializing UDP listeners
+dbg: [net] Listening on 0.0.0.0:3979 (IPv4)
+dbg: [net] Listening on 0.0.0.0:3979 (IPv4)
+dbg: [net] Network revision name: 12.2
+dbg: [net] Generating map, please wait...
+dbg: [net] Map generation percentage complete: 5
+dbg: [net] Map generation percentage complete: 10
+dbg: [net] Map generation percentage complete: 15
+dbg: [net] Map generation percentage complete: 20
+dbg: [net] Map generation percentage complete: 25
+dbg: [net] Map generation percentage complete: 30
+dbg: [net] Map generation percentage complete: 35
+dbg: [net] Map generation percentage complete: 40
+dbg: [net] Map generation percentage complete: 45
+dbg: [net] Map generation percentage complete: 50
+dbg: [net] Map generation percentage complete: 55
+dbg: [net] Map generation percentage complete: 60
+dbg: [net] Map generation percentage complete: 65
+dbg: [net] Map generation percentage complete: 70
+dbg: [net] Map generation percentage complete: 75
+dbg: [net] Map generation percentage complete: 80
+dbg: [net] Map generation percentage complete: 85
+dbg: [net] Map generation percentage complete: 90
+dbg: [net] Map generation percentage complete: 99
+dbg: [net] Map generated, starting game
+save "/home/andreas/.local/share/openttd/save/test_auto_save"
+
+Saving map...
+Map successfully saved to '/home/andreas/.local/share/openttd/save/test_auto_save.sav'.
+save "/home/andreas/.local/share/openttd/save/test_manually_save"
+
+Saving map...
+Map successfully saved to '/home/andreas/.local/share/openttd/save/test_manually_save.sav'.
+@@@-xxx-asdasd
+
+Command '@@@-xxx-asdasd' not found.
+pause
+
+‎*** Game paused (manual)

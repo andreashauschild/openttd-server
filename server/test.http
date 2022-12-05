@@ -1,0 +1,5 @@
+POST http://localhost:8080/api/login
+Content-Type: text/plain; charset=utf-8
+Authorization: Basic YWRtaW46UGFzc3dvcmRfMQ==
+
+xxxx

@@ -1,0 +1,109 @@
+---
+openapi: 3.0.3
+info:
+  title: openttd-server API
+  version: 1.0.0-SNAPSHOT
+paths:
+  /api/openttd-server/exportModel:
+    get:
+      tags:
+      - Openttd Server Resource
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportModel'
+  /api/openttd-server/hello:
+    get:
+      tags:
+      - Openttd Server Resource
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/openttd-server/hello2:
+    get:
+      tags:
+      - Openttd Server Resource
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/openttd-server/processes:
+    get:
+      tags:
+      - Openttd Server Resource
+      operationId: processes
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProcessTO'
+  /api/openttd-server/send-terminal-command:
+    post:
+      tags:
+      - Openttd Server Resource
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        "201":
+          description: Created
+  /api/openttd-server/start-server:
+    post:
+      tags:
+      - Openttd Server Resource
+      operationId: start
+      responses:
+        "201":
+          description: Created
+  /api/openttd-server/stop-server:
+    post:
+      tags:
+      - Openttd Server Resource
+      operationId: stop
+      responses:
+        "201":
+          description: Created
+components:
+  schemas:
+    ExportModel:
+      type: object
+      properties:
+        openttdTerminalUpdateEvent:
+          $ref: '#/components/schemas/OpenttdTerminalUpdateEvent'
+    OpenttdTerminalUpdateEvent:
+      type: object
+      properties:
+        created:
+          format: int64
+          type: integer
+        clazz:
+          type: object
+        source:
+          type: string
+        processId:
+          type: string
+        text:
+          type: string
+    ProcessTO:
+      type: object
+      properties:
+        processId:
+          type: string
+        processData:
+          type: string

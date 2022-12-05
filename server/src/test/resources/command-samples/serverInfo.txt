@@ -1,0 +1,81 @@
+dbg: [net] Starting dedicated server, version 12.2
+dbg: [net] Starting network
+dbg: [net] Initializing UDP listeners
+dbg: [net] Network online, multiplayer available
+dbg: [net] Detected broadcast addresses:
+dbg: [net]   0) 10.0.2.255
+OpenTTD Game Console Revision 7 - 12.2
+------------------------------------
+use "help" for more information.
+
+dbg: [net] No "server_name" has been set, using "Unnamed Server" instead. Please set this now using the "server_name <new name>" command
+dbg: [net] Initializing UDP listeners
+dbg: [net] Initializing UDP listeners
+dbg: [net] Listening on 0.0.0.0:3979 (IPv4)
+dbg: [net] Listening on 0.0.0.0:3979 (IPv4)
+dbg: [net] Network revision name: 12.2
+dbg: [net] Generating map, please wait...
+dbg: [net] Map generation percentage complete: 5
+dbg: [net] Map generation percentage complete: 10
+dbg: [net] Map generation percentage complete: 15
+dbg: [net] Map generation percentage complete: 20
+dbg: [net] Map generation percentage complete: 25
+dbg: [net] Map generation percentage complete: 30
+dbg: [net] Map generation percentage complete: 35
+dbg: [net] Map generation percentage complete: 40
+dbg: [net] Map generation percentage complete: 45
+dbg: [net] Map generation percentage complete: 50
+dbg: [net] Map generation percentage complete: 55
+dbg: [net] Map generation percentage complete: 60
+dbg: [net] Map generation percentage complete: 65
+dbg: [net] Map generation percentage complete: 70
+dbg: [net] Map generation percentage complete: 75
+dbg: [net] Map generation percentage complete: 80
+dbg: [net] Map generation percentage complete: 85
+dbg: [net] Map generation percentage complete: 90
+dbg: [net] Map generation percentage complete: 99
+dbg: [net] Map generated, starting game
+save "/home/andreas/.local/share/openttd/save/Test_auto_save"
+
+Saving map...
+Map successfully saved to '/home/andreas/.local/share/openttd/save/Test_auto_save.sav'.
+cliets
+
+Command 'cliets' not found.
+clients
+
+Client #1  name: 'Andreas Hauschild''  company: 255  IP: server
+[A
+
+Command '?[A' not found.
+clients
+
+Client #1  name: 'Andreas Hauschild''  company: 255  IP: server
+dbg: [net] [server] Client connected from 10.0.2.15 on frame 1968
+‎*** Game paused (connecting clients)
+dbg: [net] [server] Client #2 (10.0.2.15) joined as Unnamed Client
+‎*** Unnamed Client has joined the game (Client #2)
+‎*** Game unpaused (connecting clients)
+clients
+
+Client #1  name: 'Andreas Hauschild''  company: 255  IP: server
+Client #2  name: 'Unnamed Client'  company: 255  IP: 10.0.2.15
+clients
+
+Client #1  name: 'Andreas Hauschild''  company: 255  IP: server
+Client #2  name: 'Unnamed Client'  company: 255  IP: 10.0.2.15
+dbg: [net] [server] Client connected from 10.0.2.15 on frame 4960
+dbg: [net] [server] Client #3 closed connection
+dbg: [net] [server] Client connected from 10.0.2.15 on frame 5016
+‎*** Game paused (connecting clients)
+‎*** Unnamed Client #1 has joined the game (Client #4)
+dbg: [net] [server] Client #4 (10.0.2.15) joined as Unnamed Client #1
+‎*** Game unpaused (connecting clients)
+@@@-xxx-asdasd
+
+Command '@@@-xxx-asdasd' not found.
+server_info
+Invite code:      asdasd
+Current/maximum clients:      3/ 25
+Current/maximum companies:    5/ 15
+Current spectators:           1

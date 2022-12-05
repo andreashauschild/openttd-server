@@ -1,0 +1,19 @@
+<div class="w-10/12 flex flex-row">
+  <mat-form-field appearance="fill">
+    <mat-label>{{label}}</mat-label>
+    <input type="text"
+           placeholder="Pick one"
+           matInput
+           [formControl]="myControl"
+           [matAutocomplete]="auto">
+    <mat-autocomplete [displayWith]="fileToString" (optionSelected)="select($event)" autoActiveFirstOption
+                      #auto="matAutocomplete">
+      <mat-option [value]="{name:'', path:''}">
+
+      </mat-option>
+      <mat-option *ngFor="let file of filteredFiles | async" [value]="file">
+        {{file.name}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</div>
