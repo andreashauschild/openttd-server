@@ -1,5 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import {AuthResourceService} from '../../api/services/auth-resource.service';
+import {environment} from '../../../environments/environment';
+import {firstValueFrom} from 'rxjs';
+import {HEADER_OPENTTD_SERVER_SESSION_ID} from '../model/constants';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -7,28 +12,21 @@ import {HttpClient} from "@angular/common/http";
 export class AuthenticationService {
 
 
-  constructor(private http: HttpClient) {
-    // this.currentUserSubject = new BehaviorSubject<LoginUser>(JSON.parse(sessionStorage.getItem('currentUser')) );
-    // this.currentUser = this.currentUserSubject.asObservable();
+  constructor(private router: Router, private http: HttpClient) {
+
   }
 
-  // public get currentUserValue(): void {
-  //   // return this.currentUserSubject.value;
-  // }
+  async login(username: string, password: string): Promise<void> {
 
-  login(username: string, password: string) {
-
-    // return this.http.post<any>(`${environment.apiServerRoot}/api/user/authenticate`, null, {
-    //   headers: {Authorization: "Basic " + btoa(`${username}:${password}`)}
-    // })
-    //   .pipe(map(user => {
-    //     // store user details and basic auth credentials in local storage to keep user logged in between page refreshes
-    //     console.log(user)
-    //     user.authData = window.btoa(username + ':' + password);
-    //     sessionStorage.setItem('currentUser', JSON.stringify(user));
-    //     this.currentUserSubject.next(user);
-    //     return user;
-    //   }));
+    let httpResponse = await firstValueFrom(this.http.post<any>(`${environment.baseUrl}${AuthResourceService.ApiAuthLoginPostPath}`, null, {
+      observe: 'response',
+      headers: {Authorization: "Basic " + window.btoa(`${username}:${password}`)}
+    }));
+    const session = httpResponse.headers.get(HEADER_OPENTTD_SERVER_SESSION_ID)
+    if (session && session.length > 0) {
+      localStorage.setItem(HEADER_OPENTTD_SERVER_SESSION_ID, session)
+      this.router.navigateByUrl("/")
+    }
   }
 
   getBasicAuth() {
@@ -41,8 +39,18 @@ export class AuthenticationService {
   }
 
   logout() {
-    // // remove user from local storage to log user out
-    // sessionStorage.removeItem('currentUser');
-    // this.currentUserSubject.next(null);
+    if (localStorage.getItem(HEADER_OPENTTD_SERVER_SESSION_ID)) {
+      const headers: any = {}
+      headers[HEADER_OPENTTD_SERVER_SESSION_ID] = localStorage.getItem(HEADER_OPENTTD_SERVER_SESSION_ID);
+      this.http.post<any>(`${environment.baseUrl}${AuthResourceService.ApiAuthLogoutPostPath}`, null, {
+        headers
+      }).subscribe(_ => {
+        this.router.navigateByUrl("/login")
+        localStorage.removeItem(HEADER_OPENTTD_SERVER_SESSION_ID)
+      });
+    } else {
+      this.router.navigateByUrl("/login")
+    }
+
   }
 }

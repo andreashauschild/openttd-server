@@ -1,5 +1,6 @@
 export { BaseProcess } from './models/base-process';
 export { Command } from './models/command';
+export { Cookie } from './models/cookie';
 export { ExportModel } from './models/export-model';
 export { OpenttdProcess } from './models/openttd-process';
 export { OpenttdServer } from './models/openttd-server';

@@ -19,11 +19,11 @@ public class SecurityService {
     @Inject
     DefaultRepository repository;
     private static final Logger LOG = Logger.getLogger(SecurityService.class);
-    public static final String OPENTTD_SERVER_SESSION_ID = "OPENTTD_SERVER_SESSION_ID";
+    public static final String HEADER_OPENTTD_SERVER_SESSION_ID = "X-OPENTTD_SERVER_SESSION_ID";
     Map<String, BasicAuthSession> sessions = new HashMap<>();
 
     public void validatedLoginSession(ContainerRequestContext requestContext) {
-        Cookie cookie = requestContext.getCookies().get(OPENTTD_SERVER_SESSION_ID);
+        Cookie cookie = requestContext.getCookies().get(HEADER_OPENTTD_SERVER_SESSION_ID);
         if (cookie != null) {
             if (sessions.containsKey(cookie.getValue())) {
                 this.sessions.get(cookie.getValue()).setLastUpdate(System.currentTimeMillis());
@@ -75,10 +75,10 @@ public class SecurityService {
         return Optional.empty();
     }
 
-    public void logout(Cookie cookie) {
-        if (cookie != null) {
-            if (sessions.containsKey(cookie.getValue())) {
-                this.sessions.remove(cookie.getValue());
+    public void logout(String sessionId) {
+        if (sessionId != null) {
+            if (sessions.containsKey(sessionId)) {
+                this.sessions.remove(sessionId);
             }
         }
     }

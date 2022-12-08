@@ -9,8 +9,9 @@ import {environment} from '../environments/environment';
 import {EffectsModule} from '@ngrx/effects';
 import {AppEffects} from './shared/store/effects/app.effects';
 import {metaReducers, reducers} from './shared/store/reducers';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {HttpAuthInterceptor} from './shared/interceptors/http-auth-interceptor';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,9 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
       // }
     ) : [],
   ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: HttpAuthInterceptor, multi: true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

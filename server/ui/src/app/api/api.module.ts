@@ -4,6 +4,7 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
+import { AuthResourceService } from './services/auth-resource.service';
 import { ChunkUploadResourceService } from './services/chunk-upload-resource.service';
 import { OpenttdServerResourceService } from './services/openttd-server-resource.service';
 import { TestResourceService } from './services/test-resource.service';
@@ -16,6 +17,7 @@ import { TestResourceService } from './services/test-resource.service';
   exports: [],
   declarations: [],
   providers: [
+    AuthResourceService,
     ChunkUploadResourceService,
     OpenttdServerResourceService,
     TestResourceService,

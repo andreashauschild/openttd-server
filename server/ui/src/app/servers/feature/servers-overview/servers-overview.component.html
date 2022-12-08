@@ -1,31 +1,39 @@
-<div class="flex flex-row">
-  <div>
-    <button (click)="createServer()" mat-raised-button>Create Server</button>
-  </div>
-  <div>
-    <button (click)="startServer()" mat-raised-button>Start Server</button>
-  </div>
-  <div>
-
-  </div>
-  <div>
-    <button mat-raised-button (click)="uploadSaveGame()">Upload Save Game</button>
-  </div>
-  <div>
-    <button mat-raised-button (click)="uploadConfig()">Upload Config</button>
-  </div>
-
-
-  <mat-form-field appearance="fill">
-    <mat-label>Running Servers</mat-label>
-    <mat-select [(ngModel)]="openttdProcess">
-      <mat-option *ngFor="let process of openttdProcesses" [value]="process">
-        {{process?.name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+<div class="mx-auto  px-4 sm:px-6 lg:px-8">
+  <h1 class="text-2xl font-semibold text-gray-900">Servers</h1>
 </div>
+<div class="mx-auto  px-4 sm:px-6 md:px-8">
+  <!-- Replace with your content -->
 
-<app-openttd-server-table></app-openttd-server-table>
-<app-openttd-process-terminal *ngIf="openttdProcess" [openttdProcess]="openttdProcess"></app-openttd-process-terminal>
+  <div class="flex flex-row">
+    <div>
+      <button (click)="createServer()" mat-raised-button>Create Server</button>
+    </div>
+    <div>
+      <button (click)="startServer()" mat-raised-button>Start Server</button>
+    </div>
+    <div>
 
+    </div>
+    <div>
+      <button mat-raised-button (click)="uploadSaveGame()">Upload Save Game</button>
+    </div>
+    <div>
+      <button mat-raised-button (click)="uploadConfig()">Upload Config</button>
+    </div>
+
+
+    <mat-form-field appearance="fill">
+      <mat-label>Running Servers</mat-label>
+      <mat-select [(ngModel)]="openttdProcess">
+        <mat-option *ngFor="let process of openttdProcesses" [value]="process">
+          {{process?.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <app-openttd-server-table></app-openttd-server-table>
+  <app-openttd-process-terminal *ngIf="openttdProcess" [openttdProcess]="openttdProcess"></app-openttd-process-terminal>
+
+  <!-- /End replace -->
+</div>
