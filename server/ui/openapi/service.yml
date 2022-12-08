@@ -16,10 +16,22 @@ paths:
       tags:
       - Auth Resource
       parameters:
-      - name: OPENTTD_SERVER_SESSION_ID
-        in: cookie
+      - name: X-OPENTTD_SERVER_SESSION_ID
+        in: header
         schema:
-          $ref: '#/components/schemas/Cookie'
+          type: string
+      responses:
+        "200":
+          description: OK
+  /api/auth/verifyLogin:
+    post:
+      tags:
+      - Auth Resource
+      parameters:
+      - name: X-OPENTTD_SERVER_SESSION_ID
+        in: header
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -367,20 +379,6 @@ components:
         cmdSend:
           type: boolean
         type:
-          type: string
-    Cookie:
-      type: object
-      properties:
-        name:
-          type: string
-        value:
-          type: string
-        version:
-          format: int32
-          type: integer
-        path:
-          type: string
-        domain:
           type: string
     ExportModel:
       type: object

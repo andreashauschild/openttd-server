@@ -31,6 +31,15 @@ public class AuthResource {
         return Response.status(401).build();
     }
 
+    @Path("/verifyLogin")
+    @POST()
+    public Response verifyLogin(@HeaderParam(HEADER_OPENTTD_SERVER_SESSION_ID) String session) {
+        if (securityService.isLoggedIn(session)) {
+            return Response.status(200).header(HEADER_OPENTTD_SERVER_SESSION_ID, session).build();
+        }
+        return Response.status(401).build();
+    }
+
     @Path("/logout")
     @POST
     public Response logout(@HeaderParam(HEADER_OPENTTD_SERVER_SESSION_ID) String session) {

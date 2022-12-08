@@ -61,8 +61,11 @@ export class ServersOverviewComponent implements OnInit {
 
 
   createServer() {
-    const dialogRef = this.dialog.open(CreateServerDialogComponent);
+    const dialogRef = this.dialog.open(CreateServerDialogComponent,{
+      minWidth:'60%'
+    });
 
+    dialogRef.componentInstance.dialogRef = dialogRef;
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
     });

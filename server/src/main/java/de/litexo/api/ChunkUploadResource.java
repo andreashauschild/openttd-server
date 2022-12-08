@@ -6,6 +6,7 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.QueryParam;
@@ -20,6 +21,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 @javax.ws.rs.Path("/api/chunk-upload")
+@RolesAllowed("login_user")
 public class ChunkUploadResource {
     @ConfigProperty(name = "openttd.save.dir")
     String openttdSaveDir;

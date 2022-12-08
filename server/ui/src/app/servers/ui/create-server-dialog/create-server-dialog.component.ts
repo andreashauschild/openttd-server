@@ -6,6 +6,7 @@ import {Store} from "@ngrx/store";
 import {ServerFileType} from "../../../api/models/server-file-type";
 import {addServer, loadServerFiles} from '../../../shared/store/actions/app.actions';
 import {selectFiles} from '../../../shared/store/selectors/app.selectors';
+import {MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-create-server-dialog',
@@ -22,6 +23,8 @@ export class CreateServerDialogComponent implements OnInit {
     saveGame: <ServerFile>[{}],
     config:<ServerFile>[{}]
   });
+
+  public dialogRef: MatDialogRef<CreateServerDialogComponent,any> | undefined = undefined;
 
   constructor(private store: Store<{}>, private openttd: OpenttdServerResourceService, private fb: FormBuilder) {
   }
@@ -50,9 +53,9 @@ export class CreateServerDialogComponent implements OnInit {
         port: this.createServerForm.controls.port.value!,
         config: this.createServerForm.controls.config.value!,
         startSaveGame: this.createServerForm.controls.saveGame.value!,
-
       }
     }))
+    this.close();
   }
 
   selectSaveGame(file: ServerFile) {
@@ -64,6 +67,12 @@ export class CreateServerDialogComponent implements OnInit {
   selectConfig(file: ServerFile) {
     if (file && file.name!.length > 0) {
       this.createServerForm.controls.config.patchValue(file);
+    }
+  }
+
+  close() {
+    if(this.dialogRef){
+      this.dialogRef.close()
     }
   }
 }

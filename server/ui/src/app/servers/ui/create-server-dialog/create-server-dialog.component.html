@@ -1,19 +1,54 @@
-<form [formGroup]="createServerForm">
-  <div class="flex flex-col">
-    <div class="flex flex-row">
-      <mat-form-field>
-        <mat-label>Server Name</mat-label>
-        <input [formControl]="createServerForm.controls.name" matInput placeholder="" value="">
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Port</mat-label>
-        <input type="number" [formControl]="createServerForm.controls.port" matInput placeholder="port" value="3979 ">
-      </mat-form-field>
-    </div>
-    <app-server-file-select [label]="'Save Game'" (selectedFile)="selectSaveGame($event)" [files]="saveGameFiles"></app-server-file-select>
-    <app-server-file-select [label]="'OpenTTD Config'" (selectedFile)="selectConfig($event)" [files]="configFiles"></app-server-file-select>
-    <div>
-      <button (click)="createServer()" mat-raised-button>CREATE SERVER</button>
+<div class="mt-10 sm:mt-0">
+  <div class="md:grid md:grid-cols-3 md:gap-6">
+    <div class="mt-5 md:col-span-3 md:mt-0">
+      <form [formGroup]="createServerForm">
+        <div class="overflow-hidden shadow sm:rounded-md">
+          <div class="bg-white px-4 py-5 sm:p-6">
+            <div class="mb-5 flex flex-row justify-between">
+              <div>
+                <span class="text-2xl">CREATE SERVER</span>
+              </div>
+              <div>
+                <button (click)="close()" mat-icon-button aria-label="Example icon button with a vertical three dot icon">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-6 gap-6">
+
+              <div class="col-span-6 sm:col-span-3">
+                <mat-form-field class="w-full">
+                  <mat-label>Server Name</mat-label>
+                  <input [formControl]="createServerForm.controls.name" matInput placeholder="" value="">
+                </mat-form-field>
+              </div>
+
+              <div class="col-span-6 sm:col-span-3">
+                <mat-form-field class="w-full">
+                  <mat-label>Port</mat-label>
+                  <input type="number" [formControl]="createServerForm.controls.port" matInput placeholder="port" value="3979 ">
+                </mat-form-field>
+              </div>
+
+              <div class="col-span-6 sm:col-span-6">
+                <app-server-file-select [label]="'Save Game'" (selectedFile)="selectSaveGame($event)" [files]="saveGameFiles"></app-server-file-select>
+              </div>
+
+              <div class="col-span-6 sm:col-span-6">
+                <app-server-file-select [label]="'OpenTTD Config'" (selectedFile)="selectConfig($event)" [files]="configFiles"></app-server-file-select>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-4 py-3 text-right sm:px-6">
+            <button
+              class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              (click)="createServer()" mat-raised-button>CREATE SERVER
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
-</form>
+</div>
+

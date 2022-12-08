@@ -8,6 +8,7 @@ import de.litexo.model.ServerFile;
 import de.litexo.services.OpenttdService;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 
 @Path("/api/openttd-server")
+@RolesAllowed("login_user")
 public class OpenttdServerResource {
 
     @Inject

@@ -1,3 +1,6 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

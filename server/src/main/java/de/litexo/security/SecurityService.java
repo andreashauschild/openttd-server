@@ -23,13 +23,18 @@ public class SecurityService {
     Map<String, BasicAuthSession> sessions = new HashMap<>();
 
     public void validatedLoginSession(ContainerRequestContext requestContext) {
-        Cookie cookie = requestContext.getCookies().get(HEADER_OPENTTD_SERVER_SESSION_ID);
-        if (cookie != null) {
-            if (sessions.containsKey(cookie.getValue())) {
-                this.sessions.get(cookie.getValue()).setLastUpdate(System.currentTimeMillis());
-                requestContext.setSecurityContext(this.sessions.get(cookie.getValue()).getSecurityContext());
-            }
+        String sessionId = requestContext.getHeaders().getFirst(HEADER_OPENTTD_SERVER_SESSION_ID);
+        if (sessionId!=null && sessions.containsKey(sessionId)) {
+            this.sessions.get(sessionId).setLastUpdate(System.currentTimeMillis());
+            requestContext.setSecurityContext(this.sessions.get(sessionId).getSecurityContext());
         }
+    }
+
+    public boolean isLoggedIn(String sessionId) {
+        if (sessionId!=null && sessions.containsKey(sessionId)) {
+            return true;
+        }
+        return false;
     }
 
     public Optional<BasicAuthSession> login(String authHeaderValue) {

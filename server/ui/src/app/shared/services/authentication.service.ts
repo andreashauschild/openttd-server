@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {AuthResourceService} from '../../api/services/auth-resource.service';
 import {environment} from '../../../environments/environment';
 import {firstValueFrom} from 'rxjs';
@@ -13,7 +13,6 @@ export class AuthenticationService {
 
 
   constructor(private router: Router, private http: HttpClient) {
-
   }
 
   async login(username: string, password: string): Promise<void> {
@@ -25,16 +24,29 @@ export class AuthenticationService {
     const session = httpResponse.headers.get(HEADER_OPENTTD_SERVER_SESSION_ID)
     if (session && session.length > 0) {
       localStorage.setItem(HEADER_OPENTTD_SERVER_SESSION_ID, session)
-      this.router.navigateByUrl("/")
+      await this.router.navigateByUrl("/")
     }
   }
 
-  getBasicAuth() {
-    // const authData = JSON.parse(sessionStorage.getItem('currentUser')).authData;
-    // if (authData) {
-    //   return "Basic " + authData;
-    // }
-    // return null;
+  async isLoggedIn(): Promise<boolean> {
+    if (localStorage.getItem(HEADER_OPENTTD_SERVER_SESSION_ID)) {
+      const headers: any = {}
+      headers[HEADER_OPENTTD_SERVER_SESSION_ID] = localStorage.getItem(HEADER_OPENTTD_SERVER_SESSION_ID);
+      let httpResponse: HttpResponse<any | HttpErrorResponse> = await firstValueFrom(this.http.post<any>(`${environment.baseUrl}${AuthResourceService.ApiAuthVerifyLoginPostPath}`, null, {
+        observe: 'response',
+        headers
+      })).catch(e => {
+        return e;
+      })
+
+      if (httpResponse?.status === 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
 
   }
 
@@ -51,6 +63,5 @@ export class AuthenticationService {
     } else {
       this.router.navigateByUrl("/login")
     }
-
   }
 }
