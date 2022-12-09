@@ -1,0 +1,34 @@
+<div class="mt-10 sm:mt-0">
+  <div class="md:grid md:grid-cols-3 md:gap-6">
+    <div class="mt-5 md:col-span-3 md:mt-0">
+      <div class="overflow-hidden shadow sm:rounded-md">
+        <div class="bg-white px-4 py-5 sm:p-6">
+          <div class="mb-5 flex flex-row justify-between">
+            <div>
+              <span class="text-2xl">{{title}}</span>
+            </div>
+            <div>
+              <button (click)="close(false)" mat-icon-button>
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+          <ng-template [ngTemplateOutlet]="bodyTemplate"></ng-template>
+
+        </div>
+        <div class="bg-gray-50 px-4 py-3 text-right sm:px-6">
+          <ng-template [ngTemplateOutlet]="footerTemplate">
+
+          </ng-template>
+          <ng-container *ngIf="!footerTemplate">
+            <button
+              class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              (click)="close(true)" mat-raised-button>OK
+            </button>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

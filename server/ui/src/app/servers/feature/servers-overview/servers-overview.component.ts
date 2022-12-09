@@ -73,7 +73,8 @@ export class ServersOverviewComponent implements OnInit {
   }
 
   uploadSaveGame() {
-    const dialogRef = this.dialog.open(FileUploadDialogComponent);
+    const dialogRef = this.dialog.open(FileUploadDialogComponent,{minWidth:"800px"});
+    dialogRef.componentInstance.dialogRef = dialogRef;
     dialogRef.componentInstance.fileType = ServerFileType.SaveGame;
     dialogRef.componentInstance.dialogTitle = "Upload OpenTTD Savegames";
     dialogRef.afterClosed().subscribe(result => {
@@ -82,7 +83,8 @@ export class ServersOverviewComponent implements OnInit {
   }
 
   uploadConfig() {
-    const dialogRef = this.dialog.open(FileUploadDialogComponent);
+    const dialogRef = this.dialog.open(FileUploadDialogComponent,{minWidth:"800px"});
+    dialogRef.componentInstance.dialogRef = dialogRef;
     dialogRef.componentInstance.fileType = ServerFileType.Config;
     dialogRef.componentInstance.dialogTitle = "Upload OpenTTD Configs";
     dialogRef.afterClosed().subscribe(result => {

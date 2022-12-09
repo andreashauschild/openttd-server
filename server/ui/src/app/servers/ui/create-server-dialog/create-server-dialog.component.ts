@@ -21,10 +21,10 @@ export class CreateServerDialogComponent implements OnInit {
     name: [''],
     port: [3979],
     saveGame: <ServerFile>[{}],
-    config:<ServerFile>[{}]
+    config: <ServerFile>[{}]
   });
 
-  public dialogRef: MatDialogRef<CreateServerDialogComponent,any> | undefined = undefined;
+  public dialogRef: MatDialogRef<CreateServerDialogComponent, boolean> | null = null;
 
   constructor(private store: Store<{}>, private openttd: OpenttdServerResourceService, private fb: FormBuilder) {
   }
@@ -55,7 +55,7 @@ export class CreateServerDialogComponent implements OnInit {
         startSaveGame: this.createServerForm.controls.saveGame.value!,
       }
     }))
-    this.close();
+    this.dialogRef?.close(true);
   }
 
   selectSaveGame(file: ServerFile) {
@@ -70,9 +70,4 @@ export class CreateServerDialogComponent implements OnInit {
     }
   }
 
-  close() {
-    if(this.dialogRef){
-      this.dialogRef.close()
-    }
-  }
 }

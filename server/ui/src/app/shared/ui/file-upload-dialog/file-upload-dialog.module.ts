@@ -6,6 +6,8 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatDialogContent, MatDialogModule} from '@angular/material/dialog';
 import {FormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
+import {BaseDialogModule} from '../base-dialog/base-dialog.module';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 
 @NgModule({
@@ -19,7 +21,9 @@ import {MatButtonModule} from '@angular/material/button';
     MatDialogModule,
     FormsModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    BaseDialogModule,
+    MatProgressBarModule
   ],
   exports: [FileUploadDialogComponent, MatDialogContent]
 })

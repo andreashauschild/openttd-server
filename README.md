@@ -68,3 +68,21 @@ and it will apply configmap with openttd.cfg, deployment and service listening o
 
 ## Other tags ##
    * See [bateau/openttd](https://hub.docker.com/r/bateau/openttd) on docker hub for other tags
+
+# Developer notes
+
+## Helpful commands:
+
+| Description                        | Command                                                                                   |
+|------------------------------------|-------------------------------------------------------------------------------------------|
+| Create Module with routing         | `npx ng g m HomeIndex --flat --routing`                                                   |
+| Create Component and add to module | `npx ng g m LoginIndex --flat && npx ng g c LoginIndex --flat -m .\login-index.module.ts` |
+|                                    |                                                                                           |
+|                                    |                                                                                           |
+
+
+## Structure Based on:
+
+- https://github.com/joshuamorony/nx-angular-structure/tree/main/src/app
+    - https://www.youtube.com/watch?v=7SDpTOLeqHE
+

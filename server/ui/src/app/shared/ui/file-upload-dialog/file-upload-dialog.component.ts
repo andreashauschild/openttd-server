@@ -13,6 +13,7 @@ import {
 } from '@andreashauschild/just-upload';
 import {environment} from 'src/environments/environment';
 import {ServerFileType} from '../../../api/models/server-file-type';
+import {MatDialogRef} from '@angular/material/dialog';
 
 
 @Component({
@@ -40,6 +41,8 @@ export class FileUploadDialogComponent implements AfterViewInit {
   chunkedUpload?: ChunkedUpload;
 
   config: ChunkedUploadConfig | undefined;
+
+  public dialogRef: MatDialogRef<FileUploadDialogComponent, boolean> | null = null;
 
   constructor(private uploadService: JustUploadService) {
 
