@@ -1,6 +1,8 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {createAlert, removeAlert} from '../store/actions/app.actions';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {AppNotificationsComponent} from '../ui/app-notifications/app-notifications.component';
 
 @Injectable({
   providedIn: 'root'
@@ -8,9 +10,12 @@ import {createAlert, removeAlert} from '../store/actions/app.actions';
 export class ApplicationService {
   private messageId = 1;
 
-  constructor(private store: Store<{}>) { }
+  constructor(private store: Store<{}>, private _snackBar: MatSnackBar) {
+    // Set up the snackbar but the size is set to 0px, so it is not visible
+    this._snackBar.openFromComponent(AppNotificationsComponent, {verticalPosition: 'top', panelClass: 'snackbar'})
+  }
 
-  createErrorMessage(message: string): void {
+  createErrorMessage(message: string, stacktrace?: string): void {
 
     this.messageId++;
 
@@ -21,13 +26,14 @@ export class ApplicationService {
           id: this.messageId + '',
           message: 'Error: ' + message,
           type: 'error',
+          stacktrace
         },
       })
     );
 
   }
 
-  createInfoMessage(message: string,millis?: number): void {
+  createInfoMessage(message: string, millis?: number): void {
     this.messageId++;
     const msgid = this.messageId;
 
@@ -42,7 +48,7 @@ export class ApplicationService {
       })
     );
 
-    if(millis && millis>=0){
+    if (millis && millis >= 0) {
       setTimeout(() => {
         this.store.dispatch(
           removeAlert({
@@ -53,7 +59,7 @@ export class ApplicationService {
     }
   }
 
-  createWarningMessage(message: string): void {
+  createWarningMessage(message: string, stacktrace?: string): void {
     this.messageId++;
     this.store.dispatch(
       createAlert({
@@ -62,6 +68,7 @@ export class ApplicationService {
           id: this.messageId + '',
           message: 'Warning: ' + message,
           type: 'warning',
+          stacktrace
         },
       })
     );

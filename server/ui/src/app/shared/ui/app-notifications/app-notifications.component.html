@@ -4,11 +4,13 @@
       <div class="flex-shrink-0">
         <mat-icon class="text-yellow-400">warning</mat-icon>
       </div>
-      <div class="ml-3 mt-1">
+      <div class="ml-3 mt-1 w-full">
         <p class="text-sm  text-yellow-700">
-          You have no credits left.
-          <a href="#" class="font-medium text-yellow-700 underline hover:text-yellow-600">Upgrade your account to add more credits.</a>
+          {{alert.message}}
         </p>
+        <textarea *ngIf="alert.stacktrace" rows="4"class="block w-full mt-2 text-neutral-900 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+             {{alert.stacktrace}}
+            </textarea>
       </div>
       <div (click)="remove(alert.id)" class="cursor-pointer ml-auto pl-3">
         <div class="-mx-1.5 -my-1.5">
@@ -25,8 +27,7 @@
       </div>
       <div class="ml-3 mt-1">
         <p class="text-sm  text-green-700">
-          You have no credits left.
-          <a href="#" class="font-medium text-green-700 underline hover:text-green-600">Upgrade your account to add more credits.</a>
+          {{alert.message}}
         </p>
       </div>
       <div (click)="remove(alert.id)" class="cursor-pointer ml-auto pl-3">
@@ -42,11 +43,13 @@
       <div class="flex-shrink-0">
         <mat-icon class="text-red-400">cancel</mat-icon>
       </div>
-      <div class="ml-3 mt-1">
+      <div class="ml-3 mt-1 w-full">
         <p class="text-sm  text-red-700">
-          You have no credits left.
-          <a href="#" class="font-medium text-red-700 underline hover:text-red-600">Upgrade your account to add more credits.</a>
+          {{alert.message}}
         </p>
+        <textarea *ngIf="alert.stacktrace" rows="4" class="block w-full mt-2 text-neutral-900 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+             {{alert.stacktrace}}
+            </textarea>
       </div>
       <div (click)="remove(alert.id)" class="cursor-pointer ml-auto pl-3">
         <div class="-mx-1.5 -my-1.5">

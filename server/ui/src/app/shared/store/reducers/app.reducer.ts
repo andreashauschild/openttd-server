@@ -10,6 +10,7 @@ export interface AppAlert {
   id: string;
   type: 'warning' | 'info' | 'success' | 'error';
   message: string;
+  stacktrace?:string;
 }
 
 

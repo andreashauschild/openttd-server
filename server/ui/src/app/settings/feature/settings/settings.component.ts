@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {FormBuilder} from '@angular/forms';
+import {ServerFile} from '../../../api/models/server-file';
 
 @Component({
   selector: 'app-settings',
@@ -6,10 +8,19 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnInit {
+  adminFormGroup = this.fb.group({
+    oldPassword: [''],
+    newPassword: [''],
+    newPasswordRepeat: ['']
+  });
 
-  constructor() { }
+
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
   }
 
+  updatePassword() {
+
+  }
 }

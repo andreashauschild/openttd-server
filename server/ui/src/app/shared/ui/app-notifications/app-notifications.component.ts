@@ -7,7 +7,7 @@ import {removeAlert} from '../../store/actions/app.actions';
 @Component({
   selector: 'app-app-notifications',
   templateUrl: './app-notifications.component.html',
-  styleUrls: ['./app-notifications.component.scss']
+  styleUrls: ['./app-notifications.component.scss'],
 })
 export class AppNotificationsComponent implements OnInit {
 
@@ -18,12 +18,11 @@ export class AppNotificationsComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.select(selectAlerts).subscribe(alerts => {
-      console.log(alerts)
       this.alerts = JSON.parse(JSON.stringify(alerts));
     })
   }
 
-  remove(messageId:string){
+  remove(messageId: string) {
     this.store.dispatch(
       removeAlert({
         src: AppNotificationsComponent.name,
