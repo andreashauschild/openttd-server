@@ -2,10 +2,10 @@ package de.litexo.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.litexo.api.ServiceRuntimeException;
-import de.litexo.model.OpenttdServer;
-import de.litexo.model.OpenttdServerConfig;
-import de.litexo.model.ServerFile;
-import de.litexo.model.ServerFileType;
+import de.litexo.model.external.OpenttdServer;
+import de.litexo.model.internal.InternalOpenttdServerConfig;
+import de.litexo.model.external.ServerFile;
+import de.litexo.model.external.ServerFileType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.litexo.model.ServerFileType.*;
+import static de.litexo.model.external.ServerFileType.*;
 
 @ApplicationScoped
 public class DefaultRepository {
@@ -56,10 +56,10 @@ public class DefaultRepository {
             if (!Files.isDirectory(configDir)) {
                 Files.createDirectories(configDir);
                 Files.createFile(this.configFile);
-                this.save(new OpenttdServerConfig());
+                this.save(new InternalOpenttdServerConfig());
             } else if (!Files.exists(this.configFile)) {
                 Files.createFile(this.configFile);
-                this.save(new OpenttdServerConfig());
+                this.save(new InternalOpenttdServerConfig());
             }
 
             if (!Files.isDirectory(this.openttdSaveDirPath)) {
@@ -105,7 +105,7 @@ public class DefaultRepository {
     }
 
 
-    public synchronized OpenttdServerConfig save(OpenttdServerConfig serverData) {
+    public synchronized InternalOpenttdServerConfig save(InternalOpenttdServerConfig serverData) {
         try {
             Files.writeString(this.configFile, new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(serverData), StandardOpenOption.TRUNCATE_EXISTING);
             return getOpenttdServerConfig();
@@ -115,7 +115,7 @@ public class DefaultRepository {
     }
 
     public synchronized OpenttdServer addServer(OpenttdServer server) {
-        OpenttdServerConfig openttdServerData = getOpenttdServerConfig();
+        InternalOpenttdServerConfig openttdServerData = getOpenttdServerConfig();
         Optional<OpenttdServer> first = getOpenttdServer(server.getName());
         if (!first.isPresent()) {
             openttdServerData.getServers().add(server);
@@ -127,7 +127,7 @@ public class DefaultRepository {
     }
 
     public synchronized OpenttdServer updateServer(OpenttdServer server) {
-        OpenttdServerConfig openttdServerData = getOpenttdServerConfig();
+        InternalOpenttdServerConfig openttdServerData = getOpenttdServerConfig();
 
         int replaceIndex = -1;
         for (int i = 0; i < openttdServerData.getServers().size(); i++) {
@@ -147,14 +147,14 @@ public class DefaultRepository {
     }
 
     public synchronized void deleteServer(String name) {
-        OpenttdServerConfig openttdServerData = getOpenttdServerConfig();
+        InternalOpenttdServerConfig openttdServerData = getOpenttdServerConfig();
         openttdServerData.setServers(openttdServerData.getServers().stream().filter(s -> !s.getName().equalsIgnoreCase(name)).collect(Collectors.toList()));
         save(openttdServerData);
     }
 
 
     public Optional<OpenttdServer> getOpenttdServer(String name) {
-        OpenttdServerConfig openttdServerData = getOpenttdServerConfig();
+        InternalOpenttdServerConfig openttdServerData = getOpenttdServerConfig();
         Optional<OpenttdServer> first = openttdServerData.getServers().stream().filter(s -> s.getName().equalsIgnoreCase(name)).findFirst();
         if (first.isPresent()) {
             updateServerFiles(first.get());
@@ -162,9 +162,9 @@ public class DefaultRepository {
         return first;
     }
 
-    public OpenttdServerConfig getOpenttdServerConfig() {
+    public InternalOpenttdServerConfig getOpenttdServerConfig() {
         try {
-            OpenttdServerConfig openttdServerConfig = new ObjectMapper().readValue(this.configFile.toFile(), OpenttdServerConfig.class);
+            InternalOpenttdServerConfig openttdServerConfig = new ObjectMapper().readValue(this.configFile.toFile(), InternalOpenttdServerConfig.class);
             openttdServerConfig.getServers().forEach(s -> updateServerFiles(s));
             return openttdServerConfig;
         } catch (IOException e) {

@@ -1,6 +1,6 @@
 package de.litexo.services;
 
-import de.litexo.model.OpenttdServerConfig;
+import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.repository.DefaultRepository;
 import de.litexo.security.SecurityUtils;
 import io.quarkus.runtime.Startup;
@@ -31,7 +31,7 @@ public class ApplicationBootstrapService {
     }
 
     private void initDefaultServerConfig() {
-        OpenttdServerConfig openttdServerConfig = this.repository.getOpenttdServerConfig();
+        InternalOpenttdServerConfig openttdServerConfig = this.repository.getOpenttdServerConfig();
         if (StringUtils.isBlank(openttdServerConfig.getPasswordSha256Hash())) {
             System.out.println();
             System.out.println("###########################################################################");

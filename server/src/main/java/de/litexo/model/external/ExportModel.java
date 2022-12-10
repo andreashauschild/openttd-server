@@ -1,4 +1,4 @@
-package de.litexo.model;
+package de.litexo.model.external;
 
 import de.litexo.commands.PauseCommand;
 import de.litexo.commands.UnpauseCommand;

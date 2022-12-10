@@ -2,9 +2,12 @@ package de.litexo.api;
 
 import de.litexo.OpenttdProcess;
 import de.litexo.commands.Command;
-import de.litexo.model.OpenttdServer;
-import de.litexo.model.OpenttdServerConfig;
-import de.litexo.model.ServerFile;
+import de.litexo.model.external.OpenttdServer;
+import de.litexo.model.external.OpenttdServerConfigGet;
+import de.litexo.model.external.OpenttdServerConfigUpdate;
+import de.litexo.model.internal.InternalOpenttdServerConfig;
+import de.litexo.model.external.ServerFile;
+import de.litexo.model.mapper.OpenttdServerConfigMapper;
 import de.litexo.services.OpenttdService;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
@@ -12,8 +15,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,9 @@ public class OpenttdServerResource {
 
     @Inject
     OpenttdService openttdService;
+
+    @Inject
+    OpenttdServerConfigMapper openttdServerConfigMapper;
 
 
     @GET
@@ -128,9 +132,18 @@ public class OpenttdServerResource {
     @Path("/config")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(operationId = "getOpenttdServerConfig")
-    public OpenttdServerConfig getOpenttdServerConfig() {
+    public OpenttdServerConfigGet getOpenttdServerConfig() {
+        return this.openttdServerConfigMapper.toExternal(this.openttdService.getOpenttdServerConfig());
+    }
 
-        return this.openttdService.getOpenttdServerConfig();
+    @POST
+    @Path("/config")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(operationId = "updateOpenttdServerConfig")
+    public OpenttdServerConfigGet updateOpenttdServerConfig(OpenttdServerConfigUpdate update) {
+        InternalOpenttdServerConfig openttdServerConfig = this.openttdService.getOpenttdServerConfig();
+        this.openttdServerConfigMapper.patch(update, openttdServerConfig);
+        return this.openttdServerConfigMapper.toExternal(this.openttdService.save(openttdServerConfig));
 
     }
 

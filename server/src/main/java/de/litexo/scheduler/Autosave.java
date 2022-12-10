@@ -2,8 +2,8 @@ package de.litexo.scheduler;
 
 
 import de.litexo.OpenttdProcess;
-import de.litexo.model.OpenttdServer;
-import de.litexo.model.OpenttdServerConfig;
+import de.litexo.model.external.OpenttdServer;
+import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.services.OpenttdService;
 import io.quarkus.scheduler.Scheduled;
 
@@ -19,7 +19,7 @@ public class Autosave {
 
     @Scheduled(every = "10s")
     void checkAutosave() {
-        OpenttdServerConfig serverConfig = this.service.getOpenttdServerConfig();
+        InternalOpenttdServerConfig serverConfig = this.service.getOpenttdServerConfig();
         for (OpenttdProcess process : service.getProcesses()) {
             Optional<OpenttdServer> openttdServer = service.getOpenttdServer(process.getName());
             if (openttdServer.isPresent()) {

@@ -6,6 +6,12 @@ import {OpenttdProcess} from '../../../api/models/openttd-process';
 import {ServerFile} from '../../../api/models/server-file';
 import {OpenttdTerminalUpdateEvent} from '../../../api/models/openttd-terminal-update-event';
 
+export interface AppAlert {
+  id: string;
+  type: 'warning' | 'info' | 'success' | 'error';
+  message: string;
+}
+
 
 export const appFeatureKey = 'app';
 
@@ -16,17 +22,30 @@ export interface State {
   processes: OpenttdProcess[];
   files: ServerFile[];
   processUpdateEvent: OpenttdTerminalUpdateEvent[];
+  alerts: AppAlert[];
 }
 
 export const initialState: State = {
   servers: [],
   processes: [],
   processUpdateEvent: [],
-  files: []
+  files: [],
+  alerts: [],
 };
 
 export const reducer = createReducer(
   initialState,
+  on(AppActions.createAlert, (state, action) => {
+    const newState = {...state, alerts: state.alerts.concat()};
+    newState.alerts.push(action.alert);
+    return newState;
+  }),
+  on(AppActions.removeAlert, (state, action) => {
+    return {
+      ...state,
+      alerts: state.alerts.filter((a) => a.id !== action.alertId),
+    };
+  }),
 
   on(AppActions.processUpdateEvent, (state, action) => {
 

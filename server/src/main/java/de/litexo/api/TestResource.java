@@ -2,7 +2,7 @@ package de.litexo.api;
 
 import de.litexo.OpenttdProcess;
 import de.litexo.ProcessExecutorService;
-import de.litexo.model.ExportModel;
+import de.litexo.model.external.ExportModel;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.annotation.security.RolesAllowed;

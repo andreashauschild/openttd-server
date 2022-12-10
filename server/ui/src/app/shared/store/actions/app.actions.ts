@@ -4,7 +4,11 @@ import {OpenttdTerminalUpdateEvent} from '../../../api/models/openttd-terminal-u
 import {OpenttdServer} from '../../../api/models/openttd-server';
 import {OpenttdServerConfig} from '../../../api/models/openttd-server-config';
 import {ServerFile} from '../../../api/models/server-file';
+import {AppAlert} from '../reducers/app.reducer';
 
+export const createAlert = createAction('[App] Creates an alert', props<{ src: string; alert: AppAlert }>());
+
+export const removeAlert = createAction('[App] Removes the given alert', props<{ src: string; alertId: string }>());
 
 export const loadProcesses = createAction(
   '[App] loadProcesses', props<{ src: string }>()

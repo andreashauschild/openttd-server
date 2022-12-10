@@ -1,4 +1,4 @@
-package de.litexo.model;
+package de.litexo.model.external;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

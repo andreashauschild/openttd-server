@@ -1,0 +1,59 @@
+<ng-container *ngFor="let alert of alerts">
+  <div *ngIf="alert.type==='warning'" class="border-l-4 border-yellow-400 bg-yellow-50 p-4 mt-2 mb-2">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <mat-icon class="text-yellow-400">warning</mat-icon>
+      </div>
+      <div class="ml-3 mt-1">
+        <p class="text-sm  text-yellow-700">
+          You have no credits left.
+          <a href="#" class="font-medium text-yellow-700 underline hover:text-yellow-600">Upgrade your account to add more credits.</a>
+        </p>
+      </div>
+      <div (click)="remove(alert.id)" class="cursor-pointer ml-auto pl-3">
+        <div class="-mx-1.5 -my-1.5">
+          <mat-icon class="text-yellow-400 mt-2">close</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="alert.type==='success' || alert.type==='info'" class="border-l-4 border-green-400 bg-green-50 p-4 mt-2 mb-2">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <mat-icon class="text-green-400">check_circle</mat-icon>
+      </div>
+      <div class="ml-3 mt-1">
+        <p class="text-sm  text-green-700">
+          You have no credits left.
+          <a href="#" class="font-medium text-green-700 underline hover:text-green-600">Upgrade your account to add more credits.</a>
+        </p>
+      </div>
+      <div (click)="remove(alert.id)" class="cursor-pointer ml-auto pl-3">
+        <div class="-mx-1.5 -my-1.5">
+          <mat-icon class="text-green-400 mt-2">close</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="alert.type==='error'" class="border-l-4 border-red-400 bg-red-50 p-4 mt-2 mb-2">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <mat-icon class="text-red-400">cancel</mat-icon>
+      </div>
+      <div class="ml-3 mt-1">
+        <p class="text-sm  text-red-700">
+          You have no credits left.
+          <a href="#" class="font-medium text-red-700 underline hover:text-red-600">Upgrade your account to add more credits.</a>
+        </p>
+      </div>
+      <div (click)="remove(alert.id)" class="cursor-pointer ml-auto pl-3">
+        <div class="-mx-1.5 -my-1.5">
+          <mat-icon class="text-red-400 mt-2">close</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ng-container>

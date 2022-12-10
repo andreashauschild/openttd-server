@@ -4,10 +4,10 @@ import de.litexo.OpenttdProcess;
 import de.litexo.api.ServiceRuntimeException;
 import de.litexo.commands.Command;
 import de.litexo.events.EventBus;
-import de.litexo.model.OpenttdServer;
-import de.litexo.model.OpenttdServerConfig;
-import de.litexo.model.ServerFile;
-import de.litexo.model.ServerFileType;
+import de.litexo.model.external.OpenttdServer;
+import de.litexo.model.internal.InternalOpenttdServerConfig;
+import de.litexo.model.external.ServerFile;
+import de.litexo.model.external.ServerFileType;
 import de.litexo.repository.DefaultRepository;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -153,11 +153,16 @@ public class OpenttdService {
         return this.repository.getOpenttdSaveDirPath().resolve(name + "_auto_save");
     }
 
-    public OpenttdServerConfig getOpenttdServerConfig() {
-        OpenttdServerConfig openttdServerData = this.repository.getOpenttdServerConfig();
+    public InternalOpenttdServerConfig getOpenttdServerConfig() {
+        InternalOpenttdServerConfig openttdServerData = this.repository.getOpenttdServerConfig();
         openttdServerData.getServers().forEach(s -> enrich(s));
         return openttdServerData;
     }
+
+    public InternalOpenttdServerConfig save(InternalOpenttdServerConfig config) {
+        return this.repository.save(config);
+    }
+
 
     public Optional<OpenttdServer> getOpenttdServer(String name) {
         return enrich(this.repository.getOpenttdServer(name));

@@ -17,3 +17,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   @apply text-gray-300 hover:bg-gray-700 hover:text-white flex items-center px-2 py-2 text-sm font-medium rounded-md;
 }
 
+.snackbar{
+  background: white;
+  border-radius: 4px;
+  box-sizing: border-box;
+  display: block;
+  margin: 0px !important;
+  max-width: 1200vw;
+  min-width: 800px !important;
+  padding: 0px !important;
+  min-height: 0px !important;
+  transform-origin: center;
+}

@@ -1,74 +1,12 @@
-<!--
-  This example requires updating your template:
-
-  ```
-  <html class="h-full bg-gray-100">
-  <body class="h-full">
-  ```
--->
 <ng-container *ngIf="window.location.pathname.toLowerCase()!=='/login'">
-  <div>
-    <!-- Static sidebar for desktop -->
-    <div class="md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
-      <!-- Sidebar component, swap this element with another sidebar if you like -->
-      <div class="flex min-h-0 flex-1 flex-col bg-gray-800">
-        <div class="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
-          <div class="flex flex-shrink-0 items-center px-4">
-            <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company">
-          </div>
-          <nav class="mt-5 flex-1 space-y-1 px-2">
-            <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-            <a href="/" class="menu-unselected">
-              <!--
-                Heroicon name: outline/home
+  <app-sidbar-layout [model]="sidebarLayoutModel">
 
-                Current: "text-gray-300", Default: "text-gray-400 group-hover:text-gray-300"
-              -->
-              <svg class="text-gray-300 mr-3 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                   aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/>
-              </svg>
-              Dashboard
-            </a>
-
-            <a href="/servers" class="menu-selected">
-              <!-- Heroicon name: outline/users -->
-              <svg class="text-gray-400 group-hover:text-gray-300 mr-3 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                   stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z"/>
-              </svg>
-              Servers
-            </a>
-          </nav>
-        </div>
-        <div class="flex flex-shrink-0 bg-gray-700 p-4">
-          <a class="group block w-full flex-shrink-0">
-            <div class="flex items-center">
-              <div>
-                <img class="inline-block h-9 w-9 rounded-full" src="assets/images/admin.PNG" alt="">
-              </div>
-              <div class="ml-3">
-                <p class="text-sm font-medium text-white">Admin</p>
-
-                <p (click)="auth.logout()" class="cursor-pointer text-xs font-medium text-gray-300 group-hover:text-gray-200">Logout</p>
-
-              </div>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="flex flex-1 flex-col md:pl-64">
-      <main class="flex-1">
-        <div class="py-6">
-          <router-outlet></router-outlet>
-        </div>
-      </main>
-    </div>
-  </div>
+    <router-outlet></router-outlet>
+    <button (click)="test()">XXXaaX</button>
+  </app-sidbar-layout>
 </ng-container>
 <ng-container *ngIf="window.location.pathname.toLowerCase()==='/login'">
   <router-outlet></router-outlet>
 </ng-container>
+
+

@@ -1,0 +1,43 @@
+<div>
+  <!-- Static sidebar for desktop -->
+  <div class="md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
+    <!-- Sidebar component, swap this element with another sidebar if you like -->
+    <div class="flex min-h-0 flex-1 flex-col bg-gray-800">
+      <div class="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
+        <div class="flex flex-shrink-0 items-center px-4">
+          <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company">
+        </div>
+        <nav class="mt-5 flex-1 space-y-1 px-2">
+          <ng-container *ngFor="let entry of model?.entries">
+            <a (click)="selectMenuEntry(entry)" [routerLink]="[entry.path]" [class.menu-selected]="entry.selected" [class.menu-unselected]="!entry.selected">
+              <mat-icon class="text-gray-300 mr-3 flex-shrink-0 h-6 w-6" aria-hidden="false" aria-label="Example home icon" [fontIcon]="entry.icon"></mat-icon>
+              {{entry.title}}
+            </a>
+          </ng-container>
+        </nav>
+      </div>
+      <div class="flex flex-shrink-0 bg-gray-700 p-4">
+        <a class="group block w-full flex-shrink-0">
+          <div class="flex items-center">
+            <div>
+              <img class="inline-block h-9 w-9 rounded-full" src="assets/images/admin.PNG" alt="">
+            </div>
+            <div class="ml-3">
+              <p class="text-sm font-medium text-white">Admin</p>
+
+              <p (click)="auth.logout()" class="cursor-pointer text-xs font-medium text-gray-300 group-hover:text-gray-200">Logout</p>
+
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-1 flex-col md:pl-64">
+    <main class="flex-1">
+      <div class="py-6 mx-auto  px-4 sm:px-6 lg:px-8">
+        <ng-content></ng-content>
+      </div>
+    </main>
+  </div>
+</div>

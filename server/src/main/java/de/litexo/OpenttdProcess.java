@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.litexo.commands.Command;
 import de.litexo.events.EventBus;
-import de.litexo.model.BaseProcess;
+import de.litexo.model.external.BaseProcess;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

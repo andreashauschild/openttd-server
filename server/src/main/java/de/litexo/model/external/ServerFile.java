@@ -1,6 +1,5 @@
-package de.litexo.model;
+package de.litexo.model.external;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;

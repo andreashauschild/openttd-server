@@ -10,6 +10,12 @@ const routes: Routes = [
       import('./servers/feature/servers-overview/servers-overview.module').then((m) => m.ServersOverviewModule),
   },
   {
+    path: 'settings',
+    canActivate:[AuthGuard],
+    loadChildren: () =>
+      import('./settings/feature/settings/settings.module').then((m) => m.SettingsModule),
+  },
+  {
     path: 'login',
     loadChildren: () =>
       import('./auth/feature/login/login.module').then((m) => m.LoginModule),

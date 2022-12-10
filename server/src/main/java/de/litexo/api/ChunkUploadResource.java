@@ -1,8 +1,7 @@
 package de.litexo.api;
 
-import de.litexo.model.ServerFileType;
+import de.litexo.model.external.ServerFileType;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.annotation.PostConstruct;

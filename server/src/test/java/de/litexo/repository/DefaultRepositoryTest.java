@@ -2,9 +2,9 @@ package de.litexo.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.litexo.model.OpenttdServer;
-import de.litexo.model.OpenttdServerConfig;
-import de.litexo.model.ServerFile;
+import de.litexo.model.external.OpenttdServer;
+import de.litexo.model.internal.InternalOpenttdServerConfig;
+import de.litexo.model.external.ServerFile;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.CleanupMode;
@@ -57,7 +57,7 @@ class DefaultRepositoryTest {
     @DisplayName("Test that config will be created if it  does not exists")
     @Test
     void test_0010() {
-        OpenttdServerConfig openttdServerData = this.subject.getOpenttdServerConfig();
+        InternalOpenttdServerConfig openttdServerData = this.subject.getOpenttdServerConfig();
         assertNotNull(openttdServerData);
         assertTrue(openttdServerData.getServers().isEmpty());
     }
@@ -66,7 +66,7 @@ class DefaultRepositoryTest {
     @Test
     void test_0020() {
         OpenttdServer created = this.subject.addServer(new OpenttdServer().setName("server1"));
-        OpenttdServerConfig openttdServerData = this.subject.getOpenttdServerConfig();
+        InternalOpenttdServerConfig openttdServerData = this.subject.getOpenttdServerConfig();
         assertNotNull(created);
         assertEquals(1, openttdServerData.getServers().size());
         assertEquals("server1", openttdServerData.getServers().get(0).getName());
@@ -153,7 +153,7 @@ class DefaultRepositoryTest {
         this.subject.addServer(new OpenttdServer().setName("server2"));
         this.subject.addServer(new OpenttdServer().setName("server3"));
 
-        OpenttdServerConfig openttdServerData = this.subject.getOpenttdServerConfig();
+        InternalOpenttdServerConfig openttdServerData = this.subject.getOpenttdServerConfig();
         assertEquals(3, openttdServerData.getServers().size());
 
         this.subject.deleteServer("server2");
@@ -170,7 +170,7 @@ class DefaultRepositoryTest {
         OpenttdServer server1 = this.subject.addServer(new OpenttdServer().setName("server1").setPort(999));
 
 
-        OpenttdServerConfig openttdServerData = this.subject.getOpenttdServerConfig();
+        InternalOpenttdServerConfig openttdServerData = this.subject.getOpenttdServerConfig();
         assertEquals(999, openttdServerData.getServers().get(0).getPort());
 
         this.subject.updateServer(server1.setPort(777));

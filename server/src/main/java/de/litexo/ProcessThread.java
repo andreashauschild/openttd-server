@@ -2,7 +2,7 @@ package de.litexo;
 
 import de.litexo.events.EventBus;
 import de.litexo.events.OpenttdTerminalUpdateEvent;
-import de.litexo.model.BaseProcess;
+import de.litexo.model.external.BaseProcess;
 import lombok.Getter;
 
 import java.util.List;

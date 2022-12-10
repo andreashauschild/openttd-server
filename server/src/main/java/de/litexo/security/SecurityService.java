@@ -1,13 +1,12 @@
 package de.litexo.security;
 
-import de.litexo.model.OpenttdServerConfig;
+import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.repository.DefaultRepository;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.util.HashMap;
@@ -42,7 +41,7 @@ public class SecurityService {
         if (authHeaderValue != null) {
             auth = new BasicAuth(authHeaderValue);
         }
-        OpenttdServerConfig openttdServerConfig = this.repository.getOpenttdServerConfig();
+        InternalOpenttdServerConfig openttdServerConfig = this.repository.getOpenttdServerConfig();
         if (SecurityUtils.isEquals(auth.getPassword(), openttdServerConfig.getPasswordSha256Hash()) && "admin".equals(auth.getUserName())) {
             final BasicAuthSession basicAuthSession = new BasicAuthSession();
             basicAuthSession.setLastUpdate(System.currentTimeMillis());
