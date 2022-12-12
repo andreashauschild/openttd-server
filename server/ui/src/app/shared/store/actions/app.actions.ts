@@ -18,15 +18,6 @@ export const loadProcessesSuccess = createAction(
   '[App] loadProcessesSuccess', props<{ src: string, result: OpenttdProcess[] }>()
 );
 
-
-export const startProcess = createAction(
-  '[App] startProcess', props<{ src: string; setup: { name?: string, port?: number, savegame?: string, config?: string } }>()
-);
-
-export const startProcessSuccess = createAction(
-  '[App] startProcessSuccess', props<{ src: string, result: OpenttdProcess }>()
-);
-
 export const processUpdateEvent = createAction(
   '[App] processUpdateEvent', props<{ src: string, event: OpenttdTerminalUpdateEvent }>()
 );

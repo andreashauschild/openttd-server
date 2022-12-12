@@ -48,6 +48,5 @@ export class SidebarLayoutComponent implements OnInit {
         e.selected = false;
       }
     })
-    console.log(this.model)
   }
 }

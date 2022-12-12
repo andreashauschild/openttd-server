@@ -2,6 +2,7 @@ package de.litexo.security;
 
 import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.repository.DefaultRepository;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -15,6 +16,10 @@ import java.util.Optional;
 
 @ApplicationScoped
 public class SecurityService {
+
+    @ConfigProperty(name = "server.disable.security", defaultValue = "false")
+    boolean disableSecurity;
+
     @Inject
     DefaultRepository repository;
     private static final Logger LOG = Logger.getLogger(SecurityService.class);
@@ -23,14 +28,15 @@ public class SecurityService {
 
     public void validatedLoginSession(ContainerRequestContext requestContext) {
         String sessionId = requestContext.getHeaders().getFirst(HEADER_OPENTTD_SERVER_SESSION_ID);
-        if (sessionId!=null && sessions.containsKey(sessionId)) {
+        if (sessionId != null && sessions.containsKey(sessionId)) {
             this.sessions.get(sessionId).setLastUpdate(System.currentTimeMillis());
             requestContext.setSecurityContext(this.sessions.get(sessionId).getSecurityContext());
         }
     }
 
     public boolean isLoggedIn(String sessionId) {
-        if (sessionId!=null && sessions.containsKey(sessionId)) {
+        if (this.disableSecurity
+                || sessionId != null && sessions.containsKey(sessionId)) {
             return true;
         }
         return false;
@@ -42,7 +48,10 @@ public class SecurityService {
             auth = new BasicAuth(authHeaderValue);
         }
         InternalOpenttdServerConfig openttdServerConfig = this.repository.getOpenttdServerConfig();
-        if (SecurityUtils.isEquals(auth.getPassword(), openttdServerConfig.getPasswordSha256Hash()) && "admin".equals(auth.getUserName())) {
+        if (
+                this.disableSecurity
+                        || (SecurityUtils.isEquals(auth.getPassword(), openttdServerConfig.getPasswordSha256Hash()) && "admin".equals(auth.getUserName()))
+        ) {
             final BasicAuthSession basicAuthSession = new BasicAuthSession();
             basicAuthSession.setLastUpdate(System.currentTimeMillis());
             basicAuthSession.setUser(auth.getUserName());

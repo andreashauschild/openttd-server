@@ -9,7 +9,7 @@ import {MatDialogRef} from '@angular/material/dialog';
 export class BaseDialogComponent implements OnInit {
 
   @Input()
-  title: string = "";
+  title: string | undefined = "";
 
   @Input()
   bodyTemplate: TemplateRef<any> | null = null;

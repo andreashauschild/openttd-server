@@ -84,7 +84,6 @@ export class FileUploadDialogComponent implements AfterViewInit {
         return params;
       },
       afterChunkSendHook(after: AfterChunkSend) {
-        console.log(after?.response?.status)
         if (after?.response?.status == 201) {
           // set finished if server response with 201
           after.chunk.uploadFile.state = UploadState.UPLOAD_SUCCESS;
@@ -97,7 +96,6 @@ export class FileUploadDialogComponent implements AfterViewInit {
 
     this.chunkedUpload = this.uploadService.createChunkedUpload(this.fileUpload!, this.config!);
     this.chunkedUpload.onChunkProcessed().subscribe(updatedFile => {
-      console.log("onChunk", updatedFile);
 
       this.files = updateFileList(this.files, updatedFile);
     });

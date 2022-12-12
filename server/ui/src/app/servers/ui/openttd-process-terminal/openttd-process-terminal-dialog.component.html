@@ -1,0 +1,13 @@
+<ng-template #body>
+
+  <app-terminal *ngIf="showTerminal" [terminalControl]="terminalControl" (command)="sendCommand($event)"
+                [consoleInput]="consoleInput"></app-terminal>
+
+</ng-template>
+
+<ng-template #footer>
+
+</ng-template>
+
+<app-base-dialog [dialogRef]="dialogRef" [title]="'Server: ' +openttdProcess.name" [bodyTemplate]="body" [footerTemplate]="footer">
+</app-base-dialog>

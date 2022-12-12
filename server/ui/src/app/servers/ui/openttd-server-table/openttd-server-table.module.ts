@@ -3,7 +3,8 @@ import {CommonModule} from '@angular/common';
 import {OpenttdServerTableComponent} from './openttd-server-table.component';
 import {MatTableModule} from '@angular/material/table';
 import {MatIconModule} from '@angular/material/icon';
-import {OpenttdProcessTerminalModule} from '../openttd-process-terminal/openttd-process-terminal.module';
+import {OpenttdProcessTerminalDialogModule} from '../openttd-process-terminal/openttd-process-terminal-dialog.module';
+import {MatDialogModule} from "@angular/material/dialog";
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import {OpenttdProcessTerminalModule} from '../openttd-process-terminal/openttd-
     CommonModule,
     MatTableModule,
     MatIconModule,
-    OpenttdProcessTerminalModule,
+    OpenttdProcessTerminalDialogModule,
+    MatDialogModule
   ],
   exports: [OpenttdServerTableComponent]
 })

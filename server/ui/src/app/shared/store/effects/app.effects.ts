@@ -9,7 +9,6 @@ import {
   loadServerFilesSuccess,
   loadServerSuccess,
   saveServerSuccess,
-  startProcessSuccess,
   startServerSuccess,
   updateServerSuccess
 } from '../actions/app.actions'
@@ -38,25 +37,6 @@ export class AppEffects {
     );
   });
 
-  startProcess = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(AppActions.startProcess),
-      mergeMap((a) => this.service.start({
-          config: a.setup.config,
-          name: a.setup.name,
-          port: a.setup.port,
-          savegame: a.setup.savegame
-        })
-          .pipe(
-            map(result => startProcessSuccess({src: AppEffects.name, result})),
-            catchError((err) => {
-              console.log(err)
-              return EMPTY;
-            })
-          )
-      )
-    );
-  });
 
   loadServerConfig = createEffect(() => {
     return this.actions$.pipe(

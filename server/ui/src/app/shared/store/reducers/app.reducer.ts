@@ -51,7 +51,6 @@ export const reducer = createReducer(
   on(AppActions.processUpdateEvent, (state, action) => {
 
     const event = state.processUpdateEvent.find((e) => action.event.processId === e.processId);
-    console.log("UPDATE ", event, action)
     if (!event) {
       return {
         ...state,
@@ -128,10 +127,10 @@ export const reducer = createReducer(
     }
   }),
 
-  on(AppActions.startProcessSuccess, (state, action) => {
+  on(AppActions.startServerSuccess, (state, action) => {
     return {
       ...state,
-      processes: state.processes.concat(action.result)
+      processes: state.processes.concat(action.server.process!)
     }
 
   }),

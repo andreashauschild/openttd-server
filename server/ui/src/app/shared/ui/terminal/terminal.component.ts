@@ -16,7 +16,7 @@ export class TerminalComponent implements OnInit, AfterViewInit {
   readonly prompt = '\n' + FunctionsUsingCSI.cursorColumn(1) + '$ ';
 
   rows: number = 25;
-  cols: number = 100;
+  cols: number = 80;
   draggable: boolean = false;
 
   public fixed = false;
@@ -89,26 +89,22 @@ export class TerminalComponent implements OnInit, AfterViewInit {
       this.underlying.options.fontSize = 20;
       console.debug("example: font apply");
       this.invalidate();
-      // this.child.setXtermOptions({
-      //   fontFamily: '"Cascadia Code", Menlo, monospace',
-      //   theme: this.baseTheme,
-      //   cursorBlink: true
-      // });
+
       this.child.write('$ --- Welcome OpenTTD Server ----');
       this.child.write(this.prompt);
       this.child.onData().subscribe((input) => {
 
         if (input === '\r') { // Carriage Return (When Enter is pressed)
           this.child!.write(this.prompt);
-          console.log("Command: ", this.unsendCommand);
+
           this.command.emit(this.unsendCommand);
           this.unsendCommand = "";
         } else if (input === '\u007f') { // Delete (When Backspace is pressed)
 
-          if (this.unsendCommand.length > 0) {
+          if (this.unsendCommand.length >= 0) {
             this.unsendCommand = this.unsendCommand.substring(0, this.unsendCommand.length - 1);
           }
-          if (this.child!.underlying.buffer.active.cursorX > 2) {
+          if (this.child!.underlying.buffer.active.cursorX > 0) {
             this.child!.write('\b \b');
           }
         } else if (input === '\u0003') { // End of Text (When Ctrl and C are pressed)

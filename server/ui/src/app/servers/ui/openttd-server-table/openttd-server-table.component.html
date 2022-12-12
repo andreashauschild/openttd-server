@@ -1,4 +1,3 @@
-{{expandedElement?.name}}
 <table mat-table
        [trackBy]="trackBy"
        [dataSource]="dataSource" multiTemplateDataRows
@@ -42,7 +41,7 @@
           <mat-icon>close</mat-icon>
         </button>
         <button *ngIf="T(element)?.process" mat-icon-button matTooltip="Terminates this Openttd Server"
-                (click)="loadTerminal();(expandedElement = expandedElement?.name === element?.name ? null : element); $event.stopPropagation()">
+                (click)="loadTerminal(T(element).process)">
           <mat-icon>terminal</mat-icon>
         </button>
         <button *ngIf="T(element)?.process" mat-icon-button matTooltip="Saves the current game" (click)="save(element)">
@@ -73,7 +72,7 @@
            [@detailExpand]="element?.name === expandedElement?.name ? 'expanded' : 'collapsed'">
         <div *ngIf="expandedElement" class="w-full">
 
-          <app-openttd-process-terminal *ngIf="T(expandedElement).process" [openttdProcess]="T(expandedElement).process"></app-openttd-process-terminal>
+<!--          <app-openttd-process-terminal *ngIf="T(expandedElement).process" [openttdProcess]="T(expandedElement).process"></app-openttd-process-terminal>-->
 
         </div>
       </div>
