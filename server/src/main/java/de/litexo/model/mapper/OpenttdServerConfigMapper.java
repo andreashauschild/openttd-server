@@ -35,7 +35,6 @@ public abstract class OpenttdServerConfigMapper {
             } else {
                 throw new ServiceRuntimeException("Could not update password. Old password is not correct!");
             }
-
         }
     }
 

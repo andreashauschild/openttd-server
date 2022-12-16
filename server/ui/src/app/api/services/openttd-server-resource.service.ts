@@ -12,7 +12,8 @@ import { map, filter } from 'rxjs/operators';
 import { Command } from '../models/command';
 import { OpenttdProcess } from '../models/openttd-process';
 import { OpenttdServer } from '../models/openttd-server';
-import { OpenttdServerConfig } from '../models/openttd-server-config';
+import { OpenttdServerConfigGet } from '../models/openttd-server-config-get';
+import { OpenttdServerConfigUpdate } from '../models/openttd-server-config-update';
 import { ServerFile } from '../models/server-file';
 
 @Injectable({
@@ -94,7 +95,7 @@ export class OpenttdServerResourceService extends BaseService {
   getOpenttdServerConfig$Response(params?: {
     context?: HttpContext
   }
-): Observable<StrictHttpResponse<OpenttdServerConfig>> {
+): Observable<StrictHttpResponse<OpenttdServerConfigGet>> {
 
     const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.GetOpenttdServerConfigPath, 'get');
     if (params) {
@@ -107,7 +108,7 @@ export class OpenttdServerResourceService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<OpenttdServerConfig>;
+        return r as StrictHttpResponse<OpenttdServerConfigGet>;
       })
     );
   }
@@ -121,10 +122,61 @@ export class OpenttdServerResourceService extends BaseService {
   getOpenttdServerConfig(params?: {
     context?: HttpContext
   }
-): Observable<OpenttdServerConfig> {
+): Observable<OpenttdServerConfigGet> {
 
     return this.getOpenttdServerConfig$Response(params).pipe(
-      map((r: StrictHttpResponse<OpenttdServerConfig>) => r.body as OpenttdServerConfig)
+      map((r: StrictHttpResponse<OpenttdServerConfigGet>) => r.body as OpenttdServerConfigGet)
+    );
+  }
+
+  /**
+   * Path part for operation updateOpenttdServerConfig
+   */
+  static readonly UpdateOpenttdServerConfigPath = '/api/openttd-server/config';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `updateOpenttdServerConfig()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  updateOpenttdServerConfig$Response(params?: {
+    context?: HttpContext
+    body?: OpenttdServerConfigUpdate
+  }
+): Observable<StrictHttpResponse<OpenttdServerConfigGet>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.UpdateOpenttdServerConfigPath, 'patch');
+    if (params) {
+      rb.body(params.body, 'application/json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<OpenttdServerConfigGet>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `updateOpenttdServerConfig$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  updateOpenttdServerConfig(params?: {
+    context?: HttpContext
+    body?: OpenttdServerConfigUpdate
+  }
+): Observable<OpenttdServerConfigGet> {
+
+    return this.updateOpenttdServerConfig$Response(params).pipe(
+      map((r: StrictHttpResponse<OpenttdServerConfigGet>) => r.body as OpenttdServerConfigGet)
     );
   }
 

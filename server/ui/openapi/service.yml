@@ -67,6 +67,13 @@ paths:
       responses:
         "200":
           description: OK
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/openttd-server/command:
     post:
       tags:
@@ -89,6 +96,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Command'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/openttd-server/config:
     get:
       tags:
@@ -100,7 +114,37 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OpenttdServerConfig'
+                $ref: '#/components/schemas/OpenttdServerConfigGet'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
+    patch:
+      tags:
+      - Openttd Server Resource
+      operationId: updateOpenttdServerConfig
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpenttdServerConfigUpdate'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenttdServerConfigGet'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/openttd-server/dump:
     post:
       tags:
@@ -118,6 +162,13 @@ paths:
       responses:
         "201":
           description: Created
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/openttd-server/files:
     get:
       tags:
@@ -132,6 +183,13 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ServerFile'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/openttd-server/processes:
     get:
       tags:
@@ -146,6 +204,13 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/OpenttdProcess'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/openttd-server/save:
     post:
       tags:
@@ -159,6 +224,13 @@ paths:
       responses:
         "201":
           description: Created
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/openttd-server/send-terminal-command:
     post:
       tags:
@@ -177,6 +249,13 @@ paths:
       responses:
         "201":
           description: Created
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/openttd-server/server:
     get:
       tags:
@@ -194,6 +273,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OpenttdServer'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
     put:
       tags:
       - Openttd Server Resource
@@ -210,6 +296,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OpenttdServer'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
     post:
       tags:
       - Openttd Server Resource
@@ -226,6 +319,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OpenttdServer'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
     delete:
       tags:
       - Openttd Server Resource
@@ -238,6 +338,13 @@ paths:
       responses:
         "204":
           description: No Content
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/openttd-server/start-server:
     post:
       tags:
@@ -268,6 +375,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OpenttdProcess'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/openttd-server/start-server2:
     post:
       tags:
@@ -289,6 +403,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OpenttdServer'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/openttd-server/stop-server:
     post:
       tags:
@@ -302,6 +423,13 @@ paths:
       responses:
         "201":
           description: Created
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/test/exportModel:
     get:
       tags:
@@ -389,6 +517,8 @@ components:
           $ref: '#/components/schemas/UnpauseCommand'
         pauseCommand:
           $ref: '#/components/schemas/PauseCommand'
+        serviceError:
+          $ref: '#/components/schemas/ServiceError'
     OpenttdProcess:
       type: object
       properties:
@@ -425,20 +555,26 @@ components:
           $ref: '#/components/schemas/ServerFile'
         process:
           $ref: '#/components/schemas/OpenttdProcess'
-    OpenttdServerConfig:
+    OpenttdServerConfigGet:
       type: object
       properties:
-        path:
-          type: string
         autoSaveMinutes:
           format: int32
           type: integer
-        passwordSha256Hash:
-          type: string
         servers:
           type: array
           items:
             $ref: '#/components/schemas/OpenttdServer'
+    OpenttdServerConfigUpdate:
+      type: object
+      properties:
+        autoSaveMinutes:
+          format: int32
+          type: integer
+        password:
+          type: string
+        oldPassword:
+          type: string
     OpenttdTerminalUpdateEvent:
       type: object
       properties:
@@ -489,6 +625,21 @@ components:
       enum:
       - SAVE_GAME
       - CONFIG
+      type: string
+    ServiceError:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ServiceErrorType'
+        message:
+          type: string
+        stackTrace:
+          type: string
+    ServiceErrorType:
+      enum:
+      - VALIDATION_EXCEPTION
+      - RUNTIME_EXCEPTION
+      - UNKNOWN
       type: string
     UnpauseCommand:
       type: object

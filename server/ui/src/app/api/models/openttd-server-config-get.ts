@@ -1,9 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import { OpenttdServer } from './openttd-server';
-export interface OpenttdServerConfig {
+export interface OpenttdServerConfigGet {
   autoSaveMinutes?: number;
-  passwordSha256Hash?: string;
-  path?: string;
   servers?: Array<OpenttdServer>;
 }

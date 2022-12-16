@@ -10,4 +10,6 @@ public class ExportModel {
     private OpenttdTerminalUpdateEvent openttdTerminalUpdateEvent;
     private UnpauseCommand unpauseCommand;
     private PauseCommand pauseCommand;
+
+    private ServiceError serviceError;
 }

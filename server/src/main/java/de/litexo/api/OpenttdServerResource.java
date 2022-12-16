@@ -136,7 +136,7 @@ public class OpenttdServerResource {
         return this.openttdServerConfigMapper.toExternal(this.openttdService.getOpenttdServerConfig());
     }
 
-    @POST
+    @PATCH
     @Path("/config")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(operationId = "updateOpenttdServerConfig")

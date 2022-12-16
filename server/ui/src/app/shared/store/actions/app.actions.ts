@@ -2,9 +2,10 @@ import {createAction, props} from '@ngrx/store';
 import {OpenttdProcess} from '../../../api/models/openttd-process';
 import {OpenttdTerminalUpdateEvent} from '../../../api/models/openttd-terminal-update-event';
 import {OpenttdServer} from '../../../api/models/openttd-server';
-import {OpenttdServerConfig} from '../../../api/models/openttd-server-config';
 import {ServerFile} from '../../../api/models/server-file';
 import {AppAlert} from '../reducers/app.reducer';
+import {OpenttdServerConfigGet} from '../../../api/models/openttd-server-config-get';
+import {OpenttdServerConfigUpdate} from '../../../api/models/openttd-server-config-update';
 
 export const createAlert = createAction('[App] Creates an alert', props<{ src: string; alert: AppAlert }>());
 
@@ -77,8 +78,17 @@ export const loadServerConfig = createAction(
 );
 
 export const loadServerConfigSuccess = createAction(
-  '[App] loadServerConfigSuccess', props<{ src: string, config: OpenttdServerConfig }>()
+  '[App] loadServerConfigSuccess', props<{ src: string, config: OpenttdServerConfigGet }>()
 );
+
+export const patchServerConfig = createAction(
+  '[App] patchServerConfig', props<{ src: string, patch: OpenttdServerConfigUpdate }>()
+);
+
+export const patchServerConfigSuccess = createAction(
+  '[App] patchServerConfigSuccess', props<{ src: string, config: OpenttdServerConfigGet }>()
+);
+
 
 export const loadServerFiles = createAction(
   '[App] loadServerFiles', props<{ src: string }>()
