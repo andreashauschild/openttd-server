@@ -7,7 +7,7 @@ import {
   loadProcessesSuccess,
   loadServerConfigSuccess,
   loadServerFilesSuccess,
-  loadServerSuccess,
+  loadServerSuccess, patchServerConfigSuccess,
   saveServerSuccess,
   startServerSuccess,
   updateServerSuccess
@@ -15,10 +15,11 @@ import {
 import {catchError, EMPTY, mergeMap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
+import {ApplicationService} from '../../services/application.service';
 
 @Injectable()
 export class AppEffects {
-  constructor(private actions$: Actions, private service: OpenttdServerResourceService) {
+  constructor(private app: ApplicationService, private actions$: Actions, private service: OpenttdServerResourceService) {
   }
 
 
@@ -29,7 +30,7 @@ export class AppEffects {
         .pipe(
           map(result => loadProcessesSuccess({src: AppEffects.name, result})),
           catchError((err) => {
-            console.log(err)
+            this.app.handleError(err);
             return EMPTY;
           })
         )
@@ -45,7 +46,22 @@ export class AppEffects {
         .pipe(
           map(config => loadServerConfigSuccess({src: AppEffects.name, config})),
           catchError((err) => {
-            console.log(err)
+            this.app.handleError(err);
+            return EMPTY;
+          })
+        )
+      )
+    );
+  });
+
+  patchServerConfig = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.patchServerConfig),
+      mergeMap((a) => this.service.updateOpenttdServerConfig({body: a.patch})
+        .pipe(
+          map(config => patchServerConfigSuccess({src: AppEffects.name, config})),
+          catchError((err) => {
+            this.app.handleError(err);
             return EMPTY;
           })
         )
@@ -60,7 +76,7 @@ export class AppEffects {
         .pipe(
           map(files => loadServerFilesSuccess({src: AppEffects.name, files})),
           catchError((err) => {
-            console.log(err)
+            this.app.handleError(err);
             return EMPTY;
           })
         )
@@ -76,7 +92,7 @@ export class AppEffects {
         .pipe(
           map(server => addServerSuccess({src: AppEffects.name, server})),
           catchError((err) => {
-            console.log(err)
+            this.app.handleError(err);
             return EMPTY;
           })
         )
@@ -91,7 +107,7 @@ export class AppEffects {
         .pipe(
           map(server => startServerSuccess({src: AppEffects.name, server})),
           catchError((err) => {
-            console.log(err)
+            this.app.handleError(err);
             return EMPTY;
           })
         )
@@ -106,7 +122,7 @@ export class AppEffects {
         .pipe(
           map(server => updateServerSuccess({src: AppEffects.name, server})),
           catchError((err) => {
-            console.log(err)
+            this.app.handleError(err);
             return EMPTY;
           })
         )
@@ -121,7 +137,7 @@ export class AppEffects {
         .pipe(
           map(server => loadServerSuccess({src: AppEffects.name, server})),
           catchError((err) => {
-            console.log(err)
+            this.app.handleError(err);
             return EMPTY;
           })
         )
@@ -137,7 +153,7 @@ export class AppEffects {
         .pipe(
           map(name => deleteServerSuccess({src: AppEffects.name, name: a.name})),
           catchError((err) => {
-            console.log(err)
+            this.app.handleError(err);
             return EMPTY;
           })
         )
@@ -152,7 +168,7 @@ export class AppEffects {
         .pipe(
           map(name => saveServerSuccess({src: AppEffects.name, name: a.name})),
           catchError((err) => {
-            console.log(err)
+            this.app.handleError(err);
             return EMPTY;
           })
         )

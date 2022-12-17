@@ -1,12 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
-import {ServerFile} from '../../../api/models/server-file';
+import {FormBuilder, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
-import {patchServerConfig, patchServerConfigSuccess} from '../../../shared/store/actions/app.actions';
 import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
 import {ApplicationService} from '../../../shared/services/application.service';
 import {HttpErrorResponse} from '@angular/common/http';
-import {ServiceError} from '../../../api/models/service-error';
+import {patchServerConfig} from '../../../shared/store/actions/app.actions';
 
 @Component({
   selector: 'app-settings',
@@ -18,6 +16,8 @@ export class SettingsComponent implements OnInit {
 
   adminFormGroup;
 
+  basicSettingsFormGroup;
+
   constructor(private store: Store<{}>, private api: OpenttdServerResourceService, private fb: FormBuilder, private app: ApplicationService) {
     this.adminFormGroup = this.fb.group({
       oldPassword: ['', [Validators.required]],
@@ -25,6 +25,10 @@ export class SettingsComponent implements OnInit {
       newPasswordRepeat: ['', [Validators.required]]
     }, {
       validators: this.passwordsEqualValidator
+    });
+
+    this.basicSettingsFormGroup = this.fb.group({
+      autoSaveMinutes: ['', [Validators.required, Validators.min(-1)]],
     });
 
   }
@@ -40,12 +44,7 @@ export class SettingsComponent implements OnInit {
             this.app.createInfoMessage("Password changed successfully!")
           },
           error: (e: HttpErrorResponse) => {
-            if (e.error) {
-              let error = (e.error as ServiceError);
-              this.app.createErrorMessage(`Password changed failed! ${error.message}`)
-            } else {
-              this.app.createErrorMessage(`Password changed failed!`)
-            }
+            this.app.handleError(e);
           }
         }
       );
@@ -58,4 +57,16 @@ export class SettingsComponent implements OnInit {
     }
     return null;
   };
+
+  updateConfig() {
+    if (this.basicSettingsFormGroup.valid) {
+      this.store.dispatch(patchServerConfig({
+        src: SettingsComponent.name,
+        patch: {
+          autoSaveMinutes: parseInt(this.basicSettingsFormGroup.value.autoSaveMinutes!)
+        }
+      }))
+    }
+
+  }
 }

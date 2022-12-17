@@ -1,16 +1,16 @@
 import {createReducer, on} from '@ngrx/store';
 import * as AppActions from '../actions/app.actions';
 import {OpenttdServer} from '../../../api/models/openttd-server';
-import {OpenttdServerConfig} from '../../../api/models/openttd-server-config';
 import {OpenttdProcess} from '../../../api/models/openttd-process';
 import {ServerFile} from '../../../api/models/server-file';
 import {OpenttdTerminalUpdateEvent} from '../../../api/models/openttd-terminal-update-event';
+import {OpenttdServerConfigGet} from '../../../api/models/openttd-server-config-get';
 
 export interface AppAlert {
   id: string;
   type: 'warning' | 'info' | 'success' | 'error';
   message: string;
-  stacktrace?:string;
+  stacktrace?: string;
 }
 
 
@@ -18,7 +18,7 @@ export const appFeatureKey = 'app';
 
 
 export interface State {
-  config?: OpenttdServerConfig
+  config?: OpenttdServerConfigGet
   servers: OpenttdServer[]
   processes: OpenttdProcess[];
   files: ServerFile[];
@@ -90,7 +90,7 @@ export const reducer = createReducer(
 
   }),
 
-  on(AppActions.loadServerConfigSuccess, (state, action) => {
+  on(AppActions.loadServerConfigSuccess,AppActions.patchServerConfigSuccess, (state, action) => {
     return {
       ...state,
       config: action.config,

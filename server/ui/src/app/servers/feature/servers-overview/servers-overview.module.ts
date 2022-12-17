@@ -10,24 +10,26 @@ import {OpenttdServerTableModule} from '../../ui/openttd-server-table/openttd-se
 import {FileUploadDialogModule} from '../../../shared/ui/file-upload-dialog/file-upload-dialog.module';
 import {CreateServerDialogModule} from '../../ui/create-server-dialog/create-server-dialog.module';
 import { MatButtonModule } from '@angular/material/button';
+import {OpenttdServerGridModule} from '../../ui/openttd-server-grid/openttd-server-grid.module';
 
 
 @NgModule({
   declarations: [
     ServersOverviewComponent
   ],
-  imports: [
-    CommonModule,
-    ServersOverviewRoutingModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    FormsModule,
-    OpenttdProcessTerminalDialogModule,
-    OpenttdServerTableModule,
-    FileUploadDialogModule,
-    CreateServerDialogModule
-  ]
+    imports: [
+        CommonModule,
+        ServersOverviewRoutingModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        OpenttdProcessTerminalDialogModule,
+        OpenttdServerTableModule,
+        FileUploadDialogModule,
+        CreateServerDialogModule,
+        OpenttdServerGridModule
+    ]
 })
 export class ServersOverviewModule {
 }
