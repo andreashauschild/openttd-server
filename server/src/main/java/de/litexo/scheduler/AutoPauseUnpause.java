@@ -45,15 +45,15 @@ public class AutoPauseUnpause {
     }
 
     void doPauseOrUnpause(OpenttdProcess process) {
-        ServerInfoCommand cmd = process.executeCommand(new ServerInfoCommand());
+        ServerInfoCommand cmd = process.executeCommand(new ServerInfoCommand(),false);
         System.out.println("Server-Info: " + process.getName() + " " + cmd);
         if (cmd.isExecuted()) {
             if (cmd.getCurrentClients() == cmd.getCurrentSpectators()) {
                 System.out.println("Pause Server: " + process.getName());
-                process.executeCommand(new PauseCommand());
+                process.executeCommand(new PauseCommand(),false);
             } else {
                 System.out.println("Unpause Server: " + process.getName());
-                process.executeCommand(new UnpauseCommand());
+                process.executeCommand(new UnpauseCommand(),false);
             }
         }
     }

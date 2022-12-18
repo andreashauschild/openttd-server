@@ -85,4 +85,8 @@ export class OpenttdServerGridComponent implements OnInit {
   save(server: OpenttdServer) {
     this.store.dispatch(saveServer({src: OpenttdServerGridComponent.name, name: server.name!}))
   }
+
+  pauseServer(server: OpenttdServer) {
+
+  }
 }

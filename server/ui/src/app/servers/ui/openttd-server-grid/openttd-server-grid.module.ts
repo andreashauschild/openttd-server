@@ -6,6 +6,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {OpenttdProcessTerminalDialogModule} from '../openttd-process-terminal/openttd-process-terminal-dialog.module';
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {RouterLink} from '@angular/router';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatIconModule,
     OpenttdProcessTerminalDialogModule,
     MatDialogModule,
-    MatTooltipModule
+    MatTooltipModule,
+    RouterLink
   ],
   exports: [OpenttdServerGridComponent]
 })

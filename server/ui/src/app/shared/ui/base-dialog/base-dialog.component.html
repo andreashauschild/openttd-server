@@ -6,13 +6,15 @@
           <div class="mb-5 flex flex-row justify-between">
             <div>
               <span class="text-2xl">{{title}}</span>
+              <p class="mt-1 text-sm text-stone-400">{{subTitle}}</p>
             </div>
-            <div>
-              <button (click)="close(false)" mat-icon-button>
-                <mat-icon>close</mat-icon>
-              </button>
+            <div class="cursor-pointer" (click)="close(false)">
+
+              <mat-icon>close</mat-icon>
+
             </div>
           </div>
+
           <ng-template [ngTemplateOutlet]="bodyTemplate"></ng-template>
 
         </div>

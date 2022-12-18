@@ -12,6 +12,9 @@ export class BaseDialogComponent implements OnInit {
   title: string | undefined = "";
 
   @Input()
+  subTitle: string | undefined = "";
+
+  @Input()
   bodyTemplate: TemplateRef<any> | null = null;
 
   @Input()

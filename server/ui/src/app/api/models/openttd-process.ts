@@ -8,4 +8,5 @@ export interface OpenttdProcess {
   process?: BaseProcess;
   saveGame?: string;
   startServerCommand?: Array<string>;
+  uiTerminalOpenedByClient?: boolean;
 }

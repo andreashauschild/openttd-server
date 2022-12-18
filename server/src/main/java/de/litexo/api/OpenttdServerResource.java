@@ -38,6 +38,15 @@ public class OpenttdServerResource {
         return this.openttdService.getProcesses();
     }
 
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Path("/terminal/ui-open")
+    @Operation(operationId = "terminalOpenInUi")
+    public void setTerminalOpenInUi(@QueryParam("name") String name) {
+
+        this.openttdService.setTerminalOpenInUi(name);
+    }
+
     @POST
     @Path("/start-server")
     @Operation(operationId = "start")

@@ -129,6 +129,12 @@ public class OpenttdService {
         }
     }
 
+    public void setTerminalOpenInUi(String name) {
+        if (this.processes.containsKey(name)) {
+            this.processes.get(name).setLastUiTerminalActivity(System.currentTimeMillis());
+        }
+    }
+
 
     public void sendTerminalCommand(String name, String cmd) {
         if (this.processes.containsKey(name)) {
@@ -247,4 +253,6 @@ public class OpenttdService {
             throw new ServiceRuntimeException("Can't create save game for server '" + name + "'. Server does not exist or is not running!");
         }
     }
+
+
 }

@@ -7,7 +7,7 @@ const routes: Routes = [
     path: 'servers',
     canActivate:[AuthGuard],
     loadChildren: () =>
-      import('./servers/feature/servers-overview/servers-overview.module').then((m) => m.ServersOverviewModule),
+      import('./servers/feature/servers-shell/servers-shell.module').then((m) => m.ServersShellModule),
   },
   {
     path: 'settings',

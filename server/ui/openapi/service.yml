@@ -430,6 +430,26 @@ paths:
       security:
       - SecurityScheme:
         - login_user
+  /api/openttd-server/terminal/ui-open:
+    get:
+      tags:
+      - Openttd Server Resource
+      operationId: terminalOpenInUi
+      parameters:
+      - name: name
+        in: query
+        schema:
+          type: string
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/test/exportModel:
     get:
       tags:
@@ -537,6 +557,8 @@ components:
           type: string
         process:
           $ref: '#/components/schemas/BaseProcess'
+        uiTerminalOpenedByClient:
+          type: boolean
     OpenttdServer:
       type: object
       properties:

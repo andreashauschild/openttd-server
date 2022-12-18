@@ -1,11 +1,12 @@
 import {AfterViewInit, Component, Input, OnDestroy} from '@angular/core';
-import {Subject, Subscription} from "rxjs";
+import {interval, Subject, Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
 import {OpenttdProcess} from 'src/app/api/models';
 import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
 import {selectProcesses, selectProcessUpdateEvent} from '../../../shared/store/selectors/app.selectors';
 import {loadProcesses} from "../../../shared/store/actions/app.actions";
 import {MatDialogRef} from "@angular/material/dialog";
+import {ApplicationService} from '../../../shared/services/application.service';
 
 @Component({
   selector: 'app-openttd-process-terminal',
@@ -25,7 +26,7 @@ export class OpenttdProcessTerminalDialogComponent implements AfterViewInit, OnD
 
   private sub = new Subscription()
 
-  constructor(private store: Store<{}>, private openttd: OpenttdServerResourceService) {
+  constructor(private app: ApplicationService, private store: Store<{}>, private openttd: OpenttdServerResourceService) {
   }
 
   sendCommand(cmd: string) {
@@ -56,6 +57,13 @@ export class OpenttdProcessTerminalDialogComponent implements AfterViewInit, OnD
         }
       }
     }));
+
+    // Tell the backend that the client has an open terminal. This prevents the backen from executing automated commands that otherwise would pollute the terminal
+    this.sub.add(interval(10000).subscribe(_ => this.openttd.terminalOpenInUi({name: this.openttdProcess.name}).subscribe({
+      error: (e) => {
+        this.app.handleError(e);
+      }
+    })));
   }
 
   ngOnDestroy(): void {

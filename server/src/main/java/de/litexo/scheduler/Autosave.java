@@ -17,7 +17,7 @@ public class Autosave {
     @Inject
     OpenttdService service;
 
-    @Scheduled(every = "10s")
+    @Scheduled(every = "600s")
     void checkAutosave() {
         InternalOpenttdServerConfig serverConfig = this.service.getOpenttdServerConfig();
         for (OpenttdProcess process : service.getProcesses()) {

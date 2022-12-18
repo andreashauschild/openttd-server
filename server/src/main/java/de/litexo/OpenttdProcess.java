@@ -18,6 +18,8 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @Accessors(chain = true)
 public class OpenttdProcess {
 
+    private static final long UI_TERMINAL_ACTIVITY_DISABLE_COMMANDS_THRESHOLD = 30000;
+
     private List<String> startServerCommand = new ArrayList<>();
 
     private String name = null;
@@ -27,6 +29,13 @@ public class OpenttdProcess {
     private String saveGame = null;
 
     private String config = null;
+
+    /**
+     * This field is used to check if the terminal is open in the server ui. The client poll and endpoint that updates that value. No auto commands, like
+     * pause, unpause or server info will be executed in that time. That should prevent that the terminal is polluted with auto commands
+     */
+    @JsonIgnore
+    private Long lastUiTerminalActivity;
 
     @JsonIgnore
     private ProcessThread processThread;
@@ -82,11 +91,21 @@ public class OpenttdProcess {
         this.executorService.execute(processThread);
     }
 
-    public <T extends Command> T executeCommand(T command) {
+    public <T extends Command> T executeCommand(T command, boolean executeWithActiveClientTerminal) {
         if (this.processThread != null) {
-            return (T) command.execute(this.processThread);
+            if (executeWithActiveClientTerminal) {
+                return (T) command.execute(this.processThread);
+            } else if (!isUiTerminalOpenedByClient()) {
+                return (T) command.execute(this.processThread);
+            } else {
+                System.out.println("Command '" + command.getType() + "' will be skipped because there is a open ui terminal");
+            }
         }
         return command;
+    }
+
+    private boolean isUiTerminalOpenedByClient() {
+        return (System.currentTimeMillis() - this.lastUiTerminalActivity) > UI_TERMINAL_ACTIVITY_DISABLE_COMMANDS_THRESHOLD;
     }
 
 
