@@ -95,7 +95,7 @@ public class DefaultRepository {
         List<ServerFile> result = new ArrayList<>();
         try {
             FileUtils.listFiles(this.openttdConfigDirPath.toFile(), null, false).forEach(f -> {
-                result.add(this.serverFile(f.getAbsolutePath(),CONFIG));
+                result.add(this.serverFile(f.getAbsolutePath(), CONFIG));
             });
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
@@ -118,6 +118,7 @@ public class DefaultRepository {
         InternalOpenttdServerConfig openttdServerData = getOpenttdServerConfig();
         Optional<OpenttdServer> first = getOpenttdServer(server.getId());
         if (!first.isPresent()) {
+            throwIfPortAllocated(server.getPort(), openttdServerData.getServers());
             openttdServerData.getServers().add(server);
             save(openttdServerData);
             return getOpenttdServer(server.getId()).get();
@@ -126,7 +127,7 @@ public class DefaultRepository {
         }
     }
 
-    public synchronized OpenttdServer updateServer(String id,OpenttdServer server) {
+    public synchronized OpenttdServer updateServer(String id, OpenttdServer server) {
         InternalOpenttdServerConfig openttdServerData = getOpenttdServerConfig();
 
         int replaceIndex = -1;
@@ -138,6 +139,7 @@ public class DefaultRepository {
         }
 
         if (replaceIndex > -1) {
+            throwIfPortAllocated(server.getPort(), openttdServerData.getServers().stream().filter(s -> !s.getId().equals(id)).collect(Collectors.toList()));
             openttdServerData.getServers().set(replaceIndex, server);
             save(openttdServerData);
             return getOpenttdServer(id).get();
@@ -174,7 +176,7 @@ public class DefaultRepository {
 
     public void updateServerFiles(OpenttdServer server) {
         if (server.getSaveGame() != null && server.getSaveGame().getPath() != null) {
-            server.setSaveGame(serverFile(server.getSaveGame().getPath(),SAVE_GAME));
+            server.setSaveGame(serverFile(server.getSaveGame().getPath(), SAVE_GAME));
         }
 
         if (server.getConfig() != null && server.getConfig().getPath() != null) {
@@ -207,4 +209,14 @@ public class DefaultRepository {
     public Path getOpenttdConfigDirPath() {
         return openttdConfigDirPath;
     }
+
+    public void throwIfPortAllocated(int port, List<OpenttdServer> servers) {
+        if (servers != null) {
+            Optional<OpenttdServer> allocated = servers.stream().filter(s -> s.getPort() == port).findFirst();
+            if (allocated.isPresent()) {
+                throw new ServiceRuntimeException("Error: Port '" + port + " is already allocated by server '" + allocated.get().getName() + "'. You must set a different port!");
+            }
+        }
+    }
+
 }

@@ -183,9 +183,9 @@ public class OpenttdService {
         return enrich(this.repository.updateServer(id, server));
     }
 
-    public void deleteServer(String name) {
-        this.repository.deleteServer(name);
-        stop(name);
+    public void deleteServer(String id) {
+        this.repository.deleteServer(id);
+        stop(id);
     }
 
     private OpenttdServer enrich(OpenttdServer server) {

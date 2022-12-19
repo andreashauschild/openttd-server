@@ -11,6 +11,7 @@ import {RP_ID} from '../../../shared/model/constants';
 import {OpenttdServer} from '../../../api/models/openttd-server';
 import {filter} from 'rxjs/operators';
 import {clone} from '../../../shared/services/utils';
+import {FormBuilder, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-servers-detail',
@@ -18,6 +19,8 @@ import {clone} from '../../../shared/services/utils';
   styleUrls: ['./servers-detail.component.scss']
 })
 export class ServersDetailComponent implements OnInit, OnDestroy {
+  serverForm;
+
 
   server: OpenttdServer | undefined;
   openttdConfigs: ServerFile[] = [];
@@ -25,8 +28,11 @@ export class ServersDetailComponent implements OnInit, OnDestroy {
 
   private sub = new Subscription();
 
-  constructor(private store: Store<{}>, private api: OpenttdServerResourceService, private activeRoute: ActivatedRoute) {
-
+  constructor(private store: Store<{}>,private fb: FormBuilder, private api: OpenttdServerResourceService, private activeRoute: ActivatedRoute) {
+    this.serverForm = this.fb.group({
+      port: ['', [Validators.required]],
+      name: ['', [Validators.required]],
+    });
   }
 
   ngOnInit(): void {
@@ -35,7 +41,9 @@ export class ServersDetailComponent implements OnInit, OnDestroy {
 
 
     this.sub.add(this.store.select(selectServer).pipe(filter(s => s != null)).subscribe(s => {
-      this.server = clone(s);
+      this.server = clone(s!);
+      this.serverForm.controls.name.patchValue(this.server.name || '')
+      this.serverForm.controls.port.patchValue(`${this.server.port}` || '')
       this.sub.add(this.store.select(selectFiles).subscribe(files => {
         this.openttdConfigs = files.filter(f => f.type === ServerFileType.Config);
         this.openttdSavegames = files.filter(f => f.type === ServerFileType.SaveGame);

@@ -11,7 +11,7 @@
       <mat-option [value]="{name:'', path:''}">
 
       </mat-option>
-      <mat-option *ngFor="let file of filteredFiles | async" [value]="file">
+      <mat-option  *ngFor="let file of filteredFiles | async" [value]="file">
         {{file.name}}
       </mat-option>
     </mat-autocomplete>
