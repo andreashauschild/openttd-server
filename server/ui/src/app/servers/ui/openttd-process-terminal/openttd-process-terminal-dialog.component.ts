@@ -15,6 +15,9 @@ import {ApplicationService} from '../../../shared/services/application.service';
 })
 export class OpenttdProcessTerminalDialogComponent implements AfterViewInit, OnDestroy {
 
+
+  public dialogTitle = '';
+
   public dialogRef: MatDialogRef<OpenttdProcessTerminalDialogComponent, boolean> | null = null;
 
   public openttdProcess!: OpenttdProcess;
@@ -30,7 +33,7 @@ export class OpenttdProcessTerminalDialogComponent implements AfterViewInit, OnD
   }
 
   sendCommand(cmd: string) {
-    this.openttd.sendTerminalCommand({name: this.openttdProcess?.name, body: cmd}).subscribe();
+    this.openttd.sendTerminalCommand({id: this.openttdProcess.id!, body: cmd}).subscribe();
   }
 
   ngAfterViewInit(): void {
@@ -39,7 +42,7 @@ export class OpenttdProcessTerminalDialogComponent implements AfterViewInit, OnD
     this.store.dispatch(loadProcesses({src: OpenttdProcessTerminalDialogComponent.name}));
 
     this.sub.add(this.store.select(selectProcesses).subscribe(servers => {
-      const process = servers.find(s => s.name === this.openttdProcess?.name)
+      const process = servers.find(s => s.id === this.openttdProcess?.id)
       if (process) {
         this.openttdProcess = process
         setTimeout(() => {
@@ -59,7 +62,7 @@ export class OpenttdProcessTerminalDialogComponent implements AfterViewInit, OnD
     }));
 
     // Tell the backend that the client has an open terminal. This prevents the backen from executing automated commands that otherwise would pollute the terminal
-    this.sub.add(interval(10000).subscribe(_ => this.openttd.terminalOpenInUi({name: this.openttdProcess.name}).subscribe({
+    this.sub.add(interval(10000).subscribe(_ => this.openttd.terminalOpenInUi({id: this.openttdProcess.id!}).subscribe({
       error: (e) => {
         this.app.handleError(e);
       }

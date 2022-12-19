@@ -3,9 +3,12 @@ package de.litexo.repository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.litexo.model.external.OpenttdServer;
-import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.model.external.ServerFile;
-import org.junit.jupiter.api.*;
+import de.litexo.model.internal.InternalOpenttdServerConfig;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.jupiter.api.io.TempDir;
@@ -94,8 +97,6 @@ class DefaultRepositoryTest {
                 new OpenttdServer().setName("server1")
                         .setConfig(new ServerFile().setPath(this.existingFile.getPath()))
                         .setSaveGame(new ServerFile().setPath(this.existingFile.getPath()))
-                        .setAutoSaveGame(new ServerFile().setPath(this.existingFile.getPath()))
-                        .setStartSaveGame(new ServerFile().setPath(this.notExistingFile.getPath()))
         );
 
         assertEquals(true, server1.getConfig().isExists());
@@ -107,17 +108,6 @@ class DefaultRepositoryTest {
         assertEquals("existingFile.txt", server1.getSaveGame().getName());
         assertTrue(server1.getSaveGame().getCreated() > 0);
         assertTrue(server1.getSaveGame().getLastModified() > 0);
-
-        assertEquals(true, server1.getAutoSaveGame().isExists());
-        assertEquals("existingFile.txt", server1.getAutoSaveGame().getName());
-        assertTrue(server1.getAutoSaveGame().getCreated() > 0);
-        assertTrue(server1.getAutoSaveGame().getLastModified() > 0);
-
-        assertEquals(false, server1.getStartSaveGame().isExists());
-        assertEquals("notExistingFile.txt", server1.getStartSaveGame().getName());
-        assertTrue(server1.getStartSaveGame().getCreated() == 0);
-        assertTrue(server1.getStartSaveGame().getLastModified() == 0);
-
 
         // Check that return value of add is correcly mapped
         server1 = this.subject.getOpenttdServerConfig().getServers().get(0);
@@ -131,16 +121,6 @@ class DefaultRepositoryTest {
         assertEquals("existingFile.txt", server1.getSaveGame().getName());
         assertTrue(server1.getSaveGame().getCreated() > 0);
         assertTrue(server1.getSaveGame().getLastModified() > 0);
-
-        assertEquals(true, server1.getAutoSaveGame().isExists());
-        assertEquals("existingFile.txt", server1.getAutoSaveGame().getName());
-        assertTrue(server1.getAutoSaveGame().getCreated() > 0);
-        assertTrue(server1.getAutoSaveGame().getLastModified() > 0);
-
-        assertEquals(false, server1.getStartSaveGame().isExists());
-        assertEquals("notExistingFile.txt", server1.getStartSaveGame().getName());
-        assertTrue(server1.getStartSaveGame().getCreated() == 0);
-        assertTrue(server1.getStartSaveGame().getLastModified() == 0);
 
         System.out.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(server1));
 
@@ -173,7 +153,7 @@ class DefaultRepositoryTest {
         InternalOpenttdServerConfig openttdServerData = this.subject.getOpenttdServerConfig();
         assertEquals(999, openttdServerData.getServers().get(0).getPort());
 
-        this.subject.updateServer(server1.setPort(777));
+        this.subject.updateServer(server1.getId(), server1.setPort(777));
         openttdServerData = this.subject.getOpenttdServerConfig();
 
         assertEquals(777, openttdServerData.getServers().get(0).getPort());

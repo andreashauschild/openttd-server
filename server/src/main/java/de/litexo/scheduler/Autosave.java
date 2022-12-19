@@ -21,16 +21,16 @@ public class Autosave {
     void checkAutosave() {
         InternalOpenttdServerConfig serverConfig = this.service.getOpenttdServerConfig();
         for (OpenttdProcess process : service.getProcesses()) {
-            Optional<OpenttdServer> openttdServer = service.getOpenttdServer(process.getName());
+            Optional<OpenttdServer> openttdServer = service.getOpenttdServer(process.getId());
             if (openttdServer.isPresent()) {
-                if (openttdServer.get().getAutoSaveGame() == null || !openttdServer.get().getAutoSaveGame().isExists()) {
-                    this.service.autoSaveGame(openttdServer.get().getName());
+                if (openttdServer.get().getSaveGame() == null || !openttdServer.get().getSaveGame().isExists()) {
+                    this.service.autoSaveGame(openttdServer.get().getId());
                 } else {
-                    long ageInSeconds = (System.currentTimeMillis() - openttdServer.get().getAutoSaveGame().getLastModified()) / 1000;
+                    long ageInSeconds = (System.currentTimeMillis() - openttdServer.get().getSaveGame().getLastModified()) / 1000;
                     long outDated = serverConfig.getAutoSaveMinutes() * 60;
                     if (ageInSeconds > outDated) {
                         System.out.println("Last save game was made before '" + ageInSeconds + "' seconds. autosave is executed");
-                        this.service.autoSaveGame(openttdServer.get().getName());
+                        this.service.autoSaveGame(openttdServer.get().getId());
                     } else {
                         System.out.println("Last save game was made '" + ageInSeconds + "' no autosave was executed");
                     }

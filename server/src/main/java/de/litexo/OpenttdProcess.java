@@ -22,7 +22,7 @@ public class OpenttdProcess {
 
     private List<String> startServerCommand = new ArrayList<>();
 
-    private String name = null;
+    private String id = null;
 
     private Integer port = null;
 
@@ -62,8 +62,8 @@ public class OpenttdProcess {
     public void start() {
         List<String> cmd = new ArrayList<>();
 
-        if (this.name == null) {
-            this.name = "Server-" + System.currentTimeMillis();
+        if (this.id == null) {
+            this.id = "Server-" + System.currentTimeMillis();
         }
 
         if (this.startServerCommand.isEmpty()) {

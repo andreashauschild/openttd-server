@@ -7,7 +7,8 @@ import {
   loadProcessesSuccess,
   loadServerConfigSuccess,
   loadServerFilesSuccess,
-  loadServerSuccess, patchServerConfigSuccess,
+  loadServerSuccess,
+  patchServerConfigSuccess,
   saveServerSuccess,
   startServerSuccess,
   updateServerSuccess
@@ -103,7 +104,7 @@ export class AppEffects {
   startServer = createEffect(() => {
     return this.actions$.pipe(
       ofType(AppActions.startServer),
-      mergeMap((a) => this.service.startServer({name: a.name, savegame: a.saveGame})
+      mergeMap((a) => this.service.startServer({id: a.name})
         .pipe(
           map(server => startServerSuccess({src: AppEffects.name, server})),
           catchError((err) => {
@@ -118,7 +119,7 @@ export class AppEffects {
   updateServer = createEffect(() => {
     return this.actions$.pipe(
       ofType(AppActions.updateServer),
-      mergeMap((a) => this.service.updateServer({body: a.server})
+      mergeMap((a) => this.service.updateServer({id: a.id, body: a.server})
         .pipe(
           map(server => updateServerSuccess({src: AppEffects.name, server})),
           catchError((err) => {
@@ -133,7 +134,7 @@ export class AppEffects {
   loadServer = createEffect(() => {
     return this.actions$.pipe(
       ofType(AppActions.loadServer),
-      mergeMap((a) => this.service.getServer({name: a.name})
+      mergeMap((a) => this.service.getServer({id: a.id})
         .pipe(
           map(server => loadServerSuccess({src: AppEffects.name, server})),
           catchError((err) => {
@@ -149,9 +150,9 @@ export class AppEffects {
   deleteServer = createEffect(() => {
     return this.actions$.pipe(
       ofType(AppActions.deleteServer),
-      mergeMap((a) => this.service.deleteServer({name: a.name})
+      mergeMap((a) => this.service.deleteServer({id: a.id})
         .pipe(
-          map(name => deleteServerSuccess({src: AppEffects.name, name: a.name})),
+          map(name => deleteServerSuccess({src: AppEffects.name, id: a.id})),
           catchError((err) => {
             this.app.handleError(err);
             return EMPTY;
@@ -164,9 +165,9 @@ export class AppEffects {
   saveServer = createEffect(() => {
     return this.actions$.pipe(
       ofType(AppActions.saveServer),
-      mergeMap((a) => this.service.save({name: a.name})
+      mergeMap((a) => this.service.save({id: a.id})
         .pipe(
-          map(name => saveServerSuccess({src: AppEffects.name, name: a.name})),
+          map(name => saveServerSuccess({src: AppEffects.name, id: a.id})),
           catchError((err) => {
             this.app.handleError(err);
             return EMPTY;

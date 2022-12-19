@@ -79,10 +79,10 @@ export class OpenttdServerTableComponent implements OnInit {
   }
 
   deleteServer(server: OpenttdServer) {
-    this.store.dispatch(deleteServer({src: OpenttdServerTableComponent.name, name: server.name!}))
+    this.store.dispatch(deleteServer({src: OpenttdServerTableComponent.name, id: server.name!}))
   }
 
   save(server: OpenttdServer) {
-    this.store.dispatch(saveServer({src: OpenttdServerTableComponent.name, name: server.name!}))
+    this.store.dispatch(saveServer({src: OpenttdServerTableComponent.name, id: server.name!}))
   }
 }

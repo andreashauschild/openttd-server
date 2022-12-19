@@ -38,13 +38,12 @@ public class OpenttdServerResource {
         return this.openttdService.getProcesses();
     }
 
-    @GET
+    @PUT
     @Consumes(MediaType.TEXT_PLAIN)
-    @Path("/terminal/ui-open")
+    @Path("/server/{id}/terminal/ui-open")
     @Operation(operationId = "terminalOpenInUi")
-    public void setTerminalOpenInUi(@QueryParam("name") String name) {
-
-        this.openttdService.setTerminalOpenInUi(name);
+    public void setTerminalOpenInUi(@PathParam("id") String id) {
+        this.openttdService.setTerminalOpenInUi(id);
     }
 
     @POST
@@ -60,42 +59,41 @@ public class OpenttdServerResource {
     }
 
     @POST
-    @Path("/start-server2")
+    @Path("/server/{id}/start")
     @Operation(operationId = "startServer")
     public OpenttdServer startServer(
-            @QueryParam("name") String name,
-            @QueryParam("savegame") String savegame
+            @PathParam("id") String id
     ) {
-        return this.openttdService.startServer(name, savegame);
+        return this.openttdService.startServer(id);
     }
 
     @POST
-    @Path("/stop-server")
+    @Path("/server/{id}/stop")
     @Operation(operationId = "stop")
-    public void stopServer(@QueryParam("name") String name) {
-        this.openttdService.stop(name);
+    public void stopServer(@PathParam("id") String id) {
+        this.openttdService.stop(id);
     }
 
     @POST
-    @Path("/save")
+    @Path("/server/{id}/save")
     @Operation(operationId = "save")
-    public void saveServer(@QueryParam("name") String name) {
-        this.openttdService.saveGame(name);
+    public void saveServer(@PathParam("id") String id) {
+        this.openttdService.saveGame(id);
     }
 
     @POST
-    @Path("/dump")
-    @Operation(operationId = "dump")
-    public void dumpProcessData(@QueryParam("name") String name, @QueryParam("dir") String dir) {
-        this.openttdService.dumpProcessData(name, dir);
+    @Path("/server/{id}/dump-process-data")
+    @Operation(operationId = "dumpProcessData")
+    public void dumpProcessData(@PathParam("id") String id, @QueryParam("dir") String dir) {
+        this.openttdService.dumpProcessData(id, dir);
     }
 
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
-    @Path("/send-terminal-command")
+    @Path("/server/{id}/send-terminal-command")
     @Operation(operationId = "send-terminal-command")
-    public void sendTerminalCommand(@QueryParam("name") String name, String cmd) {
-        this.openttdService.sendTerminalCommand(name, cmd);
+    public void sendTerminalCommand(@PathParam("id") String id, String cmd) {
+        this.openttdService.sendTerminalCommand(id, cmd);
     }
 
     @POST
@@ -108,29 +106,28 @@ public class OpenttdServerResource {
     }
 
     @PUT
-    @Path("/server")
+    @Path("/server/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(operationId = "updateServer")
-    public OpenttdServer updateServer(OpenttdServer server) {
-        return this.openttdService.updateServer(server);
+    public OpenttdServer updateServer(@PathParam("id") String id, OpenttdServer server) {
+        return this.openttdService.updateServer(id, server);
     }
 
     @DELETE
-    @Path("/server")
+    @Path("/server/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(operationId = "deleteServer")
-    public void deleteServer(@QueryParam("name") String name) {
-        this.openttdService.deleteServer(name);
+    public void deleteServer(@PathParam("id") String id) {
+        this.openttdService.deleteServer(id);
     }
 
     @GET
-    @Path("/server")
+    @Path("/server/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(operationId = "getServer")
-    public OpenttdServer getServer(@QueryParam("name") String name) {
-
-        Optional<OpenttdServer> openttdServer = this.openttdService.getOpenttdServer(name);
+    public OpenttdServer getServer(@PathParam("id") String id) {
+        Optional<OpenttdServer> openttdServer = this.openttdService.getOpenttdServer(id);
         if (openttdServer.isPresent()) {
             return openttdServer.get();
         }
@@ -166,11 +163,11 @@ public class OpenttdServerResource {
     }
 
     @POST
-    @Path("/command")
+    @Path("/server/{id}/command")
     @Operation(operationId = "executeCommand")
-    public Command executeCommand(@QueryParam("name") String name, Command command
+    public Command executeCommand(@PathParam("id") String id, Command command
     ) {
-        return this.openttdService.execCommand(name, command);
+        return this.openttdService.execCommand(id, command);
     }
 
 }

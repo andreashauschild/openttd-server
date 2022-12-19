@@ -16,8 +16,10 @@ export class ServerFileSelectComponent implements OnInit, OnChanges {
   myControl = new FormControl('');
 
   @Output()
-  selectedFile = new EventEmitter<ServerFile>();
+  selectedFileEvent = new EventEmitter<ServerFile>();
 
+  @Output()
+  selectedFileDownloadEvent = new EventEmitter<ServerFile>();
 
   @Input()
   files: ServerFile[] = [];
@@ -25,7 +27,15 @@ export class ServerFileSelectComponent implements OnInit, OnChanges {
   @Input()
   label: string = '';
 
+  @Input()
+  hintStart: string = '';
+
+  @Input()
+  hintEnd: string = '';
+
   filteredFiles: Observable<ServerFile[]> | undefined;
+
+  selectedFile: ServerFile | undefined;
 
   ngOnInit() {
 
@@ -41,7 +51,8 @@ export class ServerFileSelectComponent implements OnInit, OnChanges {
   }
 
   select($event: MatAutocompleteSelectedEvent) {
-    this.selectedFile.emit($event.option.value);
+    this.selectedFile=$event.option.value;
+    this.selectedFileEvent.emit($event.option.value);
   }
 
   fileToString(file: any) {

@@ -20,6 +20,7 @@ export const appFeatureKey = 'app';
 export interface State {
   config?: OpenttdServerConfigGet
   servers: OpenttdServer[]
+  server?: OpenttdServer
   processes: OpenttdProcess[];
   files: ServerFile[];
   processUpdateEvent: OpenttdTerminalUpdateEvent[];
@@ -90,7 +91,7 @@ export const reducer = createReducer(
 
   }),
 
-  on(AppActions.loadServerConfigSuccess,AppActions.patchServerConfigSuccess, (state, action) => {
+  on(AppActions.loadServerConfigSuccess, AppActions.patchServerConfigSuccess, (state, action) => {
     return {
       ...state,
       config: action.config,
@@ -109,8 +110,9 @@ export const reducer = createReducer(
   on(AppActions.updateServerSuccess, AppActions.startServerSuccess, AppActions.loadServerSuccess, (state, action) => {
     return {
       ...state,
+      server: action.server,
       servers: state.servers.map(s => {
-        if (s.name === action.server.name) {
+        if (s.id === action.server.id) {
           return action.server;
         }
         return s;
@@ -122,7 +124,7 @@ export const reducer = createReducer(
     return {
       ...state,
       servers: state.servers.filter(s => {
-        return (s.name !== action.name)
+        return (s.id !== action.id)
       })
     }
   }),

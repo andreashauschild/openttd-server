@@ -5,9 +5,9 @@ import de.litexo.api.ServiceRuntimeException;
 import de.litexo.commands.Command;
 import de.litexo.events.EventBus;
 import de.litexo.model.external.OpenttdServer;
-import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.model.external.ServerFile;
 import de.litexo.model.external.ServerFileType;
+import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.repository.DefaultRepository;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -20,7 +20,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
+import java.util.UUID;
 
 @ApplicationScoped
 public class OpenttdService {
@@ -57,15 +62,15 @@ public class OpenttdService {
         return new ArrayList<>(this.processes.values());
     }
 
-    public void dumpProcessData(String name, String dir) {
-        if (this.processes.containsKey(name)) {
+    public void dumpProcessData(String id, String dir) {
+        if (this.processes.containsKey(id)) {
             try {
-                FileUtils.write(Paths.get(dir).resolve(name + "-" + System.currentTimeMillis() + "-dump.txt").toFile(), this.processes.get(name).getProcessThread().getLogs(), StandardCharsets.UTF_8, false);
+                FileUtils.write(Paths.get(dir).resolve(id + "-" + System.currentTimeMillis() + "-dump.txt").toFile(), this.processes.get(id).getProcessThread().getLogs(), StandardCharsets.UTF_8, false);
             } catch (IOException e) {
                 new ServiceRuntimeException(e);
             }
         } else {
-            new ServiceRuntimeException("Process with name '" + name + "' is not running order does not exists");
+            new ServiceRuntimeException("Process with name '" + id + "' is not running order does not exists");
         }
     }
 
@@ -85,29 +90,25 @@ public class OpenttdService {
                                 String config) {
         OpenttdProcess openttdProcess = new OpenttdProcess(this.executor, this.eventBus);
         openttdProcess.setStartServerCommand(this.startServer);
-        openttdProcess.setName(name);
+        openttdProcess.setId(name);
         openttdProcess.setPort(port);
         openttdProcess.setSaveGame(savegame);
         openttdProcess.setConfig(config);
         openttdProcess.start();
-        processes.put(openttdProcess.getName(), openttdProcess);
+        processes.put(openttdProcess.getId(), openttdProcess);
         return openttdProcess;
     }
 
-    public OpenttdServer startServer(String name, String savegame) {
-        Optional<OpenttdServer> openttdServer = this.repository.getOpenttdServer(name);
+    public OpenttdServer startServer(String id) {
+        Optional<OpenttdServer> openttdServer = this.repository.getOpenttdServer(id);
         if (openttdServer.isPresent()) {
             OpenttdProcess openttdProcess = new OpenttdProcess(this.executor, this.eventBus);
             openttdProcess.setStartServerCommand(this.startServer);
-            openttdProcess.setName(openttdServer.get().getName());
+            openttdProcess.setId(openttdServer.get().getId());
             openttdProcess.setPort(openttdServer.get().getPort());
 
-            if (savegame != null) {
-                openttdProcess.setSaveGame(savegame);
-            } else if (openttdServer.get().getSaveGame() != null) {
+            if (openttdServer.get().getSaveGame() != null) {
                 openttdProcess.setSaveGame(openttdServer.get().getSaveGame().getPath());
-            } else if (openttdServer.get().getStartSaveGame() != null) {
-                openttdProcess.setSaveGame(openttdServer.get().getStartSaveGame().getPath());
             }
 
             if (openttdServer.get().getConfig() != null) {
@@ -115,30 +116,30 @@ public class OpenttdService {
             }
 
             openttdProcess.start();
-            processes.put(openttdProcess.getName(), openttdProcess);
-            return this.getOpenttdServer(openttdServer.get().getName()).get();
+            processes.put(openttdProcess.getId(), openttdProcess);
+            return this.getOpenttdServer(openttdServer.get().getId()).get();
         }
-        throw new ServiceRuntimeException("Failed to start server. Server with name '" + name + "' does not exists!");
+        throw new ServiceRuntimeException("Failed to start server. Server with name '" + id + "' does not exists!");
     }
 
 
-    public void stop(String name) {
-        if (this.processes.containsKey(name)) {
-            this.processes.get(name).getProcessThread().stop();
-            this.processes.remove(name);
+    public void stop(String id) {
+        if (this.processes.containsKey(id)) {
+            this.processes.get(id).getProcessThread().stop();
+            this.processes.remove(id);
         }
     }
 
-    public void setTerminalOpenInUi(String name) {
-        if (this.processes.containsKey(name)) {
-            this.processes.get(name).setLastUiTerminalActivity(System.currentTimeMillis());
+    public void setTerminalOpenInUi(String id) {
+        if (this.processes.containsKey(id)) {
+            this.processes.get(id).setLastUiTerminalActivity(System.currentTimeMillis());
         }
     }
 
 
-    public void sendTerminalCommand(String name, String cmd) {
-        if (this.processes.containsKey(name)) {
-            this.processes.get(name).getProcessThread().write(cmd);
+    public void sendTerminalCommand(String id, String cmd) {
+        if (this.processes.containsKey(id)) {
+            this.processes.get(id).getProcessThread().write(cmd);
         }
     }
 
@@ -170,16 +171,16 @@ public class OpenttdService {
     }
 
 
-    public Optional<OpenttdServer> getOpenttdServer(String name) {
-        return enrich(this.repository.getOpenttdServer(name));
+    public Optional<OpenttdServer> getOpenttdServer(String id) {
+        return enrich(this.repository.getOpenttdServer(id));
     }
 
     public OpenttdServer addServer(OpenttdServer server) {
-        return enrich(this.repository.addServer(server));
+        return enrich(this.repository.addServer(server.setId(UUID.randomUUID().toString())));
     }
 
-    public OpenttdServer updateServer(OpenttdServer server) {
-        return enrich(this.repository.updateServer(server));
+    public OpenttdServer updateServer(String id, OpenttdServer server) {
+        return enrich(this.repository.updateServer(id, server));
     }
 
     public void deleteServer(String name) {
@@ -189,8 +190,8 @@ public class OpenttdService {
 
     private OpenttdServer enrich(OpenttdServer server) {
         if (server != null) {
-            if (this.processes.containsKey(server.getName())) {
-                server.setProcess(this.processes.get(server.getName()));
+            if (this.processes.containsKey(server.getId())) {
+                server.setProcess(this.processes.get(server.getId()));
             }
             return server;
         }
@@ -212,30 +213,30 @@ public class OpenttdService {
         return results;
     }
 
-    private void createSaveGame(String name, boolean autosave, boolean manually) {
-        if (this.processes.containsKey(name)) {
-            OpenttdServer openttdServer = this.repository.getOpenttdServer(name).get();
+    private void createSaveGame(String id, boolean autosave, boolean manually) {
+        if (this.processes.containsKey(id)) {
+            OpenttdServer openttdServer = this.repository.getOpenttdServer(id).get();
             String save = null;
             if (autosave) {
-                save = getAutoSaveGameName(name).toFile().getAbsolutePath();
+                save = getAutoSaveGameName(id).toFile().getAbsolutePath();
             }
             if (manually) {
-                save = getSaveGameName(name).toFile().getAbsolutePath();
+                save = getSaveGameName(id).toFile().getAbsolutePath();
             }
 
             ServerFile serverFile = this.repository.serverFile(save + ".sav", ServerFileType.SAVE_GAME);
             String cmd = String.format("save \"%s\"", save);
 
             if (autosave) {
-                openttdServer.setAutoSaveGame(serverFile);
+                openttdServer.setSaveGame(serverFile);
             }
             if (manually) {
                 openttdServer.setSaveGame(serverFile);
             }
 
 
-            this.repository.updateServer(openttdServer);
-            this.processes.get(name).getProcessThread().write(cmd);
+            this.repository.updateServer(id, openttdServer);
+            this.processes.get(id).getProcessThread().write(cmd);
             for (int i = 0; i < 100; i++) {
                 ServerFile updated = this.repository.serverFile(save + ".sav", ServerFileType.SAVE_GAME);
                 if (updated.getLastModified() > serverFile.getLastModified()) {
@@ -244,13 +245,13 @@ public class OpenttdService {
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                        throw new ServiceRuntimeException(e);
                     }
                 }
             }
             throw new ServiceRuntimeException("Save may have failed. Check logs!");
         } else {
-            throw new ServiceRuntimeException("Can't create save game for server '" + name + "'. Server does not exist or is not running!");
+            throw new ServiceRuntimeException("Can't create save game for server '" + id + "'. Server does not exist or is not running!");
         }
     }
 

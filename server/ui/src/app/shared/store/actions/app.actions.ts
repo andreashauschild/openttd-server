@@ -25,7 +25,7 @@ export const processUpdateEvent = createAction(
 
 
 export const loadServer = createAction(
-  '[App] loadServer', props<{ src: string; name: string }>()
+  '[App] loadServer', props<{ src: string; id: string }>()
 );
 
 export const loadServerSuccess = createAction(
@@ -41,7 +41,7 @@ export const addServerSuccess = createAction(
 );
 
 export const updateServer = createAction(
-  '[App] updateServer', props<{ src: string; server: OpenttdServer }>()
+  '[App] updateServer', props<{ src: string; id:string, server: OpenttdServer }>()
 );
 
 export const updateServerSuccess = createAction(
@@ -49,19 +49,19 @@ export const updateServerSuccess = createAction(
 );
 
 export const deleteServer = createAction(
-  '[App] deleteServer', props<{ src: string; name: string }>()
+  '[App] deleteServer', props<{ src: string; id: string }>()
 );
 
 export const deleteServerSuccess = createAction(
-  '[App] deleteServerSuccess', props<{ src: string, name: string }>()
+  '[App] deleteServerSuccess', props<{ src: string, id: string }>()
 );
 
 export const saveServer = createAction(
-  '[App] saveServer', props<{ src: string; name: string }>()
+  '[App] saveServer', props<{ src: string; id: string }>()
 );
 
 export const saveServerSuccess = createAction(
-  '[App] saveServerSuccess', props<{ src: string; name: string }>()
+  '[App] saveServerSuccess', props<{ src: string; id: string }>()
 );
 
 export const startServer = createAction(

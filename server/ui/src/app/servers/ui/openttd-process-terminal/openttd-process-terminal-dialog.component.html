@@ -10,5 +10,5 @@
 </ng-template>
 
 <app-base-dialog [subTitle]="'While the terminal is open all auto commands (save, server_info, etc.) will be skipped to prevent terminal pollution.'" [dialogRef]="dialogRef"
-                 [title]="'Server: ' +openttdProcess.name" [bodyTemplate]="body" [footerTemplate]="footer">
+                 [title]="dialogTitle" [bodyTemplate]="body" [footerTemplate]="footer">
 </app-base-dialog>

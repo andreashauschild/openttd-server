@@ -11,5 +11,6 @@ export const selectAlerts = createSelector(selectAppState, (state) => state.aler
 export const selectProcesses = createSelector(selectAppState, (state) => state.processes);
 export const selectProcessUpdateEvent = createSelector(selectAppState, (state) => state.processUpdateEvent);
 export const selectServers = createSelector(selectAppState, (state) => state.servers);
+export const selectServer = createSelector(selectAppState, (state) => state.server);
 
 export const selectFiles = createSelector(selectAppState, (state) => state.files);

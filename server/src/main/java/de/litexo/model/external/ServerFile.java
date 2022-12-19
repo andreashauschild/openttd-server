@@ -8,8 +8,13 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class ServerFile {
 
+    // This value represents an owner id of the given file
+    private String ownerId;
+
     private String path;
+
     private String name;
+
     private ServerFileType type;
 
 

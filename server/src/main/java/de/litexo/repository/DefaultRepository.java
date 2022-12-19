@@ -116,22 +116,22 @@ public class DefaultRepository {
 
     public synchronized OpenttdServer addServer(OpenttdServer server) {
         InternalOpenttdServerConfig openttdServerData = getOpenttdServerConfig();
-        Optional<OpenttdServer> first = getOpenttdServer(server.getName());
+        Optional<OpenttdServer> first = getOpenttdServer(server.getId());
         if (!first.isPresent()) {
             openttdServerData.getServers().add(server);
             save(openttdServerData);
-            return getOpenttdServer(server.getName()).get();
+            return getOpenttdServer(server.getId()).get();
         } else {
-            throw new ServiceRuntimeException("Can't add server. A server with name " + server.getName() + " already exists.");
+            throw new ServiceRuntimeException("Can't add server. A server with id " + server.getId() + " already exists.");
         }
     }
 
-    public synchronized OpenttdServer updateServer(OpenttdServer server) {
+    public synchronized OpenttdServer updateServer(String id,OpenttdServer server) {
         InternalOpenttdServerConfig openttdServerData = getOpenttdServerConfig();
 
         int replaceIndex = -1;
         for (int i = 0; i < openttdServerData.getServers().size(); i++) {
-            if (openttdServerData.getServers().get(i).getName().equalsIgnoreCase(server.getName())) {
+            if (openttdServerData.getServers().get(i).getId().equalsIgnoreCase(id)) {
                 replaceIndex = i;
                 break;
             }
@@ -140,22 +140,22 @@ public class DefaultRepository {
         if (replaceIndex > -1) {
             openttdServerData.getServers().set(replaceIndex, server);
             save(openttdServerData);
-            return getOpenttdServer(server.getName()).get();
+            return getOpenttdServer(id).get();
         } else {
-            throw new ServiceRuntimeException("Can't update server. A server with name " + server.getName() + " does not exists.");
+            throw new ServiceRuntimeException("Can't update server. A server with name " + id + " does not exists.");
         }
     }
 
-    public synchronized void deleteServer(String name) {
+    public synchronized void deleteServer(String id) {
         InternalOpenttdServerConfig openttdServerData = getOpenttdServerConfig();
-        openttdServerData.setServers(openttdServerData.getServers().stream().filter(s -> !s.getName().equalsIgnoreCase(name)).collect(Collectors.toList()));
+        openttdServerData.setServers(openttdServerData.getServers().stream().filter(s -> !s.getId().equalsIgnoreCase(id)).collect(Collectors.toList()));
         save(openttdServerData);
     }
 
 
-    public Optional<OpenttdServer> getOpenttdServer(String name) {
+    public Optional<OpenttdServer> getOpenttdServer(String id) {
         InternalOpenttdServerConfig openttdServerData = getOpenttdServerConfig();
-        Optional<OpenttdServer> first = openttdServerData.getServers().stream().filter(s -> s.getName().equalsIgnoreCase(name)).findFirst();
+        Optional<OpenttdServer> first = openttdServerData.getServers().stream().filter(s -> s.getId().equalsIgnoreCase(id)).findFirst();
         if (first.isPresent()) {
             updateServerFiles(first.get());
         }
@@ -173,14 +173,6 @@ public class DefaultRepository {
     }
 
     public void updateServerFiles(OpenttdServer server) {
-        if (server.getStartSaveGame() != null && server.getStartSaveGame().getPath() != null) {
-            server.setStartSaveGame(serverFile(server.getStartSaveGame().getPath(),SAVE_GAME));
-        }
-
-        if (server.getAutoSaveGame() != null && server.getAutoSaveGame().getPath() != null) {
-            server.setAutoSaveGame(serverFile(server.getAutoSaveGame().getPath(),SAVE_GAME));
-        }
-
         if (server.getSaveGame() != null && server.getSaveGame().getPath() != null) {
             server.setSaveGame(serverFile(server.getSaveGame().getPath(),SAVE_GAME));
         }

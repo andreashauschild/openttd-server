@@ -28,60 +28,6 @@ export class OpenttdServerResourceService extends BaseService {
   }
 
   /**
-   * Path part for operation executeCommand
-   */
-  static readonly ExecuteCommandPath = '/api/openttd-server/command';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `executeCommand()` instead.
-   *
-   * This method sends `application/json` and handles request body of type `application/json`.
-   */
-  executeCommand$Response(params?: {
-    name?: string;
-    context?: HttpContext
-    body?: Command
-  }
-): Observable<StrictHttpResponse<Command>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.ExecuteCommandPath, 'post');
-    if (params) {
-      rb.query('name', params.name, {});
-      rb.body(params.body, 'application/json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Command>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `executeCommand$Response()` instead.
-   *
-   * This method sends `application/json` and handles request body of type `application/json`.
-   */
-  executeCommand(params?: {
-    name?: string;
-    context?: HttpContext
-    body?: Command
-  }
-): Observable<Command> {
-
-    return this.executeCommand$Response(params).pipe(
-      map((r: StrictHttpResponse<Command>) => r.body as Command)
-    );
-  }
-
-  /**
    * Path part for operation getOpenttdServerConfig
    */
   static readonly GetOpenttdServerConfigPath = '/api/openttd-server/config';
@@ -177,60 +123,6 @@ export class OpenttdServerResourceService extends BaseService {
 
     return this.updateOpenttdServerConfig$Response(params).pipe(
       map((r: StrictHttpResponse<OpenttdServerConfigGet>) => r.body as OpenttdServerConfigGet)
-    );
-  }
-
-  /**
-   * Path part for operation dump
-   */
-  static readonly DumpPath = '/api/openttd-server/dump';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `dump()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  dump$Response(params?: {
-    dir?: string;
-    name?: string;
-    context?: HttpContext
-  }
-): Observable<StrictHttpResponse<void>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.DumpPath, 'post');
-    if (params) {
-      rb.query('dir', params.dir, {});
-      rb.query('name', params.name, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'text',
-      accept: '*/*',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `dump$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  dump(params?: {
-    dir?: string;
-    name?: string;
-    context?: HttpContext
-  }
-): Observable<void> {
-
-    return this.dump$Response(params).pipe(
-      map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
@@ -331,213 +223,6 @@ export class OpenttdServerResourceService extends BaseService {
   }
 
   /**
-   * Path part for operation save
-   */
-  static readonly SavePath = '/api/openttd-server/save';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `save()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  save$Response(params?: {
-    name?: string;
-    context?: HttpContext
-  }
-): Observable<StrictHttpResponse<void>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.SavePath, 'post');
-    if (params) {
-      rb.query('name', params.name, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'text',
-      accept: '*/*',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `save$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  save(params?: {
-    name?: string;
-    context?: HttpContext
-  }
-): Observable<void> {
-
-    return this.save$Response(params).pipe(
-      map((r: StrictHttpResponse<void>) => r.body as void)
-    );
-  }
-
-  /**
-   * Path part for operation sendTerminalCommand
-   */
-  static readonly SendTerminalCommandPath = '/api/openttd-server/send-terminal-command';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `sendTerminalCommand()` instead.
-   *
-   * This method sends `text/plain` and handles request body of type `text/plain`.
-   */
-  sendTerminalCommand$Response(params?: {
-    name?: string;
-    context?: HttpContext
-    body?: string
-  }
-): Observable<StrictHttpResponse<void>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.SendTerminalCommandPath, 'post');
-    if (params) {
-      rb.query('name', params.name, {});
-      rb.body(params.body, 'text/plain');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'text',
-      accept: '*/*',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `sendTerminalCommand$Response()` instead.
-   *
-   * This method sends `text/plain` and handles request body of type `text/plain`.
-   */
-  sendTerminalCommand(params?: {
-    name?: string;
-    context?: HttpContext
-    body?: string
-  }
-): Observable<void> {
-
-    return this.sendTerminalCommand$Response(params).pipe(
-      map((r: StrictHttpResponse<void>) => r.body as void)
-    );
-  }
-
-  /**
-   * Path part for operation getServer
-   */
-  static readonly GetServerPath = '/api/openttd-server/server';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getServer()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  getServer$Response(params?: {
-    name?: string;
-    context?: HttpContext
-  }
-): Observable<StrictHttpResponse<OpenttdServer>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.GetServerPath, 'get');
-    if (params) {
-      rb.query('name', params.name, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<OpenttdServer>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `getServer$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  getServer(params?: {
-    name?: string;
-    context?: HttpContext
-  }
-): Observable<OpenttdServer> {
-
-    return this.getServer$Response(params).pipe(
-      map((r: StrictHttpResponse<OpenttdServer>) => r.body as OpenttdServer)
-    );
-  }
-
-  /**
-   * Path part for operation updateServer
-   */
-  static readonly UpdateServerPath = '/api/openttd-server/server';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `updateServer()` instead.
-   *
-   * This method sends `application/json` and handles request body of type `application/json`.
-   */
-  updateServer$Response(params?: {
-    context?: HttpContext
-    body?: OpenttdServer
-  }
-): Observable<StrictHttpResponse<OpenttdServer>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.UpdateServerPath, 'put');
-    if (params) {
-      rb.body(params.body, 'application/json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<OpenttdServer>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `updateServer$Response()` instead.
-   *
-   * This method sends `application/json` and handles request body of type `application/json`.
-   */
-  updateServer(params?: {
-    context?: HttpContext
-    body?: OpenttdServer
-  }
-): Observable<OpenttdServer> {
-
-    return this.updateServer$Response(params).pipe(
-      map((r: StrictHttpResponse<OpenttdServer>) => r.body as OpenttdServer)
-    );
-  }
-
-  /**
    * Path part for operation addServer
    */
   static readonly AddServerPath = '/api/openttd-server/server';
@@ -589,9 +274,114 @@ export class OpenttdServerResourceService extends BaseService {
   }
 
   /**
+   * Path part for operation getServer
+   */
+  static readonly GetServerPath = '/api/openttd-server/server/{id}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `getServer()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getServer$Response(params: {
+    id: string;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<OpenttdServer>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.GetServerPath, 'get');
+    if (params) {
+      rb.path('id', params.id, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<OpenttdServer>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `getServer$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getServer(params: {
+    id: string;
+    context?: HttpContext
+  }
+): Observable<OpenttdServer> {
+
+    return this.getServer$Response(params).pipe(
+      map((r: StrictHttpResponse<OpenttdServer>) => r.body as OpenttdServer)
+    );
+  }
+
+  /**
+   * Path part for operation updateServer
+   */
+  static readonly UpdateServerPath = '/api/openttd-server/server/{id}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `updateServer()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  updateServer$Response(params: {
+    id: string;
+    context?: HttpContext
+    body?: OpenttdServer
+  }
+): Observable<StrictHttpResponse<OpenttdServer>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.UpdateServerPath, 'put');
+    if (params) {
+      rb.path('id', params.id, {});
+      rb.body(params.body, 'application/json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<OpenttdServer>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `updateServer$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  updateServer(params: {
+    id: string;
+    context?: HttpContext
+    body?: OpenttdServer
+  }
+): Observable<OpenttdServer> {
+
+    return this.updateServer$Response(params).pipe(
+      map((r: StrictHttpResponse<OpenttdServer>) => r.body as OpenttdServer)
+    );
+  }
+
+  /**
    * Path part for operation deleteServer
    */
-  static readonly DeleteServerPath = '/api/openttd-server/server';
+  static readonly DeleteServerPath = '/api/openttd-server/server/{id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -599,15 +389,15 @@ export class OpenttdServerResourceService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  deleteServer$Response(params?: {
-    name?: string;
+  deleteServer$Response(params: {
+    id: string;
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.DeleteServerPath, 'delete');
     if (params) {
-      rb.query('name', params.name, {});
+      rb.path('id', params.id, {});
     }
 
     return this.http.request(rb.build({
@@ -628,13 +418,379 @@ export class OpenttdServerResourceService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  deleteServer(params?: {
-    name?: string;
+  deleteServer(params: {
+    id: string;
     context?: HttpContext
   }
 ): Observable<void> {
 
     return this.deleteServer$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
+  /**
+   * Path part for operation executeCommand
+   */
+  static readonly ExecuteCommandPath = '/api/openttd-server/server/{id}/command';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `executeCommand()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  executeCommand$Response(params: {
+    id: string;
+    context?: HttpContext
+    body?: Command
+  }
+): Observable<StrictHttpResponse<Command>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.ExecuteCommandPath, 'post');
+    if (params) {
+      rb.path('id', params.id, {});
+      rb.body(params.body, 'application/json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Command>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `executeCommand$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  executeCommand(params: {
+    id: string;
+    context?: HttpContext
+    body?: Command
+  }
+): Observable<Command> {
+
+    return this.executeCommand$Response(params).pipe(
+      map((r: StrictHttpResponse<Command>) => r.body as Command)
+    );
+  }
+
+  /**
+   * Path part for operation dumpProcessData
+   */
+  static readonly DumpProcessDataPath = '/api/openttd-server/server/{id}/dump-process-data';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `dumpProcessData()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  dumpProcessData$Response(params: {
+    id: string;
+    dir?: string;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.DumpProcessDataPath, 'post');
+    if (params) {
+      rb.path('id', params.id, {});
+      rb.query('dir', params.dir, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `dumpProcessData$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  dumpProcessData(params: {
+    id: string;
+    dir?: string;
+    context?: HttpContext
+  }
+): Observable<void> {
+
+    return this.dumpProcessData$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
+  /**
+   * Path part for operation save
+   */
+  static readonly SavePath = '/api/openttd-server/server/{id}/save';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `save()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  save$Response(params: {
+    id: string;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.SavePath, 'post');
+    if (params) {
+      rb.path('id', params.id, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `save$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  save(params: {
+    id: string;
+    context?: HttpContext
+  }
+): Observable<void> {
+
+    return this.save$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
+  /**
+   * Path part for operation sendTerminalCommand
+   */
+  static readonly SendTerminalCommandPath = '/api/openttd-server/server/{id}/send-terminal-command';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `sendTerminalCommand()` instead.
+   *
+   * This method sends `text/plain` and handles request body of type `text/plain`.
+   */
+  sendTerminalCommand$Response(params: {
+    id: string;
+    context?: HttpContext
+    body?: string
+  }
+): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.SendTerminalCommandPath, 'post');
+    if (params) {
+      rb.path('id', params.id, {});
+      rb.body(params.body, 'text/plain');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `sendTerminalCommand$Response()` instead.
+   *
+   * This method sends `text/plain` and handles request body of type `text/plain`.
+   */
+  sendTerminalCommand(params: {
+    id: string;
+    context?: HttpContext
+    body?: string
+  }
+): Observable<void> {
+
+    return this.sendTerminalCommand$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
+  /**
+   * Path part for operation startServer
+   */
+  static readonly StartServerPath = '/api/openttd-server/server/{id}/start';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `startServer()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  startServer$Response(params: {
+    id: string;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<OpenttdServer>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.StartServerPath, 'post');
+    if (params) {
+      rb.path('id', params.id, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<OpenttdServer>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `startServer$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  startServer(params: {
+    id: string;
+    context?: HttpContext
+  }
+): Observable<OpenttdServer> {
+
+    return this.startServer$Response(params).pipe(
+      map((r: StrictHttpResponse<OpenttdServer>) => r.body as OpenttdServer)
+    );
+  }
+
+  /**
+   * Path part for operation stop
+   */
+  static readonly StopPath = '/api/openttd-server/server/{id}/stop';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `stop()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  stop$Response(params: {
+    id: string;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.StopPath, 'post');
+    if (params) {
+      rb.path('id', params.id, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `stop$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  stop(params: {
+    id: string;
+    context?: HttpContext
+  }
+): Observable<void> {
+
+    return this.stop$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
+  /**
+   * Path part for operation terminalOpenInUi
+   */
+  static readonly TerminalOpenInUiPath = '/api/openttd-server/server/{id}/terminal/ui-open';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `terminalOpenInUi()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  terminalOpenInUi$Response(params: {
+    id: string;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.TerminalOpenInUiPath, 'put');
+    if (params) {
+      rb.path('id', params.id, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `terminalOpenInUi$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  terminalOpenInUi(params: {
+    id: string;
+    context?: HttpContext
+  }
+): Observable<void> {
+
+    return this.terminalOpenInUi$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
@@ -696,162 +852,6 @@ export class OpenttdServerResourceService extends BaseService {
 
     return this.start$Response(params).pipe(
       map((r: StrictHttpResponse<OpenttdProcess>) => r.body as OpenttdProcess)
-    );
-  }
-
-  /**
-   * Path part for operation startServer
-   */
-  static readonly StartServerPath = '/api/openttd-server/start-server2';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `startServer()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  startServer$Response(params?: {
-    name?: string;
-    savegame?: string;
-    context?: HttpContext
-  }
-): Observable<StrictHttpResponse<OpenttdServer>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.StartServerPath, 'post');
-    if (params) {
-      rb.query('name', params.name, {});
-      rb.query('savegame', params.savegame, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<OpenttdServer>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `startServer$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  startServer(params?: {
-    name?: string;
-    savegame?: string;
-    context?: HttpContext
-  }
-): Observable<OpenttdServer> {
-
-    return this.startServer$Response(params).pipe(
-      map((r: StrictHttpResponse<OpenttdServer>) => r.body as OpenttdServer)
-    );
-  }
-
-  /**
-   * Path part for operation stop
-   */
-  static readonly StopPath = '/api/openttd-server/stop-server';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `stop()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  stop$Response(params?: {
-    name?: string;
-    context?: HttpContext
-  }
-): Observable<StrictHttpResponse<void>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.StopPath, 'post');
-    if (params) {
-      rb.query('name', params.name, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'text',
-      accept: '*/*',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `stop$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  stop(params?: {
-    name?: string;
-    context?: HttpContext
-  }
-): Observable<void> {
-
-    return this.stop$Response(params).pipe(
-      map((r: StrictHttpResponse<void>) => r.body as void)
-    );
-  }
-
-  /**
-   * Path part for operation terminalOpenInUi
-   */
-  static readonly TerminalOpenInUiPath = '/api/openttd-server/terminal/ui-open';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `terminalOpenInUi()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  terminalOpenInUi$Response(params?: {
-    name?: string;
-    context?: HttpContext
-  }
-): Observable<StrictHttpResponse<void>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.TerminalOpenInUiPath, 'get');
-    if (params) {
-      rb.query('name', params.name, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'text',
-      accept: '*/*',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `terminalOpenInUi$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  terminalOpenInUi(params?: {
-    name?: string;
-    context?: HttpContext
-  }
-): Observable<void> {
-
-    return this.terminalOpenInUi$Response(params).pipe(
-      map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 

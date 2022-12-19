@@ -26,7 +26,7 @@ export class ServersOverviewComponent implements OnInit {
     this.actions$.pipe(
       ofType(AppActions.saveServerSuccess)
     ).subscribe(a => {
-      this.store.dispatch(loadServer({src: ServersOverviewComponent.name, name: a.name}))
+      this.store.dispatch(loadServer({src: ServersOverviewComponent.name, id: a.id}))
     })
 
 

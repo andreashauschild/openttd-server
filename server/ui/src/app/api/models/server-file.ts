@@ -6,6 +6,7 @@ export interface ServerFile {
   exists?: boolean;
   lastModified?: number;
   name?: string;
+  ownerId?: string;
   path?: string;
   type?: ServerFileType;
 }

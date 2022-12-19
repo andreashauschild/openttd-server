@@ -16,11 +16,11 @@
     </div>
 
     <div class="col-span-6 sm:col-span-6">
-      <app-server-file-select [label]="'Save Game'" (selectedFile)="selectSaveGame($event)" [files]="saveGameFiles"></app-server-file-select>
+      <app-server-file-select [label]="'Save Game'" (selectedFileEvent)="selectSaveGame($event)" [files]="saveGameFiles"></app-server-file-select>
     </div>
 
     <div class="col-span-6 sm:col-span-6">
-      <app-server-file-select [label]="'OpenTTD Config'" (selectedFile)="selectConfig($event)" [files]="configFiles"></app-server-file-select>
+      <app-server-file-select [label]="'OpenTTD Config'" (selectedFileEvent)="selectConfig($event)" [files]="configFiles"></app-server-file-select>
     </div>
   </div>
 </ng-template>

@@ -52,7 +52,7 @@ export class CreateServerDialogComponent implements OnInit {
         name: this.createServerForm.controls.name.value!,
         port: this.createServerForm.controls.port.value!,
         config: this.createServerForm.controls.config.value!,
-        startSaveGame: this.createServerForm.controls.saveGame.value!,
+        saveGame: this.createServerForm.controls.saveGame.value!,
       }
     }))
     this.dialogRef?.close(true);
