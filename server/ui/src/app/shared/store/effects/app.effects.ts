@@ -60,7 +60,10 @@ export class AppEffects {
       ofType(AppActions.patchServerConfig),
       mergeMap((a) => this.service.updateOpenttdServerConfig({body: a.patch})
         .pipe(
-          map(config => patchServerConfigSuccess({src: AppEffects.name, config})),
+          map(config => {
+            this.app.createInfoMessage("Settings updated", 2000)
+            return patchServerConfigSuccess({src: AppEffects.name, config})
+          }),
           catchError((err) => {
             this.app.handleError(err);
             return EMPTY;
@@ -104,7 +107,7 @@ export class AppEffects {
   startServer = createEffect(() => {
     return this.actions$.pipe(
       ofType(AppActions.startServer),
-      mergeMap((a) => this.service.startServer({id: a.name})
+      mergeMap((a) => this.service.startServer({id: a.id})
         .pipe(
           map(server => startServerSuccess({src: AppEffects.name, server})),
           catchError((err) => {
@@ -121,7 +124,10 @@ export class AppEffects {
       ofType(AppActions.updateServer),
       mergeMap((a) => this.service.updateServer({id: a.id, body: a.server})
         .pipe(
-          map(server => updateServerSuccess({src: AppEffects.name, server})),
+          map(server => {
+            this.app.createInfoMessage("Server updated", 2000)
+            return updateServerSuccess({src: AppEffects.name, server})
+          }),
           catchError((err) => {
             this.app.handleError(err);
             return EMPTY;

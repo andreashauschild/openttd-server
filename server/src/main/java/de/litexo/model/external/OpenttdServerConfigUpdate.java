@@ -9,4 +9,6 @@ public class OpenttdServerConfigUpdate {
     private String password;
 
     private String oldPassword;
+
+
 }

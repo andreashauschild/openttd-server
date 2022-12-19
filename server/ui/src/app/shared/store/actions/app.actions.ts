@@ -65,7 +65,7 @@ export const saveServerSuccess = createAction(
 );
 
 export const startServer = createAction(
-  '[App] startServer', props<{ src: string; name: string, saveGame?: string }>()
+  '[App] startServer', props<{ src: string; id: string}>()
 );
 
 export const startServerSuccess = createAction(

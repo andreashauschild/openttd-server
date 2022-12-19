@@ -1,4 +1,4 @@
-<form *ngIf="server" class="space-y-6">
+<form *ngIf="server" class="space-y-6" action="">
   <div class="bg-white px-4 py-5 shadow sm:rounded-lg sm:p-6">
     <div class="md:grid md:grid-cols-3 md:gap-6">
       <div class="md:col-span-1">
@@ -24,19 +24,22 @@
               <mat-error *ngIf="serverForm.controls.port.hasError('required')">
                 Port is <strong>required</strong>
               </mat-error>
+              <mat-error *ngIf="serverForm.controls.port.hasError('min')">
+                Port must be >=  <strong>1</strong>
+              </mat-error>
             </mat-form-field>
           </div>
           <div class="col-span-6">
-            <app-server-file-select [files]="openttdSavegames" label="Startup Save Game"
+            <app-server-file-select [selectedFile]="server.saveGame" (selectedFileEvent)="saveGameSelected($event)" [files]="openttdSavegames" label="Startup Save Game"
                                     hintStart="The save game that is used on server startup. By default newest save game is selected."></app-server-file-select>
           </div>
 
           <div class="col-span-6 ">
-            <app-server-file-select [files]="openttdConfigs" label="Startup OpenTTD configuration."
+            <app-server-file-select [selectedFile]="server.config" (selectedFileEvent)="configSelected($event)" [files]="openttdConfigs" label="Startup OpenTTD configuration."
                                     hintStart="The openttd configuration that is used on server startup."></app-server-file-select>
           </div>
-          <div class="bg-gray-50 px-4 py-3 text-right col-span-6">
-            <button (click)="save()"
+          <div  class="bg-gray-50 px-4 py-3 text-right col-span-6">
+            <button (click)="save()" type="button"
                     class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
               Save
             </button>

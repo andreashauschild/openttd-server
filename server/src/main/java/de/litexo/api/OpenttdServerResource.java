@@ -8,6 +8,7 @@ import de.litexo.model.external.OpenttdServerConfigUpdate;
 import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.model.external.ServerFile;
 import de.litexo.model.mapper.OpenttdServerConfigMapper;
+import de.litexo.model.mapper.OpenttdServerMapper;
 import de.litexo.services.OpenttdService;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
@@ -28,6 +29,8 @@ public class OpenttdServerResource {
 
     @Inject
     OpenttdServerConfigMapper openttdServerConfigMapper;
+
+
 
 
     @GET

@@ -3,9 +3,10 @@ package de.litexo.repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.litexo.api.ServiceRuntimeException;
 import de.litexo.model.external.OpenttdServer;
-import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.model.external.ServerFile;
 import de.litexo.model.external.ServerFileType;
+import de.litexo.model.internal.InternalOpenttdServerConfig;
+import de.litexo.model.mapper.OpenttdServerMapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -13,6 +14,7 @@ import org.jboss.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,7 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.litexo.model.external.ServerFileType.*;
+import static de.litexo.model.external.ServerFileType.CONFIG;
+import static de.litexo.model.external.ServerFileType.SAVE_GAME;
 
 @ApplicationScoped
 public class DefaultRepository {
@@ -38,6 +41,9 @@ public class DefaultRepository {
 
     @ConfigProperty(name = "openttd.config.dir")
     String openttdConfigDir;
+
+    @Inject
+    OpenttdServerMapper openttdServerMapper;
 
     Path configFile;
 
@@ -140,7 +146,9 @@ public class DefaultRepository {
 
         if (replaceIndex > -1) {
             throwIfPortAllocated(server.getPort(), openttdServerData.getServers().stream().filter(s -> !s.getId().equals(id)).collect(Collectors.toList()));
-            openttdServerData.getServers().set(replaceIndex, server);
+            OpenttdServer toUpdate = openttdServerData.getServers().get(replaceIndex);
+            this.openttdServerMapper.patch(server, toUpdate);
+            openttdServerData.getServers().set(replaceIndex, toUpdate);
             save(openttdServerData);
             return getOpenttdServer(id).get();
         } else {

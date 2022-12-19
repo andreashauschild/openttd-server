@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
-import {loadServer, loadServerFiles} from '../../../shared/store/actions/app.actions';
+import {loadServer, loadServerFiles, updateServer} from '../../../shared/store/actions/app.actions';
 import {Subscription} from 'rxjs';
 import {selectFiles, selectServer} from '../../../shared/store/selectors/app.selectors';
 import {ServerFile} from '../../../api/models/server-file';
@@ -28,19 +28,18 @@ export class ServersDetailComponent implements OnInit, OnDestroy {
 
   private sub = new Subscription();
 
-  constructor(private store: Store<{}>,private fb: FormBuilder, private api: OpenttdServerResourceService, private activeRoute: ActivatedRoute) {
+  constructor(private store: Store<{}>, private fb: FormBuilder, private api: OpenttdServerResourceService, private activeRoute: ActivatedRoute) {
     this.serverForm = this.fb.group({
-      port: ['', [Validators.required]],
+      port: ['', [Validators.required, Validators.min(1)]],
       name: ['', [Validators.required]],
     });
   }
 
   ngOnInit(): void {
 
-    this.store.dispatch(loadServerFiles({src: ServersDetailComponent.name}));
-
 
     this.sub.add(this.store.select(selectServer).pipe(filter(s => s != null)).subscribe(s => {
+      this.store.dispatch(loadServerFiles({src: ServersDetailComponent.name}));
       this.server = clone(s!);
       this.serverForm.controls.name.patchValue(this.server.name || '')
       this.serverForm.controls.port.patchValue(`${this.server.port}` || '')
@@ -64,6 +63,25 @@ export class ServersDetailComponent implements OnInit, OnDestroy {
   }
 
   save() {
+    if (this.server && this.serverForm.valid) {
+      const update = {
+        ...this.server,
+        port: parseInt(this.serverForm.controls.port.value!),
+        name: this.serverForm.controls.name.value!
+      }
+      this.store.dispatch(updateServer({src: ServersDetailComponent.name, id: update.id!, server: update}))
+    }
+  }
 
+  saveGameSelected(file: ServerFile) {
+    if (this.server) {
+      this.server.saveGame = file;
+    }
+  }
+
+  configSelected(file: ServerFile) {
+    if (this.server) {
+      this.server.config = file;
+    }
   }
 }

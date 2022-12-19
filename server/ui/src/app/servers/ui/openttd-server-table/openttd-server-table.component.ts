@@ -51,7 +51,7 @@ export class OpenttdServerTableComponent implements OnInit {
 
 
   startServer(server: OpenttdServer) {
-    this.store.dispatch(startServer({src: OpenttdServerTableComponent.name, name: server.name!, saveGame: undefined}))
+    this.store.dispatch(startServer({src: OpenttdServerTableComponent.name, id: server.id!}))
   }
 
   stopServer(server: OpenttdServer) {
@@ -63,8 +63,8 @@ export class OpenttdServerTableComponent implements OnInit {
   }
 
   loadTerminal(process: OpenttdProcess | undefined) {
-    console.log(">>>>>>>>>>>###",process)
-    if(process){
+    console.log(">>>>>>>>>>>###", process)
+    if (process) {
       const dialogRef = this.dialog.open(OpenttdProcessTerminalDialogComponent, {
         minWidth: '60%',
       });
