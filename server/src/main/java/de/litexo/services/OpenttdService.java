@@ -29,6 +29,8 @@ import java.util.UUID;
 
 @ApplicationScoped
 public class OpenttdService {
+    public static final String MANUALLY_SAVE_INFIX = "_manually_save_";
+    public static final String AUTO_SAVE_INFIX = "_auto_save_";
     @ConfigProperty(name = "start-server.command")
     String startServerCommand;
 
@@ -152,12 +154,12 @@ public class OpenttdService {
     }
 
 
-    private Path getSaveGameName(String name) {
-        return this.repository.getOpenttdSaveDirPath().resolve(name + "_manually_save");
+    private Path getSaveGameName(String id) {
+        return this.repository.getOpenttdSaveDirPath().resolve(id + MANUALLY_SAVE_INFIX +System.currentTimeMillis());
     }
 
-    private Path getAutoSaveGameName(String name) {
-        return this.repository.getOpenttdSaveDirPath().resolve(name + "_auto_save");
+    private Path getAutoSaveGameName(String id) {
+        return this.repository.getOpenttdSaveDirPath().resolve(id + AUTO_SAVE_INFIX +System.currentTimeMillis());
     }
 
     public InternalOpenttdServerConfig getOpenttdServerConfig() {

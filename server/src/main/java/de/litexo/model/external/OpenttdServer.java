@@ -28,6 +28,12 @@ public class OpenttdServer {
     // if set this config will be used to start the server
     private ServerFile config = null;
 
+    // Enables auto save for this server
+    private boolean autoSave = true;
+
+    // Enables autoPause for this server if no played has joined a company
+    private boolean autoPause = true;
+
     // holds the server process if the server is running
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private OpenttdProcess process;

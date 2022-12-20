@@ -10,6 +10,8 @@ import java.util.List;
 public class InternalOpenttdServerConfig {
     private String path;
     private int autoSaveMinutes = 5;
+    private int numberOfAutoSaveFilesToKeep = 10;
+    private int numberOfManuallySaveFilesToKeep = 10;
 
     // sha256 hash of the admin password
 

@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.litexo.model.external.OpenttdServer;
 import de.litexo.model.external.ServerFile;
 import de.litexo.model.internal.InternalOpenttdServerConfig;
+import de.litexo.model.mapper.OpenttdServerConfigMapperImpl;
+import de.litexo.model.mapper.OpenttdServerMapper;
+import de.litexo.model.mapper.OpenttdServerMapperImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,17 +30,17 @@ import static org.wildfly.common.Assert.assertTrue;
 @ExtendWith(MockitoExtension.class)
 class DefaultRepositoryTest {
 
-    @TempDir(cleanup = CleanupMode.NEVER)
+    @TempDir(cleanup = CleanupMode.ALWAYS)
     File configDir;
 
     File existingFile;
 
     File notExistingFile;
 
-    @TempDir(cleanup = CleanupMode.NEVER)
+    @TempDir(cleanup = CleanupMode.ALWAYS)
     File openttdConfigDir;
 
-    @TempDir(cleanup = CleanupMode.NEVER)
+    @TempDir(cleanup = CleanupMode.ALWAYS)
     File openttdSavegameDir;
 
 
@@ -47,6 +50,10 @@ class DefaultRepositoryTest {
     @BeforeEach
     void beforeEach() throws IOException {
         this.subject.serverConfigDir = configDir.toString();
+        this.subject.openttdSaveDir = openttdConfigDir.toString();
+        this.subject.openttdConfigDir = openttdSavegameDir.toString();
+        this.subject.openttdServerMapper = new OpenttdServerMapperImpl();
+
         this.subject.init();
         this.existingFile = Files.write(this.configDir.toPath().resolve("existingFile.txt"), "".getBytes()).toFile();
         this.notExistingFile = this.configDir.toPath().resolve("notExistingFile.txt").toFile();
@@ -68,24 +75,11 @@ class DefaultRepositoryTest {
     @DisplayName("Test adding a server")
     @Test
     void test_0020() {
-        OpenttdServer created = this.subject.addServer(new OpenttdServer().setName("server1"));
+        OpenttdServer created = this.subject.addServer(new OpenttdServer().setName("server1").setPort(123));
         InternalOpenttdServerConfig openttdServerData = this.subject.getOpenttdServerConfig();
         assertNotNull(created);
         assertEquals(1, openttdServerData.getServers().size());
         assertEquals("server1", openttdServerData.getServers().get(0).getName());
-    }
-
-    @DisplayName("Test server name must be unique")
-    @Test
-    void test_0030() {
-        this.subject.addServer(new OpenttdServer().setName("server1"));
-        try {
-            this.subject.addServer(new OpenttdServer().setName("server1"));
-            fail("servername must be unique");
-        } catch (Exception e) {
-            assertTrue(e.getMessage().startsWith("Can't add server. A server with name"));
-        }
-
     }
 
     @DisplayName("Test serverFiles handling")
@@ -94,7 +88,7 @@ class DefaultRepositoryTest {
 
         // Check that return value of add is correcly mapped
         OpenttdServer server1 = this.subject.addServer(
-                new OpenttdServer().setName("server1")
+                new OpenttdServer().setName("server1").setPort(123)
                         .setConfig(new ServerFile().setPath(this.existingFile.getPath()))
                         .setSaveGame(new ServerFile().setPath(this.existingFile.getPath()))
         );
@@ -129,14 +123,14 @@ class DefaultRepositoryTest {
     @DisplayName("Test server delete")
     @Test
     void test_0050() {
-        this.subject.addServer(new OpenttdServer().setName("server1"));
-        this.subject.addServer(new OpenttdServer().setName("server2"));
-        this.subject.addServer(new OpenttdServer().setName("server3"));
+        this.subject.addServer(new OpenttdServer().setName("server1").setPort(111));
+        this.subject.addServer(new OpenttdServer().setId("server2-id").setName("server2").setPort(222));
+        this.subject.addServer(new OpenttdServer().setName("server3").setPort(333));
 
         InternalOpenttdServerConfig openttdServerData = this.subject.getOpenttdServerConfig();
         assertEquals(3, openttdServerData.getServers().size());
 
-        this.subject.deleteServer("server2");
+        this.subject.deleteServer("server2-id");
         openttdServerData = this.subject.getOpenttdServerConfig();
         assertEquals(2, openttdServerData.getServers().size());
         assertEquals("server1", openttdServerData.getServers().get(0).getName());

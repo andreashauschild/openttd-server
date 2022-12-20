@@ -585,6 +585,10 @@ components:
           $ref: '#/components/schemas/ServerFile'
         config:
           $ref: '#/components/schemas/ServerFile'
+        autoSave:
+          type: boolean
+        autoPause:
+          type: boolean
         process:
           $ref: '#/components/schemas/OpenttdProcess'
     OpenttdServerConfigGet:

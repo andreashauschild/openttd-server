@@ -8,20 +8,22 @@ import {MatInputModule} from '@angular/material/input';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatIconModule} from '@angular/material/icon';
 import {ServerFileSelectModule} from '../../../shared/ui/server-file-select/server-file-select.module';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 
 @NgModule({
   declarations: [
     ServersDetailComponent
   ],
-  imports: [
-    CommonModule,
-    ServersDetailRoutingModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    ServerFileSelectModule,
-  ]
+    imports: [
+        CommonModule,
+        ServersDetailRoutingModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        ServerFileSelectModule,
+        MatSlideToggleModule,
+    ]
 })
 export class ServersDetailModule { }

@@ -24,6 +24,10 @@
             <span class="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">Port: {{server.port}}</span>
             <span *ngIf="server.process" class="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">Running</span>
             <span *ngIf="!server.process" class="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-800">Offline</span>
+            <span *ngIf="!server.autoSave" class="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-800">AutoSave: OFF</span>
+            <span *ngIf="server.autoSave" class="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">AutoSave: ON</span>
+            <span *ngIf="!server.autoPause" class="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-800">AutoPause: OFF</span>
+            <span *ngIf="server.autoPause" class="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">AutoPause: ON</span>
           </dd>
         </div>
       </div>

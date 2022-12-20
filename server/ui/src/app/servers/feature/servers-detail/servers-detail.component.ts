@@ -32,6 +32,8 @@ export class ServersDetailComponent implements OnInit, OnDestroy {
     this.serverForm = this.fb.group({
       port: ['', [Validators.required, Validators.min(1)]],
       name: ['', [Validators.required]],
+      autoSave: [true, [Validators.required]],
+      autoPause: [true, [Validators.required]],
     });
   }
 
@@ -43,6 +45,8 @@ export class ServersDetailComponent implements OnInit, OnDestroy {
       this.server = clone(s!);
       this.serverForm.controls.name.patchValue(this.server.name || '')
       this.serverForm.controls.port.patchValue(`${this.server.port}` || '')
+      this.serverForm.controls.autoSave.patchValue(this.server.autoSave!)
+      this.serverForm.controls.autoPause.patchValue(this.server.autoPause!)
       this.sub.add(this.store.select(selectFiles).subscribe(files => {
         this.openttdConfigs = files.filter(f => f.type === ServerFileType.Config);
         this.openttdSavegames = files.filter(f => f.type === ServerFileType.SaveGame);
@@ -67,7 +71,9 @@ export class ServersDetailComponent implements OnInit, OnDestroy {
       const update = {
         ...this.server,
         port: parseInt(this.serverForm.controls.port.value!),
-        name: this.serverForm.controls.name.value!
+        name: this.serverForm.controls.name.value!,
+        autoSave:this.serverForm.controls.autoSave.value!,
+        autoPause:this.serverForm.controls.autoPause.value!,
       }
       this.store.dispatch(updateServer({src: ServersDetailComponent.name, id: update.id!, server: update}))
     }

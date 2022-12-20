@@ -7,6 +7,7 @@ import de.litexo.commands.ServerInfoCommand;
 import de.litexo.commands.UnpauseCommand;
 import de.litexo.events.EventBus;
 import de.litexo.events.OpenttdTerminalUpdateEvent;
+import de.litexo.model.external.OpenttdServer;
 import de.litexo.services.OpenttdService;
 import io.quarkus.scheduler.Scheduled;
 import org.eclipse.microprofile.context.ManagedExecutor;
@@ -45,6 +46,12 @@ public class AutoPauseUnpause {
     }
 
     void doPauseOrUnpause(OpenttdProcess process) {
+        Optional<OpenttdServer> openttdServer = service.getOpenttdServer(process.getId());
+        if(openttdServer.isPresent() && !openttdServer.get().isAutoPause()){
+            System.out.println("Autopause is disabled for Server: " + openttdServer.get().getName());
+            return;
+        }
+
         ServerInfoCommand cmd = process.executeCommand(new ServerInfoCommand(),false);
         System.out.println("Server-Info: " + process.getId() + " " + cmd);
         if (cmd.isExecuted()) {
@@ -59,7 +66,7 @@ public class AutoPauseUnpause {
     }
 
     void handleTerminalUpdateEvent(OpenttdTerminalUpdateEvent openttdTerminalUpdateEvent) {
-        System.out.println("Handle Termnal Update:" + openttdTerminalUpdateEvent.getText());
+        System.out.println("Handle Terminal Update:" + openttdTerminalUpdateEvent.getText());
         if (
                 openttdTerminalUpdateEvent.getText().contains("has started a new company")
                         || openttdTerminalUpdateEvent.getText().contains("has joined company")

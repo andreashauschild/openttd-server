@@ -22,6 +22,9 @@ public class OpenttdProcess {
 
     private List<String> startServerCommand = new ArrayList<>();
 
+    /**
+     * This must always be the id of the OpenTTDServer that is executed by this process
+     */
     private String id = null;
 
     private Integer port = null;
