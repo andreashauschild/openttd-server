@@ -8,5 +8,7 @@ import java.util.List;
 @Data
 public class OpenttdServerConfigGet {
     private int autoSaveMinutes;
+    private int numberOfAutoSaveFilesToKeep;
+    private int numberOfManuallySaveFilesToKeep;
     List<OpenttdServer> servers = new ArrayList<>();
 }

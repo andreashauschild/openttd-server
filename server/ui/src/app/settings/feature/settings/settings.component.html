@@ -60,10 +60,37 @@
       <div class="mt-5 space-y-6 md:col-span-2 md:mt-0">
         <div class="col-span-6 sm:col-span-3">
           <mat-form-field class="w-full">
-            <mat-label>Auto Save in minutes (-1 to disable auto save)</mat-label>
-            <input type="number" name="oldPassword" autocomplete="new-password" [formControl]="basicSettingsFormGroup.controls.autoSaveMinutes" matInput placeholder="" value="">
-            <mat-error *ngIf="adminFormGroup.controls.oldPassword.hasError('required')">
+            <mat-label>Auto Save in minutes (-1 to disable auto save for all servers)</mat-label>
+            <input type="number" name="autoSaveMinutes" autocomplete="new-autoSaveMinutes" [formControl]="basicSettingsFormGroup.controls.autoSaveMinutes" matInput placeholder="" value="">
+            <mat-error *ngIf="basicSettingsFormGroup.controls.autoSaveMinutes.hasError('required')">
               Value <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="basicSettingsFormGroup.controls.autoSaveMinutes.hasError('min')">
+              Value must >= -1
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-span-6 sm:col-span-3">
+          <mat-form-field class="w-full">
+            <mat-label>Maximum number of <strong>newest</strong> auto save games that should be kept per server.</mat-label>
+            <input type="number" name="numberOfAutoSaveFilesToKeep" autocomplete="new-numberOfAutoSaveFilesToKeep" [formControl]="basicSettingsFormGroup.controls.numberOfAutoSaveFilesToKeep" matInput placeholder="" value="">
+            <mat-error *ngIf="basicSettingsFormGroup.controls.numberOfAutoSaveFilesToKeep.hasError('required')">
+              Value <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="basicSettingsFormGroup.controls.numberOfAutoSaveFilesToKeep.hasError('min')">
+              Value must >= 1
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-span-6 sm:col-span-3">
+          <mat-form-field class="w-full">
+            <mat-label>Maximum number of <strong>newest</strong> manual save games that should be kept per server.</mat-label>
+            <input type="number" name="numberOfManuallySaveFilesToKeep" autocomplete="new-numberOfManuallySaveFilesToKeep" [formControl]="basicSettingsFormGroup.controls.numberOfManuallySaveFilesToKeep" matInput placeholder="" value="">
+            <mat-error *ngIf="basicSettingsFormGroup.controls.numberOfManuallySaveFilesToKeep.hasError('required')">
+              Value <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="basicSettingsFormGroup.controls.numberOfManuallySaveFilesToKeep.hasError('min')">
+              Value must >= 1
             </mat-error>
           </mat-form-field>
         </div>

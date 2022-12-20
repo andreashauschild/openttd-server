@@ -20,6 +20,10 @@ public class Autosave {
     @Scheduled(every = "10s")
     void checkAutosave() {
         InternalOpenttdServerConfig serverConfig = this.service.getOpenttdServerConfig();
+        if (serverConfig.getAutoSaveMinutes() <= 0) {
+            System.out.println("Auto save is skipped because save intervall is <= 0 ->" + serverConfig.getAutoSaveMinutes());
+            return;
+        }
         for (OpenttdProcess process : service.getProcesses()) {
             Optional<OpenttdServer> openttdServer = service.getOpenttdServer(process.getId());
             if (openttdServer.isPresent()) {
@@ -39,10 +43,10 @@ public class Autosave {
         }
     }
 
-    private void save(OpenttdServer server){
+    private void save(OpenttdServer server) {
         if (!server.isAutoSave()) {
             System.out.println("Autosave is disabled for Server: " + server.getName());
-        }else{
+        } else {
             this.service.autoSaveGame(server.getId());
         }
 

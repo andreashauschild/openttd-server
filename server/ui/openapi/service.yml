@@ -597,6 +597,12 @@ components:
         autoSaveMinutes:
           format: int32
           type: integer
+        numberOfAutoSaveFilesToKeep:
+          format: int32
+          type: integer
+        numberOfManuallySaveFilesToKeep:
+          format: int32
+          type: integer
         servers:
           type: array
           items:
@@ -605,6 +611,12 @@ components:
       type: object
       properties:
         autoSaveMinutes:
+          format: int32
+          type: integer
+        numberOfAutoSaveFilesToKeep:
+          format: int32
+          type: integer
+        numberOfManuallySaveFilesToKeep:
           format: int32
           type: integer
         password:

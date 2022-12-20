@@ -8,6 +8,13 @@
 
       <div class="mt-5 space-y-6 md:col-span-2 md:mt-0">
         <div class="grid grid-cols-6 gap-6">
+          <div class="col-span-6">
+            <mat-form-field class="w-full">
+              <mat-label>Server Id (generated)</mat-label>
+              <input disabled name="server-id" type="text" matInput placeholder="" [value]="server?.id">
+
+            </mat-form-field>
+          </div>
           <div class="col-span-3">
             <mat-form-field class="w-full">
               <mat-label>Name</mat-label>

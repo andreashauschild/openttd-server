@@ -4,7 +4,9 @@ import lombok.Data;
 
 @Data
 public class OpenttdServerConfigUpdate {
-    private int autoSaveMinutes = 5;
+    private int autoSaveMinutes;
+    private int numberOfAutoSaveFilesToKeep;
+    private int numberOfManuallySaveFilesToKeep;
 
     private String password;
 
