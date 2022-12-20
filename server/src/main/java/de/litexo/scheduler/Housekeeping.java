@@ -39,23 +39,26 @@ public class Housekeeping {
             Optional<OpenttdServer> serverOpt = service.getOpenttdServer(process.getId());
             if (serverOpt.isPresent()) {
                 OpenttdServer server = serverOpt.get();
+
+                // oldest begins with index 0
                 List<ServerFile> autoSaveGames = openttdSaveGames.stream()
                         .filter(f -> f.getName().contains(server.getId()) && f.getName().contains(AUTO_SAVE_INFIX))
                         .sorted(Comparator.comparingLong(ServerFile::getLastModified)).collect(Collectors.toList());
 
+                // oldest begins with index 0
                 List<ServerFile> manSaveGames = openttdSaveGames.stream()
                         .filter(f -> f.getName().contains(server.getId()) && f.getName().contains(MANUALLY_SAVE_INFIX))
                         .sorted(Comparator.comparingLong(ServerFile::getLastModified)).collect(Collectors.toList());
 
                 if (autoSaveGames.size() > serverConfig.getNumberOfAutoSaveFilesToKeep()) {
-                    List<ServerFile> toDelete = autoSaveGames.subList(serverConfig.getNumberOfAutoSaveFilesToKeep() - 1, autoSaveGames.size());
+                    List<ServerFile> toDelete = autoSaveGames.subList(0,autoSaveGames.size()- serverConfig.getNumberOfAutoSaveFilesToKeep());
                     for (ServerFile f : toDelete) {
                         FileUtils.deleteQuietly(new File(f.getPath()));
                     }
                 }
 
                 if (manSaveGames.size() > serverConfig.getNumberOfManuallySaveFilesToKeep()) {
-                    List<ServerFile> toDelete = autoSaveGames.subList(serverConfig.getNumberOfManuallySaveFilesToKeep() - 1, manSaveGames.size());
+                    List<ServerFile> toDelete = manSaveGames.subList(0,manSaveGames.size()-serverConfig.getNumberOfManuallySaveFilesToKeep());
                     for (ServerFile f : toDelete) {
                         FileUtils.deleteQuietly(new File(f.getPath()));
                     }
