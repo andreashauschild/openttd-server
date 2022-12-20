@@ -9,28 +9,86 @@ import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.model.external.ServerFile;
 import de.litexo.model.mapper.OpenttdServerConfigMapper;
 import de.litexo.model.mapper.OpenttdServerMapper;
+import de.litexo.repository.DefaultRepository;
 import de.litexo.services.OpenttdService;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
 
 @Path("/api/openttd-server")
-@RolesAllowed("login_user")
+//@RolesAllowed("login_user")
+@PermitAll
 public class OpenttdServerResource {
 
     @Inject
     OpenttdService openttdService;
 
     @Inject
+    DefaultRepository repository;
+
+    @Inject
     OpenttdServerConfigMapper openttdServerConfigMapper;
 
 
+    @GET
+    @Path("/download/save-game")
+    @Operation(operationId = "downloadSaveGame")
+    public Response downloadSaveGame(@QueryParam("fileName") String fileName) {
+        Optional<ServerFile> saveGame = repository.getSaveGame(fileName);
+        if (saveGame.isEmpty()) {
+            throw new ServiceRuntimeException("File '"+fileName+"' does not exists");
+        }
+        StreamingOutput fileStream = output -> {
+            try {
+                java.nio.file.Path path = Paths.get(saveGame.get().getPath());
+                byte[] data = Files.readAllBytes(path);
+                output.write(data);
+                output.flush();
+            } catch (Exception e) {
+                throw new WebApplicationException("File Not Found !!");
+            }
+        };
+        return Response
+                .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
+                .header("content-disposition", "attachment; filename=" + saveGame.get().getName())
+                .build();
+    }
+
+    @GET
+    @Path("/download/openttd-config")
+    @Operation(operationId = "downloadOpenttdConfig")
+    public Response downloadOpenttdConfig(@QueryParam("fileName") String fileName) {
+        Optional<ServerFile> openttdConfig = repository.getConfig(fileName);
+        if (openttdConfig.isEmpty()) {
+            throw new ServiceRuntimeException("File '"+fileName+"' does not exists");
+        }
+        StreamingOutput fileStream = output -> {
+            try {
+                java.nio.file.Path path = Paths.get(openttdConfig.get().getPath());
+                byte[] data = Files.readAllBytes(path);
+                output.write(data);
+                output.flush();
+            } catch (Exception e) {
+                throw new WebApplicationException("File Not Found !!");
+            }
+        };
+        return Response
+                .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
+                .header("content-disposition", "attachment; filename=" + openttdConfig.get().getName())
+                .build();
+    }
 
 
     @GET

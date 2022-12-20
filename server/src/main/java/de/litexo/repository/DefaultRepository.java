@@ -97,6 +97,23 @@ public class DefaultRepository {
         return result;
     }
 
+    public Optional<ServerFile> getSaveGame(String fileName) {
+        Path savegame = this.openttdSaveDirPath.resolve(fileName);
+        if(Files.exists(savegame)){
+            return Optional.of(this.serverFile(savegame.toFile().getAbsolutePath(), SAVE_GAME));
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ServerFile> getConfig(String fileName) {
+        Path savegame = this.openttdConfigDirPath.resolve(fileName);
+        if(Files.exists(savegame)){
+            return Optional.of(this.serverFile(savegame.toFile().getAbsolutePath(), CONFIG));
+        }
+        return Optional.empty();
+    }
+
+
     public List<ServerFile> getOpenttdConfigs() {
         List<ServerFile> result = new ArrayList<>();
         try {
