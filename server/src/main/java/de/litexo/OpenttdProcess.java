@@ -108,6 +108,9 @@ public class OpenttdProcess {
     }
 
     private boolean isUiTerminalOpenedByClient() {
+        if (this.lastUiTerminalActivity == null) {
+            return false;
+        }
         return (System.currentTimeMillis() - this.lastUiTerminalActivity) > UI_TERMINAL_ACTIVITY_DISABLE_COMMANDS_THRESHOLD;
     }
 
