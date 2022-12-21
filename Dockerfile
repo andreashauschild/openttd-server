@@ -27,7 +27,6 @@ ENV JAVA_HOME ${JVM_DIR}/java-17-openjdk-x64
 
 ENV PATH=$PATH:$HOME/bin:$JAVA_HOME/bin
 
-
 COPY prepare.sh /tmp/prepare.sh
 COPY cleanup.sh /tmp/cleanup.sh
 COPY buildconfig /tmp/buildconfig
@@ -70,5 +69,8 @@ ENV start-server.command="/openttd.sh"
 #STOPSIGNAL 3
 #ENTRYPOINT [ "/usr/bin/dumb-init", "--rewrite", "15:3", "--rewrite", "9:3", "--" ]
 #CMD [ "/openttd.sh" ]
+ENV openttd.save.dir=/tmp/openttd/save
+ENV openttd.config.dir=/tmp/openttd/config
+ENV server.config.dir=/tmp/openttd
 
 CMD ["java", "-jar", "/deployments/quarkus-run.jar" ]
