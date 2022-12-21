@@ -11,6 +11,9 @@ public class ServerFile {
     // This value represents an owner id of the given file
     private String ownerId;
 
+    // Optional name representation of the file owner
+    private String ownerName;
+
     private String path;
 
     private String name;

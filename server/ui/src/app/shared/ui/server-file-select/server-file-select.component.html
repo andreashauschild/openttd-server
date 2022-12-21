@@ -12,11 +12,15 @@
 
       </mat-option>
       <mat-option  *ngFor="let file of filteredFiles | async" [value]="file">
-        {{file.name}}
+        <div class="flex flex-row justify-between">
+          <div *ngIf="file?.ownerName"><strong>{{file?.ownerName}}</strong></div>
+          <div>{{file.name}}</div>
+          <div>{{file.lastModified | date: 'MMM d, y, HH:mm:ss'}}</div>
+        </div>
       </mat-option>
     </mat-autocomplete>
-    <mat-icon matSuffix>download_for_offline</mat-icon>
     <mat-hint align="start">{{hintStart}}</mat-hint>
     <mat-hint align="end">{{hintEnd}}</mat-hint>
   </mat-form-field>
+  <mat-icon (click)="download()" matTooltip="Download file" class="cursor-pointer ml-5 mt-7" matSuffix>download_for_offline</mat-icon>
 </div>

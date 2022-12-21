@@ -7,6 +7,7 @@ export interface ServerFile {
   lastModified?: number;
   name?: string;
   ownerId?: string;
+  ownerName?: string;
   path?: string;
   type?: ServerFileType;
 }

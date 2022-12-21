@@ -8,7 +8,7 @@ import {loadServerConfig, patchServerConfig} from '../../../shared/store/actions
 import {Subscription} from 'rxjs';
 import {selectConfig} from '../../../shared/store/selectors/app.selectors';
 import {filter} from 'rxjs/operators';
-import {clone} from '../../../shared/services/utils';
+import {clone} from '../../../shared/services/utils.service';
 import {OpenttdServerConfigGet} from '../../../api/models/openttd-server-config-get';
 
 @Component({

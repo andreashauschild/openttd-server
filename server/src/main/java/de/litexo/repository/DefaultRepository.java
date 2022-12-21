@@ -86,9 +86,16 @@ public class DefaultRepository {
 
     public List<ServerFile> getOpenttdSaveGames() {
         List<ServerFile> result = new ArrayList<>();
+        List<OpenttdServer> servers = this.getOpenttdServerConfig().getServers();
         try {
             FileUtils.listFiles(this.openttdSaveDirPath.toFile(), null, false).forEach(f -> {
-                result.add(this.serverFile(f.getAbsolutePath(), SAVE_GAME));
+                ServerFile saveGame = this.serverFile(f.getAbsolutePath(), SAVE_GAME);
+                String serverId = saveGame.getName().split("_")[0];
+                servers.stream().filter(s->s.getId().startsWith(serverId)).findAny().ifPresent((s)->{
+                    saveGame.setOwnerId(s.getId());
+                    saveGame.setOwnerName(s.getName());
+                });
+                result.add(saveGame);
             });
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);

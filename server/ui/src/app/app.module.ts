@@ -16,6 +16,7 @@ import {SidebarLayoutModule} from './shared/ui/sidebar-layout/sidebar-layout.mod
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatIconModule} from '@angular/material/icon';
 import {AppNotificationsModule} from './shared/ui/app-notifications/app-notifications.module';
+import {DatePipe} from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import {AppNotificationsModule} from './shared/ui/app-notifications/app-notifica
     MatSnackBarModule,
   ],
   providers: [
+    DatePipe,
     {provide: HTTP_INTERCEPTORS, useClass: HttpAuthInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]

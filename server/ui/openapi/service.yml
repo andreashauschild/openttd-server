@@ -116,6 +116,58 @@ paths:
       security:
       - SecurityScheme:
         - login_user
+  /api/openttd-server/download/openttd-config:
+    get:
+      tags:
+      - Openttd Server Resource
+      operationId: downloadOpenttdConfig
+      parameters:
+      - name: fileName
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: object
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
+  /api/openttd-server/download/save-game:
+    get:
+      tags:
+      - Openttd Server Resource
+      operationId: downloadSaveGame
+      parameters:
+      - name: downloadName
+        in: query
+        schema:
+          type: string
+      - name: fileName
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: object
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/openttd-server/files:
     get:
       tags:
@@ -656,6 +708,8 @@ components:
       type: object
       properties:
         ownerId:
+          type: string
+        ownerName:
           type: string
         path:
           type: string

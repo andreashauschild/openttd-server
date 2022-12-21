@@ -5,22 +5,29 @@ import de.litexo.commands.Command;
 import de.litexo.model.external.OpenttdServer;
 import de.litexo.model.external.OpenttdServerConfigGet;
 import de.litexo.model.external.OpenttdServerConfigUpdate;
-import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.model.external.ServerFile;
+import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.model.mapper.OpenttdServerConfigMapper;
-import de.litexo.model.mapper.OpenttdServerMapper;
 import de.litexo.repository.DefaultRepository;
 import de.litexo.services.OpenttdService;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -28,8 +35,8 @@ import java.util.Optional;
 
 
 @Path("/api/openttd-server")
-//@RolesAllowed("login_user")
-@PermitAll
+@RolesAllowed("login_user")
+//@PermitAll
 public class OpenttdServerResource {
 
     @Inject
@@ -45,10 +52,11 @@ public class OpenttdServerResource {
     @GET
     @Path("/download/save-game")
     @Operation(operationId = "downloadSaveGame")
-    public Response downloadSaveGame(@QueryParam("fileName") String fileName) {
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Object downloadSaveGame(@QueryParam("fileName") String fileName, @QueryParam("downloadName") String downloadName) {
         Optional<ServerFile> saveGame = repository.getSaveGame(fileName);
         if (saveGame.isEmpty()) {
-            throw new ServiceRuntimeException("File '"+fileName+"' does not exists");
+            throw new ServiceRuntimeException("File '" + fileName + "' does not exists");
         }
         StreamingOutput fileStream = output -> {
             try {
@@ -60,19 +68,23 @@ public class OpenttdServerResource {
                 throw new WebApplicationException("File Not Found !!");
             }
         };
+        if (downloadName == null) {
+            downloadName = saveGame.get().getName();
+        }
         return Response
                 .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
-                .header("content-disposition", "attachment; filename=" + saveGame.get().getName())
+                .header("content-disposition", "attachment; filename=" + downloadName)
                 .build();
     }
 
     @GET
     @Path("/download/openttd-config")
     @Operation(operationId = "downloadOpenttdConfig")
-    public Response downloadOpenttdConfig(@QueryParam("fileName") String fileName) {
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Object downloadOpenttdConfig(@QueryParam("fileName") String fileName) {
         Optional<ServerFile> openttdConfig = repository.getConfig(fileName);
         if (openttdConfig.isEmpty()) {
-            throw new ServiceRuntimeException("File '"+fileName+"' does not exists");
+            throw new ServiceRuntimeException("File '" + fileName + "' does not exists");
         }
         StreamingOutput fileStream = output -> {
             try {

@@ -1,9 +1,12 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {Observable} from 'rxjs';
+import {Observable, tap} from 'rxjs';
 import {filter, map, startWith} from 'rxjs/operators';
 import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
 import {ServerFile} from '../../../api/models/server-file';
+import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
+import {saveData} from '../../services/utils.service';
+import {ServerFileType} from '../../../api/models/server-file-type';
 
 
 @Component({
@@ -39,6 +42,10 @@ export class ServerFileSelectComponent implements OnInit, OnChanges {
   @Input()
   selectedFile: ServerFile | undefined;
 
+  constructor(private openttdService: OpenttdServerResourceService) {
+
+  }
+
   ngOnInit() {
     this.selectSelectedFile();
   }
@@ -47,10 +54,11 @@ export class ServerFileSelectComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
 
     this.filteredFiles = this.myControl.valueChanges.pipe(
+      tap(v => console.log("FILTER", v)),
       // selected value can be a file, but a input is always a string. if its a file with name property it is filtered out
       filter(value => !value?.hasOwnProperty('name')),
       startWith(''),
-      map(value => this._filter((value as ServerFile).name || '')),
+      map(value => this._filter(value+'')),
     );
 
     this.selectSelectedFile();
@@ -63,6 +71,7 @@ export class ServerFileSelectComponent implements OnInit, OnChanges {
 
   fileToString(file: any) {
     if (file) {
+
       return file.name;
     }
     return '';
@@ -72,7 +81,7 @@ export class ServerFileSelectComponent implements OnInit, OnChanges {
 
     const filterValue = fileName.toLowerCase();
 
-    return this.files.filter(files => files.name!.toLowerCase().includes(filterValue));
+    return this.files.filter(files => files.name!.toLowerCase().includes(filterValue) || files.ownerName?.toLowerCase().includes(filterValue));
   }
 
   private selectSelectedFile() {
@@ -80,4 +89,25 @@ export class ServerFileSelectComponent implements OnInit, OnChanges {
       this.myControl.setValue(this.selectedFile);
     }
   }
+
+  download() {
+    if (this.selectedFile) {
+      switch (this.selectedFile.type) {
+        case ServerFileType.Config: {
+          this.openttdService.downloadOpenttdConfig({fileName: this.selectedFile?.name}).subscribe(f => {
+            saveData(f, this.selectedFile?.name!);
+          })
+          break
+        }
+        case  ServerFileType.SaveGame: {
+          this.openttdService.downloadSaveGame({fileName: this.selectedFile?.name}).subscribe(f => {
+            saveData(f, this.selectedFile?.name!);
+          })
+          break;
+        }
+      }
+    }
+  }
+
+
 }

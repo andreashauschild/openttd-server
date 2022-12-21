@@ -127,6 +127,121 @@ export class OpenttdServerResourceService extends BaseService {
   }
 
   /**
+   * Path part for operation downloadOpenttdConfig
+   */
+  static readonly DownloadOpenttdConfigPath = '/api/openttd-server/download/openttd-config';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `downloadOpenttdConfig()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  downloadOpenttdConfig$Response(params?: {
+    fileName?: string;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<{
+}>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.DownloadOpenttdConfigPath, 'get');
+    if (params) {
+      rb.query('fileName', params.fileName, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'blob',
+      accept: 'application/octet-stream',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<{
+        }>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `downloadOpenttdConfig$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  downloadOpenttdConfig(params?: {
+    fileName?: string;
+    context?: HttpContext
+  }
+): Observable<{
+}> {
+
+    return this.downloadOpenttdConfig$Response(params).pipe(
+      map((r: StrictHttpResponse<{
+}>) => r.body as {
+})
+    );
+  }
+
+  /**
+   * Path part for operation downloadSaveGame
+   */
+  static readonly DownloadSaveGamePath = '/api/openttd-server/download/save-game';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `downloadSaveGame()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  downloadSaveGame$Response(params?: {
+    downloadName?: string;
+    fileName?: string;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<{
+}>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.DownloadSaveGamePath, 'get');
+    if (params) {
+      rb.query('downloadName', params.downloadName, {});
+      rb.query('fileName', params.fileName, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'blob',
+      accept: 'application/octet-stream',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<{
+        }>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `downloadSaveGame$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  downloadSaveGame(params?: {
+    downloadName?: string;
+    fileName?: string;
+    context?: HttpContext
+  }
+): Observable<{
+}> {
+
+    return this.downloadSaveGame$Response(params).pipe(
+      map((r: StrictHttpResponse<{
+}>) => r.body as {
+})
+    );
+  }
+
+  /**
    * Path part for operation getServerFiles
    */
   static readonly GetServerFilesPath = '/api/openttd-server/files';

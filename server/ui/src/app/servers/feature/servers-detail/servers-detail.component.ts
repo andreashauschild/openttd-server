@@ -10,7 +10,7 @@ import {ActivatedRoute} from '@angular/router';
 import {RP_ID} from '../../../shared/model/constants';
 import {OpenttdServer} from '../../../api/models/openttd-server';
 import {filter} from 'rxjs/operators';
-import {clone} from '../../../shared/services/utils';
+import {clone} from '../../../shared/services/utils.service';
 import {FormBuilder, Validators} from '@angular/forms';
 
 @Component({
