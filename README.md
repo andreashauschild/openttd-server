@@ -10,6 +10,10 @@ Openttd server is run as this user and subsequently its home folder will be `/ho
 Openttd on linux uses `.openttd` in the users homefolder to store configurations, savefiles and other miscellaneous files.  
 If you want to your local files accessible to openttd server inside the container you need to mount them inside with `-v` parameter (see https://docs.docker.com/engine/reference/commandline/run/ for more details on -v)
 
+# TODOS
+ - forward to login if not logged in
+ - implement stop and pause
+ - check for hanging processes with no server attached
 
 ### Environment variables ###
 These environment variables can be altered to change the behavior of the application inside the container.  

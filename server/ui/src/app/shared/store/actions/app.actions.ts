@@ -56,6 +56,22 @@ export const deleteServerSuccess = createAction(
   '[App] deleteServerSuccess', props<{ src: string, id: string }>()
 );
 
+export const stopServer = createAction(
+  '[App] stopServer', props<{ src: string; id: string }>()
+);
+
+export const stopServerSuccess = createAction(
+  '[App] stopServerSuccess', props<{ src: string, id: string }>()
+);
+
+export const pauseServer = createAction(
+  '[App] pauseServer', props<{ src: string; id: string }>()
+);
+
+export const pauseServerSuccess = createAction(
+  '[App] pauseServerSuccess', props<{ src: string, id: string }>()
+);
+
 export const saveServer = createAction(
   '[App] saveServer', props<{ src: string; id: string }>()
 );

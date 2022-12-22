@@ -111,7 +111,7 @@ public class OpenttdProcess {
         if (this.lastUiTerminalActivity == null) {
             return false;
         }
-        return (System.currentTimeMillis() - this.lastUiTerminalActivity) > UI_TERMINAL_ACTIVITY_DISABLE_COMMANDS_THRESHOLD;
+        return (System.currentTimeMillis() - this.lastUiTerminalActivity) < UI_TERMINAL_ACTIVITY_DISABLE_COMMANDS_THRESHOLD;
     }
 
 
