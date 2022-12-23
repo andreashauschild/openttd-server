@@ -66,7 +66,7 @@ public class AutoPauseUnpause {
     }
 
     void handleTerminalUpdateEvent(OpenttdTerminalUpdateEvent openttdTerminalUpdateEvent) {
-        System.out.println("Handle Terminal Update:" + openttdTerminalUpdateEvent.getText());
+        System.out.println("XXXHandle Terminal Update:" + openttdTerminalUpdateEvent.getText());
         if (
                 openttdTerminalUpdateEvent.getText().contains("has started a new company")
                         || openttdTerminalUpdateEvent.getText().contains("has joined company")

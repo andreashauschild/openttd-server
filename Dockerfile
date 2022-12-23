@@ -57,7 +57,7 @@ COPY --chown=1000 server/target/quarkus-app/app/ /deployments/app/
 COPY --chown=1000 server/target/quarkus-app/quarkus/ /deployments/quarkus/
 
 EXPOSE 8080
-EXPOSE 5005
+
 USER 1000
 ENV AB_JOLOKIA_OFF=""
 ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
@@ -72,5 +72,11 @@ ENV start-server.command="/openttd.sh"
 ENV openttd.save.dir=/tmp/openttd/save
 ENV openttd.config.dir=/tmp/openttd/config
 ENV server.config.dir=/tmp/openttd
+
+
+# DEBUG QUARKUS
+ENV QUARKUS_LAUNCH_DEVMODE=true
+ENV JAVA_ENABLE_DEBUG=true
+ENV server.initial.password=Password_1
 
 CMD ["java", "-jar", "/deployments/quarkus-run.jar" ]

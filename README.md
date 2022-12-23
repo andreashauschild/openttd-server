@@ -2,8 +2,10 @@
 [![dockeri.co](https://dockeri.co/image/bateau/openttd)](https://hub.docker.com/r/bateau/openttd)
 ## Usage ##
 - `docker build . -t openttd-server`
-- `docker run -i --rm -p 8080:8080 -p 3979:3979/tcp -p 3979:3979/udp  openttd-server`
+- `docker run -i --rm -p 8080:8080 -p 5005:5005 -p 3979:3979/tcp -p 3979:3979/udp  openttd-server`
 - `openttd -D -b 8bpp-optimized`  Run with possibility to do screenshots (https://www.tt-forums.net/viewtopic.php?t=88943)
+- https://quarkus.io/guides/maven-tooling#remote-development-mode
+- https://blog.sebastian-daschner.com/entries/quarkus-remote-dev-in-containers-update
 ### File locations ###
 This image is supplied with a user named `openttd`.  
 Openttd server is run as this user and subsequently its home folder will be `/home/openttd`.  
