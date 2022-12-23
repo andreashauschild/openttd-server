@@ -5,6 +5,7 @@ import de.litexo.ProcessExecutorService;
 import de.litexo.model.external.ExportModel;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -19,7 +20,7 @@ import java.util.concurrent.Executors;
 
 
 @Path("/api/test")
-@RolesAllowed("login_user")
+@PermitAll
 public class TestResource {
 
     @ConfigProperty(name = "start-server.command")
@@ -117,7 +118,7 @@ public class TestResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/exportModel")
     public ExportModel exportModel() {
-
+        System.out.println("XXXXXXXXXXXXXXXXXX");
         return new ExportModel();
     }
 

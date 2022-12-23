@@ -1,25 +1,55 @@
 ![Docker Image CI](https://github.com/bateau84/openttd/workflows/Docker%20Image%20CI/badge.svg?branch=master)  
 [![dockeri.co](https://dockeri.co/image/bateau/openttd)](https://hub.docker.com/r/bateau/openttd)
+
 ## Usage ##
+
 - `docker build . -t openttd-server`
-- `docker run -i --rm -p 8080:8080 -p 5005:5005 -p 3979:3979/tcp -p 3979:3979/udp  openttd-server`
+- `docker run -i --rm -p 8080:8080 -p 5005:5005 -p 3979:3979/tcp -p 3979:3979/udp -e QUARKUS_LAUNCH_DEVMODE=true openttd-server`
 - `openttd -D -b 8bpp-optimized`  Run with possibility to do screenshots (https://www.tt-forums.net/viewtopic.php?t=88943)
 - https://quarkus.io/guides/maven-tooling#remote-development-mode
 - https://blog.sebastian-daschner.com/entries/quarkus-remote-dev-in-containers-update
+
+# Debug and develop in Quarkus Container:
+
+- Add properties to `application.properties`
+
+```
+quarkus.package.type=mutable-jar
+quarkus.live-reload.password=Password_1
+quarkus.live-reload.url=http://localhost:8080
+```
+
+- Add env values to dockerfile expose debug port and add remote debug to startup:
+
+```
+EXPOSE 5005
+ENV QUARKUS_LAUNCH_DEVMODE=true
+ENV JAVA_ENABLE_DEBUG=true
+
+CMD ["java","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005", "-jar", "/deployments/quarkus-run.jar"]
+```
+
+- Start dev environment in remote debug mode (but disable local debug):
+    - `quarkus:remote-dev -Ddebug=false -Dquarkus.live-reload.url=http://localhost:8080`
+
 ### File locations ###
+
 This image is supplied with a user named `openttd`.  
 Openttd server is run as this user and subsequently its home folder will be `/home/openttd`.  
 Openttd on linux uses `.openttd` in the users homefolder to store configurations, savefiles and other miscellaneous files.  
-If you want to your local files accessible to openttd server inside the container you need to mount them inside with `-v` parameter (see https://docs.docker.com/engine/reference/commandline/run/ for more details on -v)
+If you want to your local files accessible to openttd server inside the container you need to mount them inside with `-v` parameter (
+see https://docs.docker.com/engine/reference/commandline/run/ for more details on -v)
 
 # TODOS
- - forward to login if not logged in
- - implement stop and pause
- - check for hanging processes with no server attached
+
+- forward to login if not logged in
+- implement stop and pause
+- check for hanging processes with no server attached
 
 ### Environment variables ###
+
 These environment variables can be altered to change the behavior of the application inside the container.  
-To set a new value to an enviroment variable use docker's `-e ` parameter (see https://docs.docker.com/engine/reference/commandline/run/ for more details)  
+To set a new value to an enviroment variable use docker's `-e ` parameter (see https://docs.docker.com/engine/reference/commandline/run/ for more details)
 
 | Env | Default | Meaning |
 | --- | ------- | ------- |
@@ -30,18 +60,20 @@ To set a new value to an enviroment variable use docker's `-e ` parameter (see h
 | PGID | "911" | Same thing here, except Group ID. Your user has a group, and it needs to map to the same ID inside the container. |
 | debug | `null` | Set debug things. see openttd for debug options |
 
-
 ### Networking ###
-By default docker does not expose the containers on your network. This must be done manually with `-p` parameter (see [here](https://docs.docker.com/engine/reference/commandline/run/) for more details on -p).
-If your openttd config is set up to listen on port 3979 you need to map the container port to your machines network like so `-p 3979:3979` where the first reference is the host machines port and the second the container port.
+
+By default docker does not expose the containers on your network. This must be done manually with `-p` parameter (
+see [here](https://docs.docker.com/engine/reference/commandline/run/) for more details on -p).
+If your openttd config is set up to listen on port 3979 you need to map the container port to your machines network like so `-p 3979:3979` where the first reference is the host
+machines port and the second the container port.
 
 ### Examples ###
 
-Run Openttd and expose the default ports.  
+Run Openttd and expose the default ports.
 
     docker run -d -p 3979:3979/tcp -p 3979:3979/udp bateau/openttd:latest
 
-Run Openttd with random port assignment.  
+Run Openttd with random port assignment.
 
     docker run -d -P bateau/openttd:latest
 
@@ -66,14 +98,15 @@ For example to run server and load my savename game.sav:
 ## Kubernetes ##
 
 Supplied some example for deploying on kubernetes cluster. "k8s_openttd.yml"
-just run 
+just run
 
     kubectl apply openttd.yaml
 
 and it will apply configmap with openttd.cfg, deployment and service listening on port 31979 UDP/TCP.
 
 ## Other tags ##
-   * See [bateau/openttd](https://hub.docker.com/r/bateau/openttd) on docker hub for other tags
+
+* See [bateau/openttd](https://hub.docker.com/r/bateau/openttd) on docker hub for other tags
 
 # Developer notes
 
@@ -85,7 +118,6 @@ and it will apply configmap with openttd.cfg, deployment and service listening o
 | Create Component and add to module | `npx ng g m LoginIndex --flat && npx ng g c LoginIndex --flat -m .\login-index.module.ts` |
 |                                    |                                                                                           |
 |                                    |                                                                                           |
-
 
 ## Structure Based on:
 

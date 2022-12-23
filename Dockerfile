@@ -57,6 +57,7 @@ COPY --chown=1000 server/target/quarkus-app/app/ /deployments/app/
 COPY --chown=1000 server/target/quarkus-app/quarkus/ /deployments/quarkus/
 
 EXPOSE 8080
+EXPOSE 5005
 
 USER 1000
 ENV AB_JOLOKIA_OFF=""
@@ -79,4 +80,4 @@ ENV QUARKUS_LAUNCH_DEVMODE=true
 ENV JAVA_ENABLE_DEBUG=true
 ENV server.initial.password=Password_1
 
-CMD ["java", "-jar", "/deployments/quarkus-run.jar" ]
+CMD ["java","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005", "-jar", "/deployments/quarkus-run.jar"]
