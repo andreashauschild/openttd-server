@@ -1,4 +1,4 @@
-name: Build OpenTTD Server
+name: Release OpenTTD Server
 
 on:
   push:
