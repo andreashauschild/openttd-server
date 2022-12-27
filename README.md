@@ -1,7 +1,9 @@
 [![Build OpenTTD Server](https://github.com/andreashauschild/openttd-server/actions/workflows/build.yml/badge.svg)](https://github.com/andreashauschild/openttd-server/actions/workflows/build.yml)
-[![Release OpenTTD Server](https://github.com/andreashauschild/openttd-server/actions/workflows/release.yml/badge.svg)](https://github.com/andreashauschild/openttd-server/actions/workflows/release.yml) 
+[![Release OpenTTD Server](https://github.com/andreashauschild/openttd-server/actions/workflows/release.yml/badge.svg)](https://github.com/andreashauschild/openttd-server/actions/workflows/release.yml)  
 
-![Alt text](https://dockeri.co/image/hauschi86/openttd-server?sanitize=true)
+<a href="https://hub.docker.com/r/hauschi86/openttd-server" target="_blank" rel="nofollow">
+    <img src="https://dockeri.co/image/hauschi86/openttd-server" alt="Twitter"/>
+</a>
 
 
 # Introduction
