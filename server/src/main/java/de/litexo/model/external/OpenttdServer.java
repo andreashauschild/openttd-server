@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.litexo.OpenttdProcess;
 import lombok.Data;
+import lombok.Getter;
 import lombok.experimental.Accessors;
 
 import java.util.UUID;
@@ -46,6 +47,24 @@ public class OpenttdServer {
 
     // State flag that is set if a pause action was executed
     private boolean paused = false;
+
+    // Server Info Command result
+    private String inviteCode;
+
+    // Server Info Command result
+    private int currentClients;
+
+    // Server Info Command result
+    private int maxClients;
+
+    // Server Info Command result
+    private int currentCompanies;
+
+    // Server Info Command result
+    private int maxCompanies;
+
+    // Server Info Command result
+    private int currentSpectators;
 
     // holds the server process if the server is running
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

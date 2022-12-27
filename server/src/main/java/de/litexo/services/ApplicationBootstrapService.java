@@ -1,8 +1,10 @@
 package de.litexo.services;
 
+import de.litexo.OpenttdProcess;
 import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.repository.DefaultRepository;
 import de.litexo.security.SecurityUtils;
+import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.Startup;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -10,6 +12,7 @@ import org.jboss.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import java.util.Optional;
 
@@ -23,6 +26,9 @@ public class ApplicationBootstrapService {
 
     @Inject
     DefaultRepository repository;
+
+    @Inject
+    OpenttdService service;
 
     @PostConstruct
     void init() {
@@ -46,6 +52,17 @@ public class ApplicationBootstrapService {
             this.repository.save(openttdServerConfig);
             System.out.println("###########################################################################");
             System.out.println();
+        }
+    }
+
+    void onStop(@Observes ShutdownEvent ev) {
+        System.out.println("The application is stopping. Will terminate all open processes!");
+        for (OpenttdProcess p : service.getProcesses()) {
+            try {
+                p.getProcessThread().stop();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

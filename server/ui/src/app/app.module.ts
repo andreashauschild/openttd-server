@@ -14,11 +14,11 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpAuthInterceptor} from './shared/interceptors/http-auth-interceptor';
 import {SidebarLayoutModule} from './shared/ui/sidebar-layout/sidebar-layout.module';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {MatIconModule} from '@angular/material/icon';
 import {AppNotificationsModule} from './shared/ui/app-notifications/app-notifications.module';
 import {DatePipe} from '@angular/common';
-import {LoadingBarModule} from "@ngx-loading-bar/core";
 import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";
+import {CustomLoadingBarInterceptor} from "./shared/interceptors/custom-loading-bar.interceptor";
+import {LoadingBarModule} from "@ngx-loading-bar/core";
 
 @NgModule({
   declarations: [
@@ -28,7 +28,7 @@ import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    LoadingBarHttpClientModule,
+    LoadingBarModule,
     BrowserAnimationsModule,
     EffectsModule.forRoot([AppEffects]),
     StoreModule.forRoot(reducers, {metaReducers}),
@@ -45,7 +45,12 @@ import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";
   ],
   providers: [
     DatePipe,
-    {provide: HTTP_INTERCEPTORS, useClass: HttpAuthInterceptor, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: HttpAuthInterceptor, multi: true},
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CustomLoadingBarInterceptor,
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent]
 })

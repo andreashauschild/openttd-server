@@ -5,7 +5,13 @@ import { ServerFile } from './server-file';
 export interface OpenttdServer {
   autoPause?: boolean;
   autoSave?: boolean;
+  currentClients?: number;
+  currentCompanies?: number;
+  currentSpectators?: number;
   id?: string;
+  inviteCode?: string;
+  maxClients?: number;
+  maxCompanies?: number;
   name?: string;
   openttdConfig?: ServerFile;
   openttdPrivateConfig?: ServerFile;

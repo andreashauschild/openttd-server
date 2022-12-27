@@ -19,6 +19,7 @@
     <frontend-maven-plugin.version>1.10.0</frontend-maven-plugin.version>
     <npmVersion>8.19.2</npmVersion>
     <nodeVersion>v16.18.1</nodeVersion>
+    <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -82,13 +83,13 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.18.22</version>
-      <scope>provided</scope>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok-mapstruct-binding</artifactId>
       <version>0.2.0</version>
-      <scope>provided</scope>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>

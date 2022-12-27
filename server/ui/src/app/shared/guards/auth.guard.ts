@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
 import {AuthenticationService} from "../services/authentication.service";
+import {interval} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,14 @@ export class AuthGuard implements CanActivate {
     private router: Router,
     private authenticationService: AuthenticationService
   ) {
+    interval(30000).subscribe(_ => {
+      this.authenticationService.isLoggedIn().then(loggedIn => {
+        console.log(loggedIn)
+        if (!loggedIn) {
+          this.router.navigate(['/login']);
+        }
+      })
+    });
   }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {

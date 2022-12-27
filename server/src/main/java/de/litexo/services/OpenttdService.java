@@ -144,7 +144,7 @@ public class OpenttdService {
             if (isDefined(openttdServer.getOpenttdConfig()) && Files.exists(Paths.get(openttdServer.getOpenttdConfig().getPath()))) {
                 FileUtils.copyFile(new File(openttdServer.getOpenttdConfig().getPath()), configFile.toFile());
 
-            }else{
+            } else {
                 String defaultConfig = IOUtils.toString(this.getClass().getResourceAsStream("/templates/openttd-configs/openttd.cfg"), StandardCharsets.UTF_8);
                 Files.write(configFile, defaultConfig.getBytes());
             }
@@ -191,6 +191,15 @@ public class OpenttdService {
             this.processes.get(id).executeCommand(new QuitCommand(), true);
             this.processes.get(id).getProcessThread().stop();
             this.processes.remove(id);
+            OpenttdServer patch = new OpenttdServer();
+            patch.setInviteCode("");
+            patch.setCurrentClients(0);
+            patch.setMaxClients(0);
+            patch.setCurrentCompanies(0);
+            patch.setMaxCompanies(0);
+            patch.setCurrentSpectators(0);
+
+            this.updateServer(id, patch);
         }
         return enrich(this.repository.getOpenttdServer(id));
 

@@ -605,6 +605,23 @@ components:
           type: boolean
         paused:
           type: boolean
+        inviteCode:
+          type: string
+        currentClients:
+          format: int32
+          type: integer
+        maxClients:
+          format: int32
+          type: integer
+        currentCompanies:
+          format: int32
+          type: integer
+        maxCompanies:
+          format: int32
+          type: integer
+        currentSpectators:
+          format: int32
+          type: integer
         process:
           $ref: '#/components/schemas/OpenttdProcess'
     OpenttdServerConfigGet:
