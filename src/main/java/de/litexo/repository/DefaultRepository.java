@@ -171,7 +171,7 @@ public class DefaultRepository {
         if (replaceIndex > -1) {
             OpenttdServer toUpdate = openttdServerData.getServers().get(replaceIndex);
             this.openttdServerMapper.patch(server, toUpdate);
-            throwIfPortAllocated(server.getPort(), openttdServerData.getServers().stream().filter(s -> !s.getId().equals(id)).collect(Collectors.toList()));
+            throwIfPortAllocated(toUpdate.getPort(), openttdServerData.getServers().stream().filter(s -> !s.getId().equals(id)).collect(Collectors.toList()));
             openttdServerData.getServers().set(replaceIndex, toUpdate);
             save(openttdServerData);
             return getOpenttdServer(id).get();

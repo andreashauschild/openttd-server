@@ -147,9 +147,9 @@ export class AppEffects {
         .pipe(
           map(server => {
             if (server.paused) {
-              this.app.createInfoMessage("Server paused!")
+              this.app.createInfoMessage("Server paused!",2000)
             } else {
-              this.app.createInfoMessage("Server unpaused!")
+              this.app.createInfoMessage("Server unpaused!",2000)
             }
             return pauseUnpauseServerSuccess({src: AppEffects.name, server})
           }),
