@@ -1,13 +1,52 @@
 [![Build OpenTTD Server](https://github.com/andreashauschild/openttd-server/actions/workflows/build.yml/badge.svg)](https://github.com/andreashauschild/openttd-server/actions/workflows/build.yml)
 [![Release OpenTTD Server](https://github.com/andreashauschild/openttd-server/actions/workflows/release.yml/badge.svg)](https://github.com/andreashauschild/openttd-server/actions/workflows/release.yml)  
+[![Docker Pulls](https://badgen.net/docker/pulls/hauschi86/openttd-server?icon=docker&label=pulls)](https://hub.docker.com/r/hauschi86/openttd-server/)
+[![Docker Stars](https://badgen.net/docker/stars/hauschi86/openttd-server?icon=docker&label=stars)](https://hub.docker.com/r/hauschi86/openttd-server/)
+[![Docker Image Size](https://badgen.net/docker/size/hauschi86/openttd-server?icon=docker&label=image%20size)](https://hub.docker.com/r/hauschi86/openttd-server/)
+![Github stars](https://badgen.net/github/stars/andreashauschild/openttd-server?icon=github&label=stars)
+![Github forks](https://badgen.net/github/forks/andreashauschild/openttd-server?icon=github&label=forks)
+![Github issues](https://img.shields.io/github/issues/andreashauschild/openttd-server)
+![Github last-commit](https://img.shields.io/github/last-commit/andreashauschild/openttd-server)
 
-<a href="https://hub.docker.com/r/hauschi86/openttd-server" target="_blank" rel="nofollow">
-    <img src="https://dockeri.co/image/hauschi86/openttd-server" alt="Twitter"/>
+# Welcome to  OpenTTD Server
+This Docker container allows you to host multiple instances of an OpenTTD dedicated server in a single container, providing an efficient and convenient environment for hosting these servers.
+
+It provides the following features:
+
+- Login protected admin gui
+- Managing multiple dedicated OpenTTD server instance. You just need to expose the needed ports on container startup.
+- Upload/Download of save games and configuration files
+- Password protection for dedicated servers
+- Auto save of running servers
+- Auto pause and unpause on inactive servers. If no player is playing the server is running but paused. Server unpauses if a player joins a company.
+- Simple terminal to send commands directly to the dedicated server
+
+# Screenshots
+
+### Server Management
+<a href="docs/images/server-overview.JPG">
+<img src="docs/images/server-overview.JPG"/>
 </a>
 
+### Dedicated Server Settings
+<a href="docs/images/server_configuration.JPG">
+<img src="docs/images/server_configuration.JPG"/>
+</a>
 
-# Introduction
+### Terminal
+<a href="docs/images/server-terminal.JPG">
+<img src="docs/images/server-terminal.JPG"/>
+</a>
 
+### File Upload
+<a href="docs/images/file_upload.JPG">
+<img src="docs/images/file_upload.JPG"/>
+</a>
+
+### Admin Login
+<a href="docs/images/admin-login.JPG">
+<img src="docs/images/admin-login.JPG"/>
+</a>
 
 # Development
 
@@ -55,25 +94,6 @@ Openttd on linux uses `.openttd` in the users homefolder to store configurations
 If you want to your local files accessible to openttd server inside the container you need to mount them inside with `-v` parameter (
 see https://docs.docker.com/engine/reference/commandline/run/ for more details on -v)
 
-# TODOS
-
-- forward to login if not logged in
-- implement stop and pause
-- check for hanging processes with no server attached
-
-### Environment variables ###
-
-These environment variables can be altered to change the behavior of the application inside the container.  
-To set a new value to an enviroment variable use docker's `-e ` parameter (see https://docs.docker.com/engine/reference/commandline/run/ for more details)
-
-| Env | Default | Meaning |
-| --- | ------- | ------- |
-| savepath | "/home/openttd" | The path to which autosave wil save |
-| loadgame | `null` | load game has 4 settings. false, true, last-autosave and exit.<br>  - **false**: this will just start server and create a new game.<br>  - **true**: if true is set you also need to set savename. savename needs to be the name of the saved game file. This will load the given saved game.<br>  - **last-autosave**: This will load the last autosaved game located in <$savepath>/autosave folder.<br>  - **exit**: This will load the exit.sav file located in <$savepath>/autosave/. |
-| savename | `null` | Set this when allong with `loadgame=true` to the value of your save game file-name |
-| PUID | "911" | This is the ID of the user inside the container. If you mount in (-v </path/of/your/choosing>:</path/inside/container>) you would need for the user inside the container to have the same ID as your user outside (so that you can save files for example). |
-| PGID | "911" | Same thing here, except Group ID. Your user has a group, and it needs to map to the same ID inside the container. |
-| debug | `null` | Set debug things. see openttd for debug options |
 
 ### Networking ###
 
@@ -92,36 +112,9 @@ Run Openttd with random port assignment.
 
     docker run -d -P bateau/openttd:latest
 
-Its set up to not load any games by default (new game) and it can be run without mounting a .openttd folder.  
-However, if you want to save/load your games, mounting a .openttd folder is required.
+## Honourable Mention ##
 
-    docker run -v /path/to/your/.openttd:/home/openttd/.openttd -p 3979:3979/tcp -p 3979:3979/udp bateau/openttd:latest
-
-Set UID and GID of user in container to be the same as your user outside with seting env PUID and PGID.
-For example
-
-    docker run -e PUID=1000 -e PGID=1000 -v /path/to/your/.openttd:/home/openttd/.openttd -p 3979:3979/tcp -p 3979:3979/udp bateau/openttd:latest
-
-For other save games use (/home/openttd/.openttd/save/ is appended to savename when passed to openttd command)
-
-    docker run -e "loadgame=true" -e "savename=game.sav" -v /path/to/your/.openttd:/home/openttd/.openttd -p 3979:3979/tcp -p 3979:3979/udp bateau/openttd:latest
-
-For example to run server and load my savename game.sav:
-
-    docker run -d -p 3979:3979/tcp -p 3979:3979/udp -v /home/<your_username>/.openttd:/home/openttd/.openttd -e PUID=<your_userid> -e PGID=<your_groupid> -e "loadgame=true" -e "savename=game.sav" bateau/openttd:latest
-
-## Kubernetes ##
-
-Supplied some example for deploying on kubernetes cluster. "k8s_openttd.yml"
-just run
-
-    kubectl apply openttd.yaml
-
-and it will apply configmap with openttd.cfg, deployment and service listening on port 31979 UDP/TCP.
-
-## Other tags ##
-
-* See [bateau/openttd](https://hub.docker.com/r/bateau/openttd) on docker hub for other tags
+This dockerfile and linux setup was inspired by the openttd docker project: [bateau/openttd](https://github.com/bateau84/openttd). Thank you!
 
 # Developer notes
 
