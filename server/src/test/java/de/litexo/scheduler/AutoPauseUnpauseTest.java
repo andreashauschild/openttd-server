@@ -2,12 +2,16 @@ package de.litexo.scheduler;
 
 import de.litexo.OpenttdProcess;
 import de.litexo.ProcessThread;
+import de.litexo.commands.Command;
 import de.litexo.commands.PauseCommand;
 import de.litexo.commands.ServerInfoCommand;
 import de.litexo.commands.UnpauseCommand;
 import de.litexo.events.OpenttdTerminalUpdateEvent;
 import de.litexo.model.external.OpenttdServer;
+import de.litexo.repository.DefaultRepository;
 import de.litexo.services.OpenttdService;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +45,9 @@ class AutoPauseUnpauseTest {
     @Mock
     ServerInfoCommand serverInfoCommand;
 
+    @Mock
+    DefaultRepository repository;
+
     @InjectMocks
     AutoPauseUnpause subject = new AutoPauseUnpause();
 
@@ -50,12 +57,17 @@ class AutoPauseUnpauseTest {
         when(this.service.getOpenttdServer(any())).thenReturn(Optional.of(new OpenttdServer().setAutoPause(true)));
         when(this.service.getProcesses()).thenReturn(List.of(openttdProcess));
         when(openttdProcess.executeCommand(any(ServerInfoCommand.class), anyBoolean())).thenReturn(serverInfoCommand);
+        when(openttdProcess.executeCommand(any(PauseCommand.class), anyBoolean())).thenAnswer(a-> {
+            Command argument = (Command) a.getArgument(0);
+            FieldUtils.writeField(argument,"executed",true,true);
+            return argument;
+        });
         when(serverInfoCommand.getCurrentClients()).thenReturn(5);
         when(serverInfoCommand.getCurrentSpectators()).thenReturn(5);
         when(serverInfoCommand.isExecuted()).thenReturn(true);
         this.subject.checkAutoPauseUnpause();
 
-        verify(this.openttdProcess).executeCommand(any(PauseCommand.class),anyBoolean());
+        verify(this.openttdProcess).executeCommand(any(PauseCommand.class), anyBoolean());
 
     }
 
@@ -65,6 +77,11 @@ class AutoPauseUnpauseTest {
         when(this.service.getOpenttdServer(any())).thenReturn(Optional.of(new OpenttdServer().setAutoPause(true)));
         when(this.service.getProcesses()).thenReturn(List.of(openttdProcess));
         when(openttdProcess.executeCommand(any(ServerInfoCommand.class), anyBoolean())).thenReturn(serverInfoCommand);
+        when(openttdProcess.executeCommand(any(UnpauseCommand.class), anyBoolean())).thenAnswer(a-> {
+            Command argument = (Command) a.getArgument(0);
+            FieldUtils.writeField(argument,"executed",true,true);
+            return argument;
+        });
         when(serverInfoCommand.getCurrentClients()).thenReturn(7);
         when(serverInfoCommand.getCurrentSpectators()).thenReturn(5);
         when(serverInfoCommand.isExecuted()).thenReturn(true);
@@ -83,6 +100,11 @@ class AutoPauseUnpauseTest {
         when(this.service.getProcesses()).thenReturn(List.of(openttdProcess));
 
         when(openttdProcess.executeCommand(any(ServerInfoCommand.class), anyBoolean())).thenReturn(serverInfoCommand);
+        when(openttdProcess.executeCommand(any(UnpauseCommand.class), anyBoolean())).thenAnswer(a-> {
+            Command argument = (Command) a.getArgument(0);
+            FieldUtils.writeField(argument,"executed",true,true);
+            return argument;
+        });
         when(serverInfoCommand.getCurrentClients()).thenReturn(7);
         when(serverInfoCommand.getCurrentSpectators()).thenReturn(5);
         when(serverInfoCommand.isExecuted()).thenReturn(true);

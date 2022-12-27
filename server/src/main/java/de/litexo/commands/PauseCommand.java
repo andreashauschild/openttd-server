@@ -8,8 +8,11 @@ import java.util.Optional;
 
 public class PauseCommand extends Command {
 
-    public PauseCommand() {
+    private final DefaultRepository repository;
+
+    public PauseCommand(DefaultRepository repository) {
         super("pause");
+        this.repository = repository;
     }
 
     @Override
@@ -22,11 +25,11 @@ public class PauseCommand extends Command {
 
     @Override
     public void onSuccess(String openttdServeId) {
-        DefaultRepository defaultRepository = CDI.current().select(DefaultRepository.class).get();
-        Optional<OpenttdServer> openttdServer = defaultRepository.getOpenttdServer(openttdServeId);
+
+        Optional<OpenttdServer> openttdServer = this.repository.getOpenttdServer(openttdServeId);
         if (openttdServer.isPresent()) {
             openttdServer.get().setPaused(true);
-            defaultRepository.updateServer(openttdServeId, openttdServer.get());
+            this.repository.updateServer(openttdServeId, openttdServer.get());
         }
         super.onSuccess(openttdServeId);
     }

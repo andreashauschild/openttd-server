@@ -48,7 +48,7 @@ export class ServersOverviewComponent implements OnInit {
     const dialogRef = this.dialog.open(FileUploadDialogComponent, {minWidth: "800px"});
     dialogRef.componentInstance.dialogRef = dialogRef;
     dialogRef.componentInstance.fileType = ServerFileType.SaveGame;
-    dialogRef.componentInstance.dialogTitle = "Upload OpenTTD Savegames";
+    dialogRef.componentInstance.dialogTitle = "UPLOAD OPENTTD SAVEGAMES";
     dialogRef.componentInstance.subTitle = "Info: Don't upload files where the filename contains single/double quotes: ' or \" . This will cause problems!";
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
@@ -59,7 +59,7 @@ export class ServersOverviewComponent implements OnInit {
     const dialogRef = this.dialog.open(FileUploadDialogComponent, {minWidth: "800px"});
     dialogRef.componentInstance.dialogRef = dialogRef;
     dialogRef.componentInstance.fileType = ServerFileType.Config;
-    dialogRef.componentInstance.dialogTitle = "Upload OpenTTD Configs";
+    dialogRef.componentInstance.dialogTitle = "UPLOAD OPENTTD CONFIGS";
     dialogRef.componentInstance.subTitle = "Info: Don't upload files where the filename contains single/double quotes: ' or \" . This will cause problems!";
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);

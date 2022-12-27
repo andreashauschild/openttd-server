@@ -1,10 +1,12 @@
 package de.litexo.commands;
 
 import de.litexo.ProcessThread;
+import de.litexo.repository.DefaultRepository;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -20,10 +22,15 @@ class PauseCommandTest {
     @Mock
     ProcessThread process;
 
-    PauseCommand subject = new PauseCommand();
+    @Mock
+    DefaultRepository repository;
+
+
+    PauseCommand subject;
 
     @BeforeEach
     void beforeEach() {
+        subject = new PauseCommand(repository);
         this.subject.marker = "@@@-xxx-asdasd";
     }
 

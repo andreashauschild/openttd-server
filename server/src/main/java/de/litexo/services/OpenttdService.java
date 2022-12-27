@@ -336,9 +336,9 @@ public class OpenttdService {
         Optional<OpenttdServer> openttdServer = this.repository.getOpenttdServer(id);
         if (openttdServer.isPresent() && this.processes.containsKey(id)) {
             if (openttdServer.get().isPaused()) {
-                this.processes.get(id).executeCommand(new UnpauseCommand(), true);
+                this.processes.get(id).executeCommand(new UnpauseCommand(this.repository), true);
             } else {
-                this.processes.get(id).executeCommand(new PauseCommand(), true);
+                this.processes.get(id).executeCommand(new PauseCommand(this.repository), true);
             }
         }
         return enrich(this.repository.getOpenttdServer(id));

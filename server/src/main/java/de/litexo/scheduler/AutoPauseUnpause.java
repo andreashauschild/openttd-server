@@ -1,6 +1,7 @@
 package de.litexo.scheduler;
 
 
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
 import de.litexo.OpenttdProcess;
 import de.litexo.commands.PauseCommand;
 import de.litexo.commands.ServerInfoCommand;
@@ -8,6 +9,7 @@ import de.litexo.commands.UnpauseCommand;
 import de.litexo.events.EventBus;
 import de.litexo.events.OpenttdTerminalUpdateEvent;
 import de.litexo.model.external.OpenttdServer;
+import de.litexo.repository.DefaultRepository;
 import de.litexo.services.OpenttdService;
 import io.quarkus.scheduler.Scheduled;
 import org.eclipse.microprofile.context.ManagedExecutor;
@@ -22,6 +24,9 @@ public class AutoPauseUnpause {
 
     @Inject
     OpenttdService service;
+
+    @Inject
+    DefaultRepository repository;
 
     @Inject
     EventBus eventBus;
@@ -56,13 +61,13 @@ public class AutoPauseUnpause {
         if (cmd.isExecuted()) {
             if (cmd.getCurrentClients() == cmd.getCurrentSpectators()) {
                 System.out.println("Pause Server: " + process.getId());
-                PauseCommand pauseCommand = process.executeCommand(new PauseCommand(), false);
+                PauseCommand pauseCommand = process.executeCommand(new PauseCommand(this.repository), false);
                 if (pauseCommand.isExecuted()) {
                     openttdServer.get().setPaused(true);
                 }
             } else {
                 System.out.println("Unpause Server: " + process.getId());
-                UnpauseCommand unpauseCommand = process.executeCommand(new UnpauseCommand(), false);
+                UnpauseCommand unpauseCommand = process.executeCommand(new UnpauseCommand(this.repository), false);
                 if (unpauseCommand.isExecuted()) {
                     openttdServer.get().setPaused(false);
                 }

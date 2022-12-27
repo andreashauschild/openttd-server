@@ -1,6 +1,7 @@
 package de.litexo.commands;
 
 import de.litexo.ProcessThread;
+import de.litexo.repository.DefaultRepository;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,10 +21,14 @@ class UnpauseCommandTest {
     @Mock
     ProcessThread process;
 
-    UnpauseCommand subject = new UnpauseCommand();
+    @Mock()
+    DefaultRepository repository;
+
+    UnpauseCommand subject;
 
     @BeforeEach
     void beforeEach() {
+        subject = new UnpauseCommand(repository);
         this.subject.marker = "@@@-xxx-asdasd";
     }
 

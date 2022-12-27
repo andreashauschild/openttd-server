@@ -8,8 +8,11 @@ import java.util.Optional;
 
 public class UnpauseCommand extends Command {
 
-    public UnpauseCommand() {
+    private final DefaultRepository repository;
+
+    public UnpauseCommand(DefaultRepository repository) {
         super("unpause");
+        this.repository = repository;
     }
 
     @Override
@@ -22,11 +25,10 @@ public class UnpauseCommand extends Command {
 
     @Override
     public void onSuccess(String openttdServeId) {
-        DefaultRepository defaultRepository = CDI.current().select(DefaultRepository.class).get();
-        Optional<OpenttdServer> openttdServer = defaultRepository.getOpenttdServer(openttdServeId);
+        Optional<OpenttdServer> openttdServer = this.repository.getOpenttdServer(openttdServeId);
         if (openttdServer.isPresent()) {
             openttdServer.get().setPaused(false);
-            defaultRepository.updateServer(openttdServeId, openttdServer.get());
+            repository.updateServer(openttdServeId, openttdServer.get());
         }
         super.onSuccess(openttdServeId);
     }

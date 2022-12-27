@@ -10,6 +10,7 @@ import {FileUploadDialogModule} from '../../../shared/ui/file-upload-dialog/file
 import {CreateServerDialogModule} from '../../ui/create-server-dialog/create-server-dialog.module';
 import { MatButtonModule } from '@angular/material/button';
 import {OpenttdServerGridModule} from '../../ui/openttd-server-grid/openttd-server-grid.module';
+import {MatIconModule} from "@angular/material/icon";
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import {OpenttdServerGridModule} from '../../ui/openttd-server-grid/openttd-serv
         OpenttdProcessTerminalDialogModule,
         FileUploadDialogModule,
         CreateServerDialogModule,
-        OpenttdServerGridModule
+        OpenttdServerGridModule,
+        MatIconModule
     ]
 })
 export class ServersOverviewModule {
