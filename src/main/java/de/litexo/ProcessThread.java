@@ -4,6 +4,7 @@ import de.litexo.events.EventBus;
 import de.litexo.events.OpenttdTerminalUpdateEvent;
 import de.litexo.model.external.BaseProcess;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -114,6 +115,11 @@ public class ProcessThread implements Runnable {
     }
 
     public BaseProcess toModel() {
-        return new BaseProcess().setProcessData(this.getLogs()).setProcessId(this.getUuid());
+        // Only send last 20000 chars to processdata
+        String data = this.getLogs();
+        if (data.length() > 20000) {
+            data = logs.substring(data.length() - 20000);
+        }
+        return new BaseProcess().setProcessData(data).setProcessId(this.getUuid());
     }
 }
