@@ -12,7 +12,7 @@ This section is for developers. This can be skipped if you just want to use that
 
 # Usage Development Mode
 
-- Open a terminal in the `server` directory
+- Open a terminal in the `root` directory
 - `docker build -f src/main/docker/Dockerfile.dev . --progress=plain -t openttd-server`
 - `docker run -i --rm -p 8080:8080 -p 5005:5005 -p 3979:3979/tcp -p 3979:3979/udp -e QUARKUS_LAUNCH_DEVMODE=true openttd-server`
 - `openttd -D -b 8bpp-optimized`  Run with possibility to do screenshots (https://www.tt-forums.net/viewtopic.php?t=88943)
