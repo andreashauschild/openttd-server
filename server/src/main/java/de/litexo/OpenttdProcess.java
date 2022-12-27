@@ -2,12 +2,19 @@ package de.litexo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.litexo.api.ServiceRuntimeException;
 import de.litexo.commands.Command;
 import de.litexo.events.EventBus;
 import de.litexo.model.external.BaseProcess;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -63,43 +70,49 @@ public class OpenttdProcess {
     }
 
     public void start() {
-        List<String> cmd = new ArrayList<>();
+        try {
 
-        if (this.id == null) {
-            this.id = "Server-" + System.currentTimeMillis();
+
+            List<String> cmd = new ArrayList<>();
+
+            if (this.id == null) {
+                this.id = "Server-" + System.currentTimeMillis();
+            }
+
+            if (this.startServerCommand.isEmpty()) {
+                cmd.add("openttd");
+                cmd.add("-D");
+            } else {
+                cmd.addAll(this.startServerCommand);
+            }
+
+
+            if (this.port != null) {
+                cmd.add("0.0.0.0:" + this.port);
+            }
+
+            if (isNotEmpty(this.saveGame)) {
+                cmd.add("-g");
+                cmd.add(this.saveGame);
+            }
+
+            if (isNotEmpty(this.config)) {
+                cmd.add("-c");
+                cmd.add(this.config);
+            }
+            this.processThread = new ProcessThread(this.executorService, cmd, this.eventBus);
+            this.executorService.execute(processThread);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException("Error: Failed to start process", e);
         }
-
-        if (this.startServerCommand.isEmpty()) {
-            cmd.add("openttd");
-            cmd.add("-D");
-        } else {
-            cmd.addAll(this.startServerCommand);
-        }
-
-
-        if (this.port != null) {
-            cmd.add("0.0.0.0:" + this.port);
-        }
-
-        if (isNotEmpty(this.saveGame)) {
-            cmd.add("-g");
-            cmd.add(this.saveGame);
-        }
-
-        if (isNotEmpty(this.config)) {
-            cmd.add("-c");
-            cmd.add(this.config);
-        }
-        this.processThread = new ProcessThread(this.executorService, cmd, this.eventBus);
-        this.executorService.execute(processThread);
     }
 
     public <T extends Command> T executeCommand(T command, boolean executeWithActiveClientTerminal) {
         if (this.processThread != null) {
             if (executeWithActiveClientTerminal) {
-                return (T) command.execute(this.processThread);
+                return (T) command.execute(this.processThread, this.id);
             } else if (!isUiTerminalOpenedByClient()) {
-                return (T) command.execute(this.processThread);
+                return (T) command.execute(this.processThread, this.id);
             } else {
                 System.out.println("Command '" + command.getType() + "' will be skipped because there is a open ui terminal");
             }

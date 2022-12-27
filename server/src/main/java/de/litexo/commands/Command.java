@@ -37,7 +37,16 @@ public abstract class Command {
 
     public abstract boolean check(String logs);
 
-    public Command execute(ProcessThread process) {
+    /**
+     * Will be called if the command was successfully executed
+     *
+     * @param openttdServeId id of server that executed the command
+     */
+    public void onSuccess(String openttdServeId){
+
+    }
+
+    public Command execute(ProcessThread process, String openttdServerId ) {
         process.write(this.marker);
         for (int i = 0; i < 100; i++) {
             try {
@@ -56,6 +65,7 @@ public abstract class Command {
             this.rawResult = process.getLogs().substring(beginIndex);
             if (check(this.rawResult)) {
                 this.executed = true;
+                this.onSuccess(openttdServerId);
                 return this;
             }
         }

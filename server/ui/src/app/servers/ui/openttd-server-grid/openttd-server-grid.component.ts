@@ -1,7 +1,13 @@
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {Component, OnInit} from '@angular/core';
 import {Store} from "@ngrx/store";
-import {deleteServer, loadServerConfig, saveServer, startServer} from 'src/app/shared/store/actions/app.actions';
+import {
+  deleteServer,
+  loadServerConfig, pauseUnpauseServer,
+  saveServer,
+  startServer,
+  stopServer
+} from 'src/app/shared/store/actions/app.actions';
 import {OpenttdServer} from '../../../api/models/openttd-server';
 import {selectServers} from '../../../shared/store/selectors/app.selectors';
 import {MatDialog} from "@angular/material/dialog";
@@ -47,7 +53,7 @@ export class OpenttdServerGridComponent implements OnInit {
   }
 
   stopServer(server: OpenttdServer) {
-
+    this.store.dispatch(stopServer({src: OpenttdServerGridComponent.name, id: server.id!}))
   }
 
   trackBy(index: number, item: OpenttdServer) {
@@ -80,6 +86,6 @@ export class OpenttdServerGridComponent implements OnInit {
   }
 
   pauseServer(server: OpenttdServer) {
-
+    this.store.dispatch(pauseUnpauseServer({src: OpenttdServerGridComponent.name, id: server.id!}))
   }
 }

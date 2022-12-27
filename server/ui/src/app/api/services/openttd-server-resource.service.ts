@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { Command } from '../models/command';
+import { ExportModel } from '../models/export-model';
 import { OpenttdProcess } from '../models/openttd-process';
 import { OpenttdServer } from '../models/openttd-server';
 import { OpenttdServerConfigGet } from '../models/openttd-server-config-get';
@@ -238,6 +239,54 @@ export class OpenttdServerResourceService extends BaseService {
       map((r: StrictHttpResponse<{
 }>) => r.body as {
 })
+    );
+  }
+
+  /**
+   * Path part for operation apiOpenttdServerExportModelGet
+   */
+  static readonly ApiOpenttdServerExportModelGetPath = '/api/openttd-server/exportModel';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOpenttdServerExportModelGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOpenttdServerExportModelGet$Response(params?: {
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<ExportModel>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.ApiOpenttdServerExportModelGetPath, 'get');
+    if (params) {
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ExportModel>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiOpenttdServerExportModelGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOpenttdServerExportModelGet(params?: {
+    context?: HttpContext
+  }
+): Observable<ExportModel> {
+
+    return this.apiOpenttdServerExportModelGet$Response(params).pipe(
+      map((r: StrictHttpResponse<ExportModel>) => r.body as ExportModel)
     );
   }
 
@@ -653,6 +702,57 @@ export class OpenttdServerResourceService extends BaseService {
   }
 
   /**
+   * Path part for operation pauseUnpause
+   */
+  static readonly PauseUnpausePath = '/api/openttd-server/server/{id}/pause-unpause';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `pauseUnpause()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  pauseUnpause$Response(params: {
+    id: string;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<OpenttdServer>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.PauseUnpausePath, 'post');
+    if (params) {
+      rb.path('id', params.id, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<OpenttdServer>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `pauseUnpause$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  pauseUnpause(params: {
+    id: string;
+    context?: HttpContext
+  }
+): Observable<OpenttdServer> {
+
+    return this.pauseUnpause$Response(params).pipe(
+      map((r: StrictHttpResponse<OpenttdServer>) => r.body as OpenttdServer)
+    );
+  }
+
+  /**
    * Path part for operation save
    */
   static readonly SavePath = '/api/openttd-server/server/{id}/save';
@@ -823,7 +923,7 @@ export class OpenttdServerResourceService extends BaseService {
     id: string;
     context?: HttpContext
   }
-): Observable<StrictHttpResponse<void>> {
+): Observable<StrictHttpResponse<OpenttdServer>> {
 
     const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.StopPath, 'post');
     if (params) {
@@ -831,13 +931,13 @@ export class OpenttdServerResourceService extends BaseService {
     }
 
     return this.http.request(rb.build({
-      responseType: 'text',
-      accept: '*/*',
+      responseType: 'json',
+      accept: 'application/json',
       context: params?.context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+        return r as StrictHttpResponse<OpenttdServer>;
       })
     );
   }
@@ -852,10 +952,10 @@ export class OpenttdServerResourceService extends BaseService {
     id: string;
     context?: HttpContext
   }
-): Observable<void> {
+): Observable<OpenttdServer> {
 
     return this.stop$Response(params).pipe(
-      map((r: StrictHttpResponse<void>) => r.body as void)
+      map((r: StrictHttpResponse<OpenttdServer>) => r.body as OpenttdServer)
     );
   }
 
@@ -907,66 +1007,6 @@ export class OpenttdServerResourceService extends BaseService {
 
     return this.terminalOpenInUi$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
-    );
-  }
-
-  /**
-   * Path part for operation start
-   */
-  static readonly StartPath = '/api/openttd-server/start-server';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `start()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  start$Response(params?: {
-    config?: string;
-    name?: string;
-    port?: number;
-    savegame?: string;
-    context?: HttpContext
-  }
-): Observable<StrictHttpResponse<OpenttdProcess>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OpenttdServerResourceService.StartPath, 'post');
-    if (params) {
-      rb.query('config', params.config, {});
-      rb.query('name', params.name, {});
-      rb.query('port', params.port, {});
-      rb.query('savegame', params.savegame, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<OpenttdProcess>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `start$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  start(params?: {
-    config?: string;
-    name?: string;
-    port?: number;
-    savegame?: string;
-    context?: HttpContext
-  }
-): Observable<OpenttdProcess> {
-
-    return this.start$Response(params).pipe(
-      map((r: StrictHttpResponse<OpenttdProcess>) => r.body as OpenttdProcess)
     );
   }
 

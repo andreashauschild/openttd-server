@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -32,7 +33,7 @@ class ServerInfoCommandTest {
         String logs = IOUtils.resourceToString("/command-samples/serverInfo.txt", StandardCharsets.UTF_8);
         when(this.process.getLogs()).thenReturn(logs);
 
-        ServerInfoCommand execute = (ServerInfoCommand) this.subject.execute(process);
+        ServerInfoCommand execute = (ServerInfoCommand) this.subject.execute(process, UUID.randomUUID().toString());
 
         assertTrue(execute.isExecuted());
         assertEquals("asdasd",execute.getInviteCode());

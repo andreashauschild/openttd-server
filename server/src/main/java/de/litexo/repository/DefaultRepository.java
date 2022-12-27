@@ -211,8 +211,8 @@ public class DefaultRepository {
             server.setSaveGame(serverFile(server.getSaveGame().getPath(), SAVE_GAME));
         }
 
-        if (server.getConfig() != null && server.getConfig().getPath() != null) {
-            server.setConfig(serverFile(server.getConfig().getPath(), CONFIG));
+        if (server.getOpenttdConfig() != null && server.getOpenttdConfig().getPath() != null) {
+            server.setOpenttdConfig(serverFile(server.getOpenttdConfig().getPath(), CONFIG));
         }
 
     }

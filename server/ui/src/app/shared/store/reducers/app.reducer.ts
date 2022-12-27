@@ -107,18 +107,19 @@ export const reducer = createReducer(
     }
   }),
 
-  on(AppActions.updateServerSuccess, AppActions.startServerSuccess, AppActions.loadServerSuccess, (state, action) => {
-    return {
-      ...state,
-      server: action.server,
-      servers: state.servers.map(s => {
-        if (s.id === action.server.id) {
-          return action.server;
-        }
-        return s;
-      })
-    }
-  }),
+  on(AppActions.updateServerSuccess, AppActions.startServerSuccess, AppActions.loadServerSuccess
+    , AppActions.stopServerSuccess, AppActions.pauseUnpauseServerSuccess, (state, action) => {
+      return {
+        ...state,
+        server: action.server,
+        servers: state.servers.map(s => {
+          if (s.id === action.server.id) {
+            return action.server;
+          }
+          return s;
+        })
+      }
+    }),
 
   on(AppActions.deleteServerSuccess, (state, action) => {
     return {
@@ -134,6 +135,5 @@ export const reducer = createReducer(
       ...state,
       processes: state.processes.concat(action.server.process!)
     }
-
   }),
 );

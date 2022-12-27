@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.litexo.model.external.OpenttdServer;
 import de.litexo.model.external.ServerFile;
 import de.litexo.model.internal.InternalOpenttdServerConfig;
-import de.litexo.model.mapper.OpenttdServerConfigMapperImpl;
-import de.litexo.model.mapper.OpenttdServerMapper;
 import de.litexo.model.mapper.OpenttdServerMapperImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.wildfly.common.Assert.assertNotNull;
 import static org.wildfly.common.Assert.assertTrue;
 
@@ -89,14 +86,14 @@ class DefaultRepositoryTest {
         // Check that return value of add is correcly mapped
         OpenttdServer server1 = this.subject.addServer(
                 new OpenttdServer().setName("server1").setPort(123)
-                        .setConfig(new ServerFile().setPath(this.existingFile.getPath()))
+                        .setOpenttdConfig(new ServerFile().setPath(this.existingFile.getPath()))
                         .setSaveGame(new ServerFile().setPath(this.existingFile.getPath()))
         );
 
-        assertEquals(true, server1.getConfig().isExists());
-        assertEquals("existingFile.txt", server1.getConfig().getName());
-        assertTrue(server1.getConfig().getCreated() > 0);
-        assertTrue(server1.getConfig().getLastModified() > 0);
+        assertEquals(true, server1.getOpenttdConfig().isExists());
+        assertEquals("existingFile.txt", server1.getOpenttdConfig().getName());
+        assertTrue(server1.getOpenttdConfig().getCreated() > 0);
+        assertTrue(server1.getOpenttdConfig().getLastModified() > 0);
 
         assertEquals(true, server1.getSaveGame().isExists());
         assertEquals("existingFile.txt", server1.getSaveGame().getName());
@@ -106,10 +103,10 @@ class DefaultRepositoryTest {
         // Check that return value of add is correcly mapped
         server1 = this.subject.getOpenttdServerConfig().getServers().get(0);
 
-        assertEquals(true, server1.getConfig().isExists());
-        assertEquals("existingFile.txt", server1.getConfig().getName());
-        assertTrue(server1.getConfig().getCreated() > 0);
-        assertTrue(server1.getConfig().getLastModified() > 0);
+        assertEquals(true, server1.getOpenttdConfig().isExists());
+        assertEquals("existingFile.txt", server1.getOpenttdConfig().getName());
+        assertTrue(server1.getOpenttdConfig().getCreated() > 0);
+        assertTrue(server1.getOpenttdConfig().getLastModified() > 0);
 
         assertEquals(true, server1.getSaveGame().isExists());
         assertEquals("existingFile.txt", server1.getSaveGame().getName());

@@ -6,22 +6,24 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
 import {BaseDialogModule} from '../../../shared/ui/base-dialog/base-dialog.module';
+import {NgIf} from "@angular/common";
 
 
 @NgModule({
   declarations: [
     CreateServerDialogComponent
   ],
-  imports: [
-    ServerFileSelectModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    BaseDialogModule
+    imports: [
+        ServerFileSelectModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        BaseDialogModule,
+        NgIf
 
-  ],
+    ],
   exports: [CreateServerDialogComponent]
 })
 export class CreateServerDialogModule {

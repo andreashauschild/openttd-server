@@ -27,6 +27,9 @@ export class FileUploadDialogComponent implements AfterViewInit {
   dialogTitle= "File Upload";
 
   @Input()
+  subTitle= "";
+
+  @Input()
   fileType: ServerFileType | undefined;
 
   @ViewChild("fileUpload", {static: false})
@@ -77,7 +80,7 @@ export class FileUploadDialogComponent implements AfterViewInit {
             fileName: chunk.uploadFile.name
           },
           // Add header to the post request, e.g. for Authorization
-          header: {...before.requestParams.header, 'Authorization': 'Basic d2lraTpwZWRpYQ== '}
+          header: {...before.requestParams.header}
         }
 
 

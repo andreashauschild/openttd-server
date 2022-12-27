@@ -19,6 +19,9 @@ public class OpenttdServer {
     // Name of the server
     private String name = null;
 
+    // Password of the server.
+    private String password = null;
+
     // of the server
     private Integer port = null;
 
@@ -26,13 +29,23 @@ public class OpenttdServer {
     private ServerFile saveGame = null;
 
     // if set this config will be used to start the server
-    private ServerFile config = null;
+    private ServerFile openttdConfig = null;
+
+
+    // if set this is the private config that will be used to start the server
+    private ServerFile openttdPrivateConfig = null;
+
+    // if set this is used to set the secret config of the server
+    private ServerFile openttdSecretsConfig = null;
 
     // Enables auto save for this server
     private boolean autoSave = true;
 
     // Enables autoPause for this server if no played has joined a company
     private boolean autoPause = true;
+
+    // State flag that is set if a pause action was executed
+    private boolean paused = false;
 
     // holds the server process if the server is running
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

@@ -2,6 +2,7 @@ package de.litexo.api;
 
 import de.litexo.OpenttdProcess;
 import de.litexo.commands.Command;
+import de.litexo.model.external.ExportModel;
 import de.litexo.model.external.OpenttdServer;
 import de.litexo.model.external.OpenttdServerConfigGet;
 import de.litexo.model.external.OpenttdServerConfigUpdate;
@@ -36,7 +37,6 @@ import java.util.Optional;
 
 @Path("/api/openttd-server")
 @RolesAllowed("login_user")
-//@PermitAll
 public class OpenttdServerResource {
 
     @Inject
@@ -120,18 +120,6 @@ public class OpenttdServerResource {
     }
 
     @POST
-    @Path("/start-server")
-    @Operation(operationId = "start")
-    public OpenttdProcess startServer(
-            @QueryParam("name") String name,
-            @QueryParam("port") Integer port,
-            @QueryParam("savegame") String savegame,
-            @QueryParam("config") String config
-    ) {
-        return this.openttdService.start(name, port, savegame, config);
-    }
-
-    @POST
     @Path("/server/{id}/start")
     @Operation(operationId = "startServer")
     public OpenttdServer startServer(
@@ -143,8 +131,27 @@ public class OpenttdServerResource {
     @POST
     @Path("/server/{id}/stop")
     @Operation(operationId = "stop")
-    public void stopServer(@PathParam("id") String id) {
-        this.openttdService.stop(id);
+    @Produces(MediaType.APPLICATION_JSON)
+    public OpenttdServer stopServer(@PathParam("id") String id) {
+        Optional<OpenttdServer> server = this.openttdService.stop(id);
+        if (server.isPresent()) {
+            return server.get();
+        } else {
+            throw new ServiceRuntimeException("Can't stop server with id '" + id + "'. Server does not exists");
+        }
+    }
+
+    @POST
+    @Path("/server/{id}/pause-unpause")
+    @Operation(operationId = "pauseUnpause")
+    @Produces(MediaType.APPLICATION_JSON)
+    public OpenttdServer pauseUnpauseServer(@PathParam("id") String id) {
+        Optional<OpenttdServer> server = this.openttdService.pauseUnpauseServer(id);
+        if (server.isPresent()) {
+            return server.get();
+        } else {
+            throw new ServiceRuntimeException("Can't pause server with id '" + id + "'. Server does not exists");
+        }
     }
 
     @POST
@@ -167,6 +174,7 @@ public class OpenttdServerResource {
     @Operation(operationId = "send-terminal-command")
     public void sendTerminalCommand(@PathParam("id") String id, String cmd) {
         this.openttdService.sendTerminalCommand(id, cmd);
+
     }
 
     @POST
@@ -243,4 +251,11 @@ public class OpenttdServerResource {
         return this.openttdService.execCommand(id, command);
     }
 
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/exportModel")
+    public ExportModel exportModel() {
+        return new ExportModel();
+    }
 }

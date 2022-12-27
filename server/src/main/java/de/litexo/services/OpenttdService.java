@@ -3,6 +3,9 @@ package de.litexo.services;
 import de.litexo.OpenttdProcess;
 import de.litexo.api.ServiceRuntimeException;
 import de.litexo.commands.Command;
+import de.litexo.commands.PauseCommand;
+import de.litexo.commands.QuitCommand;
+import de.litexo.commands.UnpauseCommand;
 import de.litexo.events.EventBus;
 import de.litexo.model.external.OpenttdServer;
 import de.litexo.model.external.ServerFile;
@@ -10,22 +13,29 @@ import de.litexo.model.external.ServerFileType;
 import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.repository.DefaultRepository;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.context.ManagedExecutor;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class OpenttdService {
@@ -33,6 +43,10 @@ public class OpenttdService {
     public static final String AUTO_SAVE_INFIX = "_auto_save_";
     @ConfigProperty(name = "start-server.command")
     String startServerCommand;
+
+    @ConfigProperty(name = "openttd.config.dir")
+    String openttdConfigDir;
+
 
     @Inject
     ManagedExecutor executor;
@@ -78,27 +92,11 @@ public class OpenttdService {
 
     public Command execCommand(String processName, Command command) {
         if (this.processes.containsKey(processName)) {
-            return command.execute(this.processes.get(processName).getProcessThread());
+            return command.execute(this.processes.get(processName).getProcessThread(), this.processes.get(processName).getId());
         } else {
             new ServiceRuntimeException("Process with name '" + processName + "' is not running order does not exists");
         }
         return null;
-    }
-
-
-    public OpenttdProcess start(String name,
-                                Integer port,
-                                String savegame,
-                                String config) {
-        OpenttdProcess openttdProcess = new OpenttdProcess(this.executor, this.eventBus);
-        openttdProcess.setStartServerCommand(this.startServer);
-        openttdProcess.setId(name);
-        openttdProcess.setPort(port);
-        openttdProcess.setSaveGame(savegame);
-        openttdProcess.setConfig(config);
-        openttdProcess.start();
-        processes.put(openttdProcess.getId(), openttdProcess);
-        return openttdProcess;
     }
 
     public OpenttdServer startServer(String id) {
@@ -113,9 +111,8 @@ public class OpenttdService {
                 openttdProcess.setSaveGame(openttdServer.get().getSaveGame().getPath());
             }
 
-            if (openttdServer.get().getConfig() != null) {
-                openttdProcess.setConfig(openttdServer.get().getConfig().getPath());
-            }
+            handleCustomConfig(openttdServer.get(), openttdProcess);
+
 
             openttdProcess.start();
             processes.put(openttdProcess.getId(), openttdProcess);
@@ -124,12 +121,79 @@ public class OpenttdService {
         throw new ServiceRuntimeException("Failed to start server. Server with name '" + id + "' does not exists!");
     }
 
+    /**
+     * If a custom config is used, openttd will create many custom files in the directory of the given config.
+     * To handle that behavior we do the following before we start the process:
+     * 1. Create a custom directory for the given OpenttdServer in the 'openttd.config.dir'
+     * 2. Create copies of the given configs move these copies to the custom directoy
+     * 3. If specific values are set (like password, server name e.g) we will replace them in the copied config files
+     *
+     * @param openttdServer
+     * @param openttdProcess
+     */
+    protected void handleCustomConfig(OpenttdServer openttdServer, OpenttdProcess openttdProcess) {
+        try {
+            Path customConfigDir = Paths.get(this.openttdConfigDir).resolve(openttdServer.getId());
 
-    public void stop(String id) {
+            if (Files.exists(customConfigDir)) {
+                FileUtils.deleteDirectory(customConfigDir.toFile());
+            }
+            Files.createDirectories(customConfigDir);
+
+            Path configFile = customConfigDir.resolve("openttd.cfg");
+            if (isDefined(openttdServer.getOpenttdConfig()) && Files.exists(Paths.get(openttdServer.getOpenttdConfig().getPath()))) {
+                FileUtils.copyFile(new File(openttdServer.getOpenttdConfig().getPath()), configFile.toFile());
+
+            }else{
+                String defaultConfig = IOUtils.toString(this.getClass().getResourceAsStream("/templates/openttd-configs/openttd.cfg"), StandardCharsets.UTF_8);
+                Files.write(configFile, defaultConfig.getBytes());
+            }
+
+            // Be sure that the server runs always in english, so that we can handle the terminal events like 'player joined'
+            this.replaceLine(configFile, "language", "language = english_US.lng");
+            openttdProcess.setConfig(configFile.toFile().getAbsolutePath());
+
+            Path secretConfigFile = customConfigDir.resolve("secrets.cfg");
+            if (!isDefined(openttdServer.getOpenttdSecretsConfig())) {
+                String secretConfig = IOUtils.toString(this.getClass().getResourceAsStream("/templates/openttd-configs/secrets.cfg"), StandardCharsets.UTF_8);
+                Files.write(secretConfigFile, secretConfig.getBytes());
+            } else if (openttdServer.getOpenttdSecretsConfig().getPath() != null && Files.exists(Paths.get(openttdServer.getOpenttdSecretsConfig().getPath()))) {
+                FileUtils.copyFile(new File(openttdServer.getOpenttdSecretsConfig().getPath()), secretConfigFile.toFile());
+            }
+
+            if (StringUtils.isNotEmpty(openttdServer.getPassword())) {
+                this.replaceLine(secretConfigFile, "server_password", "server_password = " + openttdServer.getPassword());
+            }
+
+            Path privateConfigFile = customConfigDir.resolve("private.cfg");
+            if (!isDefined(openttdServer.getOpenttdPrivateConfig())) {
+                String privateConfig = IOUtils.toString(this.getClass().getResourceAsStream("/templates/openttd-configs/private.cfg"), StandardCharsets.UTF_8);
+                Files.write(privateConfigFile, privateConfig.getBytes());
+            } else if (openttdServer.getOpenttdPrivateConfig().getPath() != null && Files.exists(Paths.get(openttdServer.getOpenttdPrivateConfig().getPath()))) {
+                FileUtils.copyFile(new File(openttdServer.getOpenttdPrivateConfig().getPath()), privateConfigFile.toFile());
+            }
+
+            if (StringUtils.isNotEmpty(openttdServer.getName())) {
+                this.replaceLine(privateConfigFile, "server_name", "server_name = " + openttdServer.getName());
+            }
+
+        } catch (Exception e) {
+            throw new ServiceRuntimeException("Failed to handle custom config for server: " + openttdServer.getName());
+        }
+    }
+
+    private boolean isDefined(ServerFile file) {
+        return file != null && StringUtils.isNotBlank(file.getPath());
+    }
+
+    public Optional<OpenttdServer> stop(String id) {
         if (this.processes.containsKey(id)) {
+            this.processes.get(id).executeCommand(new QuitCommand(), true);
             this.processes.get(id).getProcessThread().stop();
             this.processes.remove(id);
         }
+        return enrich(this.repository.getOpenttdServer(id));
+
     }
 
     public void setTerminalOpenInUi(String id) {
@@ -155,11 +219,11 @@ public class OpenttdService {
 
 
     private Path getSaveGameName(String id) {
-        return this.repository.getOpenttdSaveDirPath().resolve(id + MANUALLY_SAVE_INFIX +System.currentTimeMillis());
+        return this.repository.getOpenttdSaveDirPath().resolve(id + MANUALLY_SAVE_INFIX + System.currentTimeMillis());
     }
 
     private Path getAutoSaveGameName(String id) {
-        return this.repository.getOpenttdSaveDirPath().resolve(id + AUTO_SAVE_INFIX +System.currentTimeMillis());
+        return this.repository.getOpenttdSaveDirPath().resolve(id + AUTO_SAVE_INFIX + System.currentTimeMillis());
     }
 
     public InternalOpenttdServerConfig getOpenttdServerConfig() {
@@ -189,6 +253,7 @@ public class OpenttdService {
         this.repository.deleteServer(id);
         stop(id);
     }
+
 
     private OpenttdServer enrich(OpenttdServer server) {
         if (server != null) {
@@ -258,4 +323,32 @@ public class OpenttdService {
     }
 
 
+    public Optional<OpenttdServer> pauseUnpauseServer(String id) {
+        Optional<OpenttdServer> openttdServer = this.repository.getOpenttdServer(id);
+        if (openttdServer.isPresent() && this.processes.containsKey(id)) {
+            if (openttdServer.get().isPaused()) {
+                this.processes.get(id).executeCommand(new UnpauseCommand(), true);
+            } else {
+                this.processes.get(id).executeCommand(new PauseCommand(), true);
+            }
+        }
+        return enrich(this.repository.getOpenttdServer(id));
+    }
+
+    private void replaceLine(Path file, String lineContainsMatcherLowerCase, String replacement) throws IOException {
+        if (file != null && lineContainsMatcherLowerCase != null && replacement != null) {
+            List<String> lines = Files.readAllLines(file);
+            List<String> replaced = new ArrayList<>();
+            for (int i = 0; i < lines.size(); i++) {
+                if (lines.get(i).toLowerCase().contains(lineContainsMatcherLowerCase)) {
+                    replaced.add(replacement);
+                } else {
+                    replaced.add(lines.get(i));
+                }
+            }
+            String result = replaced.stream().collect(Collectors.joining("\n"));
+            Files.write(file, result.getBytes(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+        }
+
+    }
 }

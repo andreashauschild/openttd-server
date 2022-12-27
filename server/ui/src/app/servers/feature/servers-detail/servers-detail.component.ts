@@ -21,9 +21,11 @@ import {FormBuilder, Validators} from '@angular/forms';
 export class ServersDetailComponent implements OnInit, OnDestroy {
   serverForm;
 
-
+  showPassword=false;
   server: OpenttdServer | undefined;
   openttdConfigs: ServerFile[] = [];
+  openttdPrivateConfigs: ServerFile[] = [];
+  openttdSecretConfigs: ServerFile[] = [];
   openttdSavegames: ServerFile[] = [];
 
   private sub = new Subscription();
@@ -32,6 +34,7 @@ export class ServersDetailComponent implements OnInit, OnDestroy {
     this.serverForm = this.fb.group({
       port: ['', [Validators.required, Validators.min(1)]],
       name: ['', [Validators.required]],
+      password: [''],
       autoSave: [true, [Validators.required]],
       autoPause: [true, [Validators.required]],
     });
@@ -45,10 +48,13 @@ export class ServersDetailComponent implements OnInit, OnDestroy {
       this.server = clone(s!);
       this.serverForm.controls.name.patchValue(this.server.name || '')
       this.serverForm.controls.port.patchValue(`${this.server.port}` || '')
+      this.serverForm.controls.password.patchValue(`${this.server.password}` || '')
       this.serverForm.controls.autoSave.patchValue(this.server.autoSave!)
       this.serverForm.controls.autoPause.patchValue(this.server.autoPause!)
       this.sub.add(this.store.select(selectFiles).subscribe(files => {
         this.openttdConfigs = files.filter(f => f.type === ServerFileType.Config);
+        this.openttdSecretConfigs = files.filter(f => f.type === ServerFileType.Config);
+        this.openttdPrivateConfigs = files.filter(f => f.type === ServerFileType.Config);
         this.openttdSavegames = files.filter(f => f.type === ServerFileType.SaveGame);
       }));
     }));
@@ -72,8 +78,9 @@ export class ServersDetailComponent implements OnInit, OnDestroy {
         ...this.server,
         port: parseInt(this.serverForm.controls.port.value!),
         name: this.serverForm.controls.name.value!,
-        autoSave:this.serverForm.controls.autoSave.value!,
-        autoPause:this.serverForm.controls.autoPause.value!,
+        password: this.serverForm.controls.password.value!,
+        autoSave: this.serverForm.controls.autoSave.value!,
+        autoPause: this.serverForm.controls.autoPause.value!,
       }
       this.store.dispatch(updateServer({src: ServersDetailComponent.name, id: update.id!, server: update}))
     }
@@ -87,7 +94,19 @@ export class ServersDetailComponent implements OnInit, OnDestroy {
 
   configSelected(file: ServerFile) {
     if (this.server) {
-      this.server.config = file;
+      this.server.openttdConfig = file;
+    }
+  }
+
+  secretConfigSelected(file: ServerFile) {
+    if (this.server) {
+      this.server.openttdSecretsConfig = file;
+    }
+  }
+
+  privateConfigSelected(file: ServerFile) {
+    if (this.server) {
+      this.server.openttdPrivateConfig = file;
     }
   }
 }

@@ -17,6 +17,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatIconModule} from '@angular/material/icon';
 import {AppNotificationsModule} from './shared/ui/app-notifications/app-notifications.module';
 import {DatePipe} from '@angular/common';
+import {LoadingBarModule} from "@ngx-loading-bar/core";
+import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";
 
 @NgModule({
   declarations: [
@@ -26,6 +28,7 @@ import {DatePipe} from '@angular/common';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    LoadingBarHttpClientModule,
     BrowserAnimationsModule,
     EffectsModule.forRoot([AppEffects]),
     StoreModule.forRoot(reducers, {metaReducers}),

@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -31,7 +32,7 @@ class PauseCommandTest {
         String logs = IOUtils.resourceToString("/command-samples/pause.txt", StandardCharsets.UTF_8);
         when(this.process.getLogs()).thenReturn(logs);
 
-        this.subject.execute(process);
+        this.subject.execute(process, UUID.randomUUID().toString());
 
         assertTrue(this.subject.isExecuted());
     }

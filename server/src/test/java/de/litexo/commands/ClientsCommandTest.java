@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +35,7 @@ class ClientsCommandTest {
         String logs = IOUtils.resourceToString("/command-samples/clients.txt", StandardCharsets.UTF_8);
         when(this.process.getLogs()).thenReturn(logs);
 
-        ClientsCommand execute = (ClientsCommand) this.subject.execute(process);
+        ClientsCommand execute = (ClientsCommand) this.subject.execute(process, UUID.randomUUID().toString());
 
         assertTrue(execute.isExecuted());
         assertEquals(3,execute.getClients().size());

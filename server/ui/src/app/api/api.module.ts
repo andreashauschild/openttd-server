@@ -7,7 +7,6 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 import { AuthResourceService } from './services/auth-resource.service';
 import { ChunkUploadResourceService } from './services/chunk-upload-resource.service';
 import { OpenttdServerResourceService } from './services/openttd-server-resource.service';
-import { TestResourceService } from './services/test-resource.service';
 
 /**
  * Module that provides all services and configuration.
@@ -20,7 +19,6 @@ import { TestResourceService } from './services/test-resource.service';
     AuthResourceService,
     ChunkUploadResourceService,
     OpenttdServerResourceService,
-    TestResourceService,
     ApiConfiguration
   ],
 })

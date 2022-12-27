@@ -25,6 +25,8 @@
     "@ngrx/effects": "^14.3.2",
     "@ngrx/store": "^14.3.2",
     "@ngrx/store-devtools": "^14.3.2",
+    "@ngx-loading-bar/core": "^6.0.2",
+    "@ngx-loading-bar/http-client": "^6.0.2",
     "@tailwindcss/forms": "^0.5.3",
     "angular-google-charts": "^2.2.3",
     "highcharts": "^10.2.1",

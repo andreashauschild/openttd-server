@@ -15,7 +15,7 @@
 
             </mat-form-field>
           </div>
-          <div class="col-span-3">
+          <div class="col-span-2">
             <mat-form-field class="w-full">
               <mat-label>Name</mat-label>
               <input name="server-name" type="text" [formControl]="serverForm.controls.name" matInput placeholder="" value="">
@@ -24,7 +24,7 @@
               </mat-error>
             </mat-form-field>
           </div>
-          <div class="col-span-3">
+          <div class="col-span-2">
             <mat-form-field class="w-full">
               <mat-label>Port</mat-label>
               <input name="server-port" type="number" [formControl]="serverForm.controls.port" matInput placeholder="" value="">
@@ -34,6 +34,17 @@
               <mat-error *ngIf="serverForm.controls.port.hasError('min')">
                 Port must be >=  <strong>1</strong>
               </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-span-2">
+            <mat-form-field class="w-full">
+              <mat-label>Password</mat-label>
+              <input *ngIf="!showPassword" name="custom-server-password" type="password" [formControl]="serverForm.controls.password"
+                     matInput>
+              <input *ngIf="showPassword" name="custom-server-password" type="text" [formControl]="serverForm.controls.password"
+                     matInput>
+              <mat-icon *ngIf="!showPassword" (click)="showPassword=!showPassword" matSuffix>visibility</mat-icon>
+              <mat-icon *ngIf="showPassword" (click)="showPassword=!showPassword" matSuffix>visibility_off</mat-icon>
             </mat-form-field>
           </div>
           <div class="col-span-3">
@@ -49,7 +60,15 @@
           </div>
 
           <div class="col-span-6 ">
-            <app-server-file-select [selectedFile]="server.config" (selectedFileEvent)="configSelected($event)" [files]="openttdConfigs" label="Startup OpenTTD configuration."
+            <app-server-file-select [selectedFile]="server.openttdConfig" (selectedFileEvent)="configSelected($event)" [files]="openttdConfigs" label="Startup OpenTTD configuration."
+                                    hintStart="The openttd configuration that is used on server startup."></app-server-file-select>
+          </div>
+          <div class="col-span-6 ">
+            <app-server-file-select [selectedFile]="server.openttdPrivateConfig" (selectedFileEvent)="privateConfigSelected($event)" [files]="openttdPrivateConfigs" label="Startup Private OpenTTD configuration."
+                                    hintStart="The openttd configuration that is used on server startup."></app-server-file-select>
+          </div>
+          <div class="col-span-6 ">
+            <app-server-file-select [selectedFile]="server.openttdSecretsConfig" (selectedFileEvent)="secretConfigSelected($event)" [files]="openttdSecretConfigs" label="Startup Secret OpenTTD configuration."
                                     hintStart="The openttd configuration that is used on server startup."></app-server-file-select>
           </div>
           <div  class="bg-gray-50 px-4 py-3 text-right col-span-6">

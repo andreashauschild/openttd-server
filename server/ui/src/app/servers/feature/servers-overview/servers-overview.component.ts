@@ -49,6 +49,7 @@ export class ServersOverviewComponent implements OnInit {
     dialogRef.componentInstance.dialogRef = dialogRef;
     dialogRef.componentInstance.fileType = ServerFileType.SaveGame;
     dialogRef.componentInstance.dialogTitle = "Upload OpenTTD Savegames";
+    dialogRef.componentInstance.subTitle = "Info: Don't upload files where the filename contains single/double quotes: ' or \" . This will cause problems!";
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
     });
@@ -59,6 +60,7 @@ export class ServersOverviewComponent implements OnInit {
     dialogRef.componentInstance.dialogRef = dialogRef;
     dialogRef.componentInstance.fileType = ServerFileType.Config;
     dialogRef.componentInstance.dialogTitle = "Upload OpenTTD Configs";
+    dialogRef.componentInstance.subTitle = "Info: Don't upload files where the filename contains single/double quotes: ' or \" . This will cause problems!";
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
     });

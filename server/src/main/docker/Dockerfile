@@ -41,14 +41,12 @@ RUN chmod +x /tmp/prepare.sh /tmp/cleanup.sh /openttd.sh
 RUN /tmp/prepare.sh
 RUN /tmp/cleanup.sh
 
-VOLUME /home/openttd/.openttd
+RUN mkdir /home/openttd/server
+RUN chown 1000:1000 /home/openttd/server
 
-EXPOSE 3979/tcp
-EXPOSE 3979/udp
-
+VOLUME /home/openttd/server
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
-
 
 # We make four distinct layers so if there are application changes the library layers can be re-used
 COPY --chown=1000 server/target/quarkus-app/lib/ /deployments/lib/
@@ -56,36 +54,15 @@ COPY --chown=1000 server/target/quarkus-app/*.jar /deployments/
 COPY --chown=1000 server/target/quarkus-app/app/ /deployments/app/
 COPY --chown=1000 server/target/quarkus-app/quarkus/ /deployments/quarkus/
 
-EXPOSE 8080
-EXPOSE 5005
-
 USER 1000
-ENV AB_JOLOKIA_OFF=""
-ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
-ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
+#ENV AB_JOLOKIA_OFF=""
+#ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+#ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
 
 ENV start-server.command="/openttd.sh"
 
+ENV openttd.save.dir=/home/openttd/server/save
+ENV openttd.config.dir=/home/openttd/server/config
+ENV server.config.dir=/home/openttd/server
 
-
-
-#STOPSIGNAL 3
-#ENTRYPOINT [ "/usr/bin/dumb-init", "--rewrite", "15:3", "--rewrite", "9:3", "--" ]
-#CMD [ "/openttd.sh" ]
-ENV openttd.save.dir=/tmp/openttd/save
-ENV openttd.config.dir=/tmp/openttd/config
-ENV server.config.dir=/tmp/openttd
-
-
-# DEBUG QUARKUS
-ENV QUARKUS_LAUNCH_DEVMODE=true
-ENV JAVA_ENABLE_DEBUG=true
-ENV server.initial.password=Password_1
-
-USER root
-RUN apt-get update
-RUN apt-get install -y mc
-
-USER 1000
-
-CMD ["java","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005", "-jar", "/deployments/quarkus-run.jar"]
+CMD ["java", "-jar", "/deployments/quarkus-run.jar"]

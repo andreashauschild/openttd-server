@@ -28,7 +28,6 @@ public class ChunkUploadResource {
     @ConfigProperty(name = "openttd.config.dir")
     String openttdConfigDir;
 
-
     Path configDir;
 
     Path saveDir;

@@ -8,9 +8,9 @@ import {
   loadServerConfigSuccess,
   loadServerFilesSuccess,
   loadServerSuccess,
-  patchServerConfigSuccess,
+  patchServerConfigSuccess, pauseUnpauseServerSuccess,
   saveServerSuccess,
-  startServerSuccess,
+  startServerSuccess, stopServerSuccess,
   updateServerSuccess
 } from '../actions/app.actions'
 import {catchError, EMPTY, mergeMap} from 'rxjs';
@@ -109,7 +109,10 @@ export class AppEffects {
       ofType(AppActions.startServer),
       mergeMap((a) => this.service.startServer({id: a.id})
         .pipe(
-          map(server => startServerSuccess({src: AppEffects.name, server})),
+          map(server => {
+            this.app.createInfoMessage("Server started!", 2000)
+            return startServerSuccess({src: AppEffects.name, server})
+          }),
           catchError((err) => {
             this.app.handleError(err);
             return EMPTY;
@@ -118,6 +121,47 @@ export class AppEffects {
       )
     );
   });
+
+  stopServer = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.stopServer),
+      mergeMap((a) => this.service.stop({id: a.id})
+        .pipe(
+          map(server => {
+            this.app.createInfoMessage("Server stopped!", 2000)
+            return stopServerSuccess({src: AppEffects.name, server})
+          }),
+          catchError((err) => {
+            this.app.handleError(err);
+            return EMPTY;
+          })
+        )
+      )
+    );
+  });
+
+  pauseUnpauseServer = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.pauseUnpauseServer),
+      mergeMap((a) => this.service.pauseUnpause({id: a.id})
+        .pipe(
+          map(server => {
+            if (server.paused) {
+              this.app.createInfoMessage("Server paused!")
+            } else {
+              this.app.createInfoMessage("Server unpaused!")
+            }
+            return pauseUnpauseServerSuccess({src: AppEffects.name, server})
+          }),
+          catchError((err) => {
+            this.app.handleError(err);
+            return EMPTY;
+          })
+        )
+      )
+    );
+  });
+
 
   updateServer = createEffect(() => {
     return this.actions$.pipe(
@@ -158,7 +202,10 @@ export class AppEffects {
       ofType(AppActions.deleteServer),
       mergeMap((a) => this.service.deleteServer({id: a.id})
         .pipe(
-          map(name => deleteServerSuccess({src: AppEffects.name, id: a.id})),
+          map(name => {
+            this.app.createInfoMessage("Server deleted!", 2000)
+            return deleteServerSuccess({src: AppEffects.name, id: a.id})
+          }),
           catchError((err) => {
             this.app.handleError(err);
             return EMPTY;
@@ -173,7 +220,10 @@ export class AppEffects {
       ofType(AppActions.saveServer),
       mergeMap((a) => this.service.save({id: a.id})
         .pipe(
-          map(name => saveServerSuccess({src: AppEffects.name, id: a.id})),
+          map(name => {
+            this.app.createInfoMessage("Game saved!", 2000)
+            return saveServerSuccess({src: AppEffects.name, id: a.id})
+          }),
           catchError((err) => {
             this.app.handleError(err);
             return EMPTY;

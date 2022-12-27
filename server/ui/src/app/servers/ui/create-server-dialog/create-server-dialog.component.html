@@ -1,26 +1,50 @@
 <ng-template #body>
   <div class="grid grid-cols-6 gap-6">
 
-    <div class="col-span-6 sm:col-span-3">
+    <div class="col-span-6 sm:col-span-2">
       <mat-form-field class="w-full">
         <mat-label>Server Name</mat-label>
         <input [formControl]="createServerForm.controls.name" matInput placeholder="" value="">
       </mat-form-field>
     </div>
 
-    <div class="col-span-6 sm:col-span-3">
+    <div class="col-span-6 sm:col-span-2">
       <mat-form-field class="w-full">
         <mat-label>Port</mat-label>
         <input type="number" [formControl]="createServerForm.controls.port" matInput placeholder="port" value="3979 ">
       </mat-form-field>
     </div>
 
-    <div class="col-span-6 sm:col-span-6">
-      <app-server-file-select [label]="'Save Game'" (selectedFileEvent)="selectSaveGame($event)" [files]="saveGameFiles"></app-server-file-select>
+    <div class="col-span-6 sm:col-span-2">
+      <mat-form-field class="w-full">
+        <mat-label>Password</mat-label>
+        <input *ngIf="!showPassword" name="custom-server-password" type="password" [formControl]="createServerForm.controls.password"
+               matInput>
+        <input *ngIf="showPassword" name="custom-server-password" type="text" [formControl]="createServerForm.controls.password"
+               matInput>
+        <mat-icon *ngIf="!showPassword" (click)="showPassword=!showPassword" matSuffix>visibility</mat-icon>
+        <mat-icon *ngIf="showPassword" (click)="showPassword=!showPassword" matSuffix>visibility_off</mat-icon>
+      </mat-form-field>
     </div>
 
     <div class="col-span-6 sm:col-span-6">
-      <app-server-file-select [label]="'OpenTTD Config'" (selectedFileEvent)="selectConfig($event)" [files]="configFiles"></app-server-file-select>
+      <app-server-file-select [label]="'Save Game'" (selectedFileEvent)="selectSaveGame($event)"
+                              [files]="saveGameFiles"></app-server-file-select>
+    </div>
+
+    <div class="col-span-6 sm:col-span-6">
+      <app-server-file-select [label]="'OpenTTD Config'" (selectedFileEvent)="selectConfig($event)"
+                              [files]="configFiles"></app-server-file-select>
+    </div>
+
+    <div class="col-span-6 sm:col-span-6">
+      <app-server-file-select [label]="'OpenTTD Private Config'" (selectedFileEvent)="selectPrivateConfig($event)"
+                              [files]="configFiles"></app-server-file-select>
+    </div>
+
+    <div class="col-span-6 sm:col-span-6">
+      <app-server-file-select [label]="'OpenTTD Secret Config'" (selectedFileEvent)="selectSecretConfig($event)"
+                              [files]="configFiles"></app-server-file-select>
     </div>
   </div>
 </ng-template>

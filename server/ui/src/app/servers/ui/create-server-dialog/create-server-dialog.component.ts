@@ -16,12 +16,15 @@ import {MatDialogRef} from '@angular/material/dialog';
 export class CreateServerDialogComponent implements OnInit {
   configFiles: ServerFile[] = []
   saveGameFiles: ServerFile[] = []
-
+  showPassword=false;
   createServerForm = this.fb.group({
     name: [''],
     port: [3979],
+    password: [''],
     saveGame: <ServerFile>[{}],
-    config: <ServerFile>[{}]
+    config: <ServerFile>[{}],
+    configSecret: <ServerFile>[{}],
+    configPrivate: <ServerFile>[{}]
   });
 
   public dialogRef: MatDialogRef<CreateServerDialogComponent, boolean> | null = null;
@@ -51,7 +54,10 @@ export class CreateServerDialogComponent implements OnInit {
       src: CreateServerDialogComponent.name, server: {
         name: this.createServerForm.controls.name.value!,
         port: this.createServerForm.controls.port.value!,
-        config: this.createServerForm.controls.config.value!,
+        password: this.createServerForm.controls.password.value!,
+        openttdConfig: this.createServerForm.controls.config.value!,
+        openttdSecretsConfig: this.createServerForm.controls.configSecret.value!,
+        openttdPrivateConfig: this.createServerForm.controls.configPrivate.value!,
         saveGame: this.createServerForm.controls.saveGame.value!,
       }
     }))
@@ -67,6 +73,18 @@ export class CreateServerDialogComponent implements OnInit {
   selectConfig(file: ServerFile) {
     if (file && file.name!.length > 0) {
       this.createServerForm.controls.config.patchValue(file);
+    }
+  }
+
+  selectSecretConfig(file: ServerFile) {
+    if (file && file.name!.length > 0) {
+      this.createServerForm.controls.configSecret.patchValue(file);
+    }
+  }
+
+  selectPrivateConfig(file: ServerFile) {
+    if (file && file.name!.length > 0) {
+      this.createServerForm.controls.configPrivate.patchValue(file);
     }
   }
 

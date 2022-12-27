@@ -61,15 +61,15 @@ export const stopServer = createAction(
 );
 
 export const stopServerSuccess = createAction(
-  '[App] stopServerSuccess', props<{ src: string, id: string }>()
+  '[App] stopServerSuccess', props<{ src: string, server: OpenttdServer }>()
 );
 
-export const pauseServer = createAction(
-  '[App] pauseServer', props<{ src: string; id: string }>()
+export const pauseUnpauseServer = createAction(
+  '[App] pauseUnpauseServer', props<{ src: string; id: string }>()
 );
 
-export const pauseServerSuccess = createAction(
-  '[App] pauseServerSuccess', props<{ src: string, id: string }>()
+export const pauseUnpauseServerSuccess = createAction(
+  '[App] pauseUnpauseServerSuccess', props<{ src: string, server: OpenttdServer}>()
 );
 
 export const saveServer = createAction(

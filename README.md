@@ -1,9 +1,19 @@
 ![Docker Image CI](https://github.com/bateau84/openttd/workflows/Docker%20Image%20CI/badge.svg?branch=master)  
 [![dockeri.co](https://dockeri.co/image/bateau/openttd)](https://hub.docker.com/r/bateau/openttd)
 
-## Usage ##
+# Setup
 
-- `docker build . -t openttd-server`
+
+# Development
+
+This section is for developers. This can be skipped if you just want to use that server as docker container.
+`docker run -i --rm -v /tmp/openttd-server-volumne:/home/openttd/server -p 8080:8080 -p 3979-3999:3979-3999/tcp 3979-3999:3979-3999/udp openttd-server` 
+
+
+# Usage Development Mode
+
+- Open a terminal in the `server` directory
+- `docker build -f src/main/docker/Dockerfile.dev . --progress=plain -t openttd-server`
 - `docker run -i --rm -p 8080:8080 -p 5005:5005 -p 3979:3979/tcp -p 3979:3979/udp -e QUARKUS_LAUNCH_DEVMODE=true openttd-server`
 - `openttd -D -b 8bpp-optimized`  Run with possibility to do screenshots (https://www.tt-forums.net/viewtopic.php?t=88943)
 - https://quarkus.io/guides/maven-tooling#remote-development-mode

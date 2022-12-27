@@ -168,6 +168,24 @@ paths:
       security:
       - SecurityScheme:
         - login_user
+  /api/openttd-server/exportModel:
+    get:
+      tags:
+      - Openttd Server Resource
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportModel'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/openttd-server/files:
     get:
       tags:
@@ -363,6 +381,31 @@ paths:
       security:
       - SecurityScheme:
         - login_user
+  /api/openttd-server/server/{id}/pause-unpause:
+    post:
+      tags:
+      - Openttd Server Resource
+      operationId: pauseUnpause
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenttdServer'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - login_user
   /api/openttd-server/server/{id}/save:
     post:
       tags:
@@ -447,8 +490,12 @@ paths:
         schema:
           type: string
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenttdServer'
         "401":
           description: Not Authorized
         "403":
@@ -470,97 +517,6 @@ paths:
       responses:
         "204":
           description: No Content
-        "401":
-          description: Not Authorized
-        "403":
-          description: Not Allowed
-      security:
-      - SecurityScheme:
-        - login_user
-  /api/openttd-server/start-server:
-    post:
-      tags:
-      - Openttd Server Resource
-      operationId: start
-      parameters:
-      - name: config
-        in: query
-        schema:
-          type: string
-      - name: name
-        in: query
-        schema:
-          type: string
-      - name: port
-        in: query
-        schema:
-          format: int32
-          type: integer
-      - name: savegame
-        in: query
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OpenttdProcess'
-        "401":
-          description: Not Authorized
-        "403":
-          description: Not Allowed
-      security:
-      - SecurityScheme:
-        - login_user
-  /api/test/exportModel:
-    get:
-      tags:
-      - Test Resource
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ExportModel'
-        "401":
-          description: Not Authorized
-        "403":
-          description: Not Allowed
-      security:
-      - SecurityScheme:
-        - login_user
-  /api/test/hello:
-    get:
-      tags:
-      - Test Resource
-      responses:
-        "200":
-          description: OK
-          content:
-            text/plain:
-              schema:
-                type: string
-        "401":
-          description: Not Authorized
-        "403":
-          description: Not Allowed
-      security:
-      - SecurityScheme:
-        - login_user
-  /api/test/hello2:
-    get:
-      tags:
-      - Test Resource
-      responses:
-        "200":
-          description: OK
-          content:
-            text/plain:
-              schema:
-                type: string
         "401":
           description: Not Authorized
         "403":
@@ -630,16 +586,24 @@ components:
           type: string
         name:
           type: string
+        password:
+          type: string
         port:
           format: int32
           type: integer
         saveGame:
           $ref: '#/components/schemas/ServerFile'
-        config:
+        openttdConfig:
+          $ref: '#/components/schemas/ServerFile'
+        openttdPrivateConfig:
+          $ref: '#/components/schemas/ServerFile'
+        openttdSecretsConfig:
           $ref: '#/components/schemas/ServerFile'
         autoSave:
           type: boolean
         autoPause:
+          type: boolean
+        paused:
           type: boolean
         process:
           $ref: '#/components/schemas/OpenttdProcess'
