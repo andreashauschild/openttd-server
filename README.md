@@ -118,6 +118,11 @@ This dockerfile and linux setup was inspired by the openttd docker project: [bat
 
 # Developer notes
 
+## Issues
+- Multiples Servers the terminal is polluted with strange messages
+- If a server is delete the custom config dir with the server id is not delete but must be also deleted
+- A server must be stopped if a exit command is issued via console
+
 ## Helpful commands:
 
 | Description                        | Command                                                                                   |
