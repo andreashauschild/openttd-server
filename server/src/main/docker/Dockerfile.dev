@@ -59,12 +59,8 @@ EXPOSE 8080
 EXPOSE 5005
 
 USER 1000
-#ENV AB_JOLOKIA_OFF=""
-#ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
-#ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
 
 ENV start-server.command="/openttd.sh"
-
 
 ENV openttd.save.dir=/home/openttd/server/save
 ENV openttd.config.dir=/home/openttd/server/config

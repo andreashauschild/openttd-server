@@ -27,10 +27,10 @@ ENV JAVA_HOME ${JVM_DIR}/java-17-openjdk-x64
 
 ENV PATH=$PATH:$HOME/bin:$JAVA_HOME/bin
 
-COPY prepare.sh /tmp/prepare.sh
-COPY cleanup.sh /tmp/cleanup.sh
-COPY buildconfig /tmp/buildconfig
-COPY --chown=1000:1000 openttd.sh /openttd.sh
+COPY src/main/docker/prepare.sh /tmp/prepare.sh
+COPY src/main/docker/cleanup.sh /tmp/cleanup.sh
+COPY src/main/docker/buildconfig /tmp/buildconfig
+COPY --chown=1000:1000 src/main/docker/openttd.sh /openttd.sh
 
 RUN dos2unix /tmp/prepare.sh
 RUN dos2unix /tmp/cleanup.sh
@@ -49,15 +49,12 @@ VOLUME /home/openttd/server
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 
 # We make four distinct layers so if there are application changes the library layers can be re-used
-COPY --chown=1000 server/target/quarkus-app/lib/ /deployments/lib/
-COPY --chown=1000 server/target/quarkus-app/*.jar /deployments/
-COPY --chown=1000 server/target/quarkus-app/app/ /deployments/app/
-COPY --chown=1000 server/target/quarkus-app/quarkus/ /deployments/quarkus/
+COPY --chown=1000 target/quarkus-app/lib/ /deployments/lib/
+COPY --chown=1000 target/quarkus-app/*.jar /deployments/
+COPY --chown=1000 target/quarkus-app/app/ /deployments/app/
+COPY --chown=1000 target/quarkus-app/quarkus/ /deployments/quarkus/
 
 USER 1000
-#ENV AB_JOLOKIA_OFF=""
-#ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
-#ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
 
 ENV start-server.command="/openttd.sh"
 
