@@ -1,4 +1,4 @@
-name: Quarkus Server
+name: Build OpenTTD Server
 
 on:
   push:
