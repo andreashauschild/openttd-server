@@ -9,7 +9,11 @@
 ![Github last-commit](https://img.shields.io/github/last-commit/andreashauschild/openttd-server)
 
 # Welcome to  OpenTTD Server
-This Docker container allows you to host multiple instances of an OpenTTD dedicated server in a single container, providing an efficient and convenient environment for hosting these servers.
+This Docker container allows you to host multiple instances of OpenTTD dedicated servers in a single container, providing an efficient and convenient environment for hosting these servers.
+
+This documentation expect a basic knowledge of docker (expose ports and volumes).
+
+The current state of this Project is `BETA`. Hosting works and every function was tested but as you now a developer should not test his own software. Please create an issue if something needs to be fixed.
 
 It provides the following features:
 
@@ -20,6 +24,15 @@ It provides the following features:
 - Auto save of running servers
 - Auto pause and unpause on inactive servers. If no player is playing the server is running but paused. Server unpauses if a player joins a company.
 - Simple terminal to send commands directly to the dedicated server
+
+# Versions
+The following table shows which docker image contains which OpenTTD version. For now, I will only support final versions (no beta).
+
+| Container                       | OpenTTD |
+|---------------------------------|---------|
+| hauschi86/openttd-server:latest | 12.2    |
+| hauschi86/openttd-server:12.2.1 | 12.2    |
+
 
 # Screenshots
 
@@ -48,14 +61,49 @@ It provides the following features:
 <img src="docs/images/admin-login.JPG"/>
 </a>
 
-# Development
+# Networking
+By default, docker does not expose the containers on your network. This must be done manually with -p parameter (see here for more details on -p). 
+For the container to work you need to expose at least 2 ports. The port `8080` for the web application and the port for your openttd dedicated server (default: `3979`)
 
-This section is for developers. This can be skipped if you just want to use that server as docker container.
-`docker run -i --rm -v /tmp/openttd-server-volumne:/home/openttd/server -p 8080:8080 -p 3979-3999:3979-3999/tcp 3979-3999:3979-3999/udp openttd-server` 
+# File Locations
+All data and uploads within the container are saved in the `/home/openttd/server` directory.
+
+# Setup
+When you start the Docker container for the OpenTTD server for the first time, it will log the password for the admin login. See fragment below.
+You can use the admin user to log in to the web app, which runs on http://localhost:8080 by default.
+Once logged in, you can access the web app's settings to change the admin password.
+
+**First startup log fragment with password**
+```
+...
+###########################################################################
+### No initial password was set. A password for 'admin' will be generated.
+### Copy it NOW, because it will never be shown again.
+### Password: W!318Y-yBb
+###########################################################################
+...
+```
+
+# Examples
+**Info:** If you have a specific version of the container that you prefer to use, you can replace the example version with your chosen version. 
+This will ensure that you are using the version of the container that best meets your needs and preferences.
+
+Run OpenTTD Server with 1 exposed port. In this case you can host only 1 server.
+
+`docker run -d -p 8080:8080 -p 3979:3979/tcp -p 3979:3979/udp hauschi86/openttd-server:latest`
+
+Run OpenTTD Server with 20 exposed port. In this case you can host 20 server.
+
+`docker run -d -p 8080:8080 -p 3979-3999:3979-3999/tcp -p 3979-3999:3979-3999/udp hauschi86/openttd-server:latest`
+
+The container uses a simple file storage to store data. If you want to have persistent storage you should create a volume and bind it.
+
+`docker run -d -v openttd-server-volumne:/home/openttd/server -p 8080:8080 -p 3979-3999:3979-3999/tcp -p 3979-3999:3979-3999/udp hauschi86/openttd-server:latest`
 
 
 # Usage Development Mode
 
+## Quarkus remote docker container development
 - Open a terminal in the `root` directory
 - `docker build -f src/main/docker/Dockerfile.dev . --progress=plain -t openttd-server`
 - `docker run -i --rm -p 8080:8080 -p 5005:5005 -p 3979:3979/tcp -p 3979:3979/udp -e QUARKUS_LAUNCH_DEVMODE=true openttd-server`
@@ -63,7 +111,7 @@ This section is for developers. This can be skipped if you just want to use that
 - https://quarkus.io/guides/maven-tooling#remote-development-mode
 - https://blog.sebastian-daschner.com/entries/quarkus-remote-dev-in-containers-update
 
-# Debug and develop in Quarkus Container:
+## Debug and develop in Quarkus Container:
 
 - Add properties to `application.properties`
 
@@ -84,42 +132,7 @@ CMD ["java","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0
 ```
 
 - Start dev environment in remote debug mode (but disable local debug):
-    - `quarkus:remote-dev -Ddebug=false -Dquarkus.live-reload.url=http://localhost:8080`
-
-### File locations ###
-
-This image is supplied with a user named `openttd`.  
-Openttd server is run as this user and subsequently its home folder will be `/home/openttd`.  
-Openttd on linux uses `.openttd` in the users homefolder to store configurations, savefiles and other miscellaneous files.  
-If you want to your local files accessible to openttd server inside the container you need to mount them inside with `-v` parameter (
-see https://docs.docker.com/engine/reference/commandline/run/ for more details on -v)
-
-
-### Networking ###
-
-By default docker does not expose the containers on your network. This must be done manually with `-p` parameter (
-see [here](https://docs.docker.com/engine/reference/commandline/run/) for more details on -p).
-If your openttd config is set up to listen on port 3979 you need to map the container port to your machines network like so `-p 3979:3979` where the first reference is the host
-machines port and the second the container port.
-
-### Examples ###
-
-Run Openttd and expose the default ports.
-
-    docker run -d -p 3979:3979/tcp -p 3979:3979/udp bateau/openttd:latest
-
-Run Openttd with random port assignment.
-
-    docker run -d -P bateau/openttd:latest
-
-## Honourable Mention ##
-
-This dockerfile and linux setup was inspired by the openttd docker project: [bateau/openttd](https://github.com/bateau84/openttd). Thank you!
-
-# Developer notes
-
-## Issues
-
+    - `mvn quarkus:remote-dev -Ddebug=false -Dquarkus.live-reload.url=http://localhost:8080`
 
 ## Helpful commands:
 

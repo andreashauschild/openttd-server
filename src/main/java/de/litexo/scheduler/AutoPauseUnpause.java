@@ -42,7 +42,7 @@ public class AutoPauseUnpause {
         });
     }
 
-    @Scheduled(every = "60s")
+    @Scheduled(every = "30s")
     void checkAutoPauseUnpause() {
         for (OpenttdProcess process : service.getProcesses()) {
             doPauseOrUnpause(process);
