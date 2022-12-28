@@ -1,5 +1,7 @@
 package de.litexo;
 
+import de.litexo.api.ServiceRuntimeException;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -23,16 +25,18 @@ public class ProccesInputThread implements Runnable {
         try {
             while (!stopped) {
                 if (!data.isEmpty()) {
-                    String dataValue = data.poll()+"\n";
+                    String dataValue = data.poll() + "\n";
                     process.getOutputStream().write(dataValue.getBytes());
                     process.getOutputStream().flush();
-                    console.append(dataValue+"\r\n");
+                    console.append(dataValue + "\r\n");
                 }
                 Thread.sleep(100);
             }
 
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ServiceRuntimeException(e);
         }
         System.out.println("Finished: ProccesInputThread");
     }
@@ -43,7 +47,7 @@ public class ProccesInputThread implements Runnable {
         }
     }
 
-    public void stop(){
-        this.stopped=true;
+    public void stop() {
+        this.stopped = true;
     }
 }

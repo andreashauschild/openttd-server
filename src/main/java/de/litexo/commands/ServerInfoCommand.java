@@ -1,13 +1,10 @@
 package de.litexo.commands;
 
-import de.litexo.commands.model.Client;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ServerInfoCommand extends Command {
 
@@ -58,7 +55,7 @@ public class ServerInfoCommand extends Command {
             }
             if (line.contains("Current spectators:")) {
                 String[] split = line.split("Current spectators:");
-                if (split.length > 1){
+                if (split.length > 1) {
                     this.currentSpectators = Integer.parseInt(split[1].trim());
                 }
                 matched++;

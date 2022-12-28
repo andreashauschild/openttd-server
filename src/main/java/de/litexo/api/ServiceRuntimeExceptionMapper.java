@@ -17,7 +17,7 @@ import static javax.ws.rs.core.Response.status;
 
 @Provider
 public class ServiceRuntimeExceptionMapper implements ExceptionMapper<ServiceRuntimeException> {
-    private static final Logger LOG = Logger.getLogger(DefaultRepository.class);
+    private static final Logger LOG = Logger.getLogger(ServiceRuntimeExceptionMapper.class);
 
     private static String toJson(final Object result) throws JsonProcessingException {
 

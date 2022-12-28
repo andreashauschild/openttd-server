@@ -93,9 +93,6 @@ public class ChunkUploadResource {
         long uploaded = Files.size(upload);
         System.out.println("Size on server: " + uploaded + " Expected: " + size + "Appended: " + chunk.length);
 
-        if (uploaded == size) {
-            return true;
-        }
-        return false;
+        return uploaded == size;
     }
 }

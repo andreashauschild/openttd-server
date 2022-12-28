@@ -1,10 +1,10 @@
 package de.litexo;
 
+import de.litexo.api.ServiceRuntimeException;
 import de.litexo.events.EventBus;
 import de.litexo.events.OpenttdTerminalUpdateEvent;
 import de.litexo.model.external.BaseProcess;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -82,7 +82,7 @@ public class ProcessThread implements Runnable {
                     Thread.sleep(100);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new ServiceRuntimeException(e);
             }
 
         });

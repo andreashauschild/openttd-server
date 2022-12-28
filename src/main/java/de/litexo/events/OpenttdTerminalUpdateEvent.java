@@ -3,8 +3,6 @@ package de.litexo.events;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.util.List;
-
 @ToString(callSuper = true)
 
 public class OpenttdTerminalUpdateEvent extends BaseEvent {

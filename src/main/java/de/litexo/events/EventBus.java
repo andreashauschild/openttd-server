@@ -63,7 +63,7 @@ public class EventBus {
     }
 
     public <T extends BaseEvent> void observe(Class<T> clazz, @NonNull Object subscribingInstance, @NonNull Consumer<T> action) {
-        Disposable disposable = getSubject(clazz).subscribe((Consumer) action);
+        Disposable disposable = getSubject(clazz).subscribe(action);
         getCompositeDisposable(subscribingInstance).add(disposable);
     }
 
@@ -92,11 +92,6 @@ public class EventBus {
             compositeDisposable.dispose();
         }
     }
-
-//    public <T extends BaseEvent> void publish(Class<T> eventType, T message) {
-//        getSubject(eventType).onNext(message);
-//    }
-//
 
     public void publish(@NonNull BaseEvent message) {
         getSubjectTypless(message.getClass()).onNext(message);

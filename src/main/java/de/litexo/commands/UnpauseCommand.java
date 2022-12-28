@@ -3,7 +3,6 @@ package de.litexo.commands;
 import de.litexo.model.external.OpenttdServer;
 import de.litexo.repository.DefaultRepository;
 
-import javax.enterprise.inject.spi.CDI;
 import java.util.Optional;
 
 public class UnpauseCommand extends Command {
@@ -17,10 +16,7 @@ public class UnpauseCommand extends Command {
 
     @Override
     public boolean check(String logs) {
-        if(logs.contains("*** Game unpaused (manual)") || logs.contains("Game is already unpaused")){
-            return true;
-        }
-        return false;
+        return logs.contains("*** Game unpaused (manual)") || logs.contains("Game is already unpaused");
     }
 
     @Override

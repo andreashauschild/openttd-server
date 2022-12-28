@@ -1,7 +1,5 @@
 package de.litexo.security;
 
-import org.jboss.logging.Logger;
-
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -20,8 +18,6 @@ public class SecurityFiler implements ContainerRequestFilter {
     public void filter(ContainerRequestContext requestContext) throws IOException {
         securityService.validatedLoginSession(requestContext);
     }
-
-
 
 
 }

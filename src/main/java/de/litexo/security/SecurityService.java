@@ -35,64 +35,63 @@ public class SecurityService {
     }
 
     public boolean isLoggedIn(String sessionId) {
-        if (this.disableSecurity
-                || sessionId != null && sessions.containsKey(sessionId)) {
-            return true;
-        }
-        return false;
+        return this.disableSecurity || sessionId != null && sessions.containsKey(sessionId);
     }
 
     public Optional<BasicAuthSession> login(String authHeaderValue) {
-        BasicAuth auth = null;
+        ;
         if (authHeaderValue != null) {
-            auth = new BasicAuth(authHeaderValue);
-        }
-        InternalOpenttdServerConfig openttdServerConfig = this.repository.getOpenttdServerConfig();
-        if (
-                this.disableSecurity
-                        || (SecurityUtils.isEquals(auth.getPassword(), openttdServerConfig.getPasswordSha256Hash()) && "admin".equals(auth.getUserName()))
-        ) {
-            final BasicAuthSession basicAuthSession = new BasicAuthSession();
-            basicAuthSession.setLastUpdate(System.currentTimeMillis());
-            basicAuthSession.setUser(auth.getUserName());
-            basicAuthSession.setSecurityContext(new SecurityContext() {
-                @Override
-                public Principal getUserPrincipal() {
-                    return new Principal() {
-                        @Override
-                        public String getName() {
-                            return basicAuthSession.getUser();
-                        }
-                    };
-                }
-
-                @Override
-                public boolean isUserInRole(String r) {
-                    return true;
-                }
-
-                @Override
-                public boolean isSecure() {
-                    return false;
-                }
-
-                @Override
-                public String getAuthenticationScheme() {
-                    return "basic";
-                }
-            });
-            LOG.infof("User '%s' logged in");
-            this.sessions.put(basicAuthSession.getSessionId(), basicAuthSession);
-            return Optional.of(basicAuthSession);
+            BasicAuth auth = new BasicAuth(authHeaderValue);
+            InternalOpenttdServerConfig openttdServerConfig = this.repository.getOpenttdServerConfig();
+            if (auth != null && SecurityUtils.isEquals(auth.getPassword(), openttdServerConfig.getPasswordSha256Hash()) && "admin".equals(auth.getUserName())) {
+                return getBasicAuthSession(auth);
+            }
+        } else if (this.disableSecurity) {
+            // if disabled we just fake a basic auth
+            BasicAuth auth = new BasicAuth("Basic YWRtaW46UGFzc3dvcmRfMQ=="); //admin:Password_1
+            return getBasicAuthSession(auth);
         }
         return Optional.empty();
     }
 
-    public void logout(String sessionId) {
-        if (sessionId != null) {
-            if (sessions.containsKey(sessionId)) {
-                this.sessions.remove(sessionId);
+    private Optional<BasicAuthSession> getBasicAuthSession(BasicAuth auth) {
+        final BasicAuthSession basicAuthSession = new BasicAuthSession();
+        basicAuthSession.setLastUpdate(System.currentTimeMillis());
+        basicAuthSession.setUser(auth.getUserName());
+        basicAuthSession.setSecurityContext(new SecurityContext() {
+            @Override
+            public Principal getUserPrincipal() {
+                return new Principal() {
+                    @Override
+                    public String getName() {
+                        return basicAuthSession.getUser();
+                    }
+                };
             }
+
+            @Override
+            public boolean isUserInRole(String r) {
+                return true;
+            }
+
+            @Override
+            public boolean isSecure() {
+                return false;
+            }
+
+            @Override
+            public String getAuthenticationScheme() {
+                return "basic";
+            }
+        });
+        LOG.infof("User '%s' logged in");
+        this.sessions.put(basicAuthSession.getSessionId(), basicAuthSession);
+        return Optional.of(basicAuthSession);
+    }
+
+    public void logout(String sessionId) {
+        if (sessionId != null && sessions.containsKey(sessionId)) {
+            this.sessions.remove(sessionId);
         }
     }
 }

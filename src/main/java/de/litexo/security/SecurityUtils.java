@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SecurityUtils {
+
+    private SecurityUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static String toSHA256(String value) {
         return DigestUtils.sha256Hex(value);
     }
@@ -24,7 +29,7 @@ public class SecurityUtils {
         String specialChar = RandomStringUtils.random(2, 33, 47, false, false);
         String totalChars = RandomStringUtils.randomAlphanumeric(2);
         String combinedChars = upperCaseLetters.concat(lowerCaseLetters).concat(numbers).concat(specialChar).concat(totalChars);
-        List<Character> pwdChars = combinedChars.chars().mapToObj(c -> (char) c).collect(Collectors.toList());
+        List<Character> pwdChars = combinedChars.chars().mapToObj(c -> (char) c).toList();
         Collections.shuffle(pwdChars);
         String password = pwdChars.stream().collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
         return password;

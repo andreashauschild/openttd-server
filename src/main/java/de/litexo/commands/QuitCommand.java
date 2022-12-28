@@ -8,9 +8,6 @@ public class QuitCommand extends Command {
 
     @Override
     public boolean check(String logs) {
-        if (logs.contains("quit")) {
-            return true;
-        }
-        return false;
+        return logs.contains("quit");
     }
 }

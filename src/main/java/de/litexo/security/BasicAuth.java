@@ -24,7 +24,7 @@ public class BasicAuth {
                 this.password = values[1].trim();
             }
         } catch (IllegalArgumentException e) {
-            new ServiceRuntimeException(e);
+            throw new ServiceRuntimeException(e);
         }
 
     }

@@ -18,7 +18,7 @@ public abstract class BaseEvent{
 
     private final Class<? extends Object> clazz;
 
-    public BaseEvent(Object eventSource) {
+    protected BaseEvent(Object eventSource) {
         this.clazz = ((Class) eventSource);
     }
 

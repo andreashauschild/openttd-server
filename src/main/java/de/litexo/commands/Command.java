@@ -17,7 +17,6 @@ public abstract class Command {
 
     String marker;
     String command;
-
     String rawResult;
 
     @Getter
@@ -25,7 +24,7 @@ public abstract class Command {
 
     boolean cmdSend = false;
 
-    public Command(String command) {
+    protected Command(String command) {
         this.command = command;
         this.marker = "@@@@_" + getType() + "_" + System.currentTimeMillis() + "_@@@@";
     }
@@ -56,7 +55,7 @@ public abstract class Command {
                     this.cmdSend = true;
                 }
             } catch (InterruptedException e) {
-                throw new ServiceRuntimeException(e);
+                Thread.currentThread().interrupt();
             }
             int beginIndex = process.getLogs().indexOf(this.marker);
             if (beginIndex == -1) {

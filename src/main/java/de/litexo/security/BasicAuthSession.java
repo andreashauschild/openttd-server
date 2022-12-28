@@ -1,6 +1,5 @@
 package de.litexo.security;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

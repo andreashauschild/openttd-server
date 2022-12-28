@@ -1,7 +1,6 @@
 package de.litexo.scheduler;
 
 
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
 import de.litexo.OpenttdProcess;
 import de.litexo.commands.PauseCommand;
 import de.litexo.commands.ServerInfoCommand;
@@ -51,28 +50,32 @@ public class AutoPauseUnpause {
     }
 
     void doPauseOrUnpause(OpenttdProcess process) {
-        Optional<OpenttdServer> openttdServer = service.getOpenttdServer(process.getId());
-        if (openttdServer.isPresent() && !openttdServer.get().isAutoPause()) {
-            System.out.println("Autopause is disabled for Server: " + openttdServer.get().getName());
-            return;
-        }
+        OpenttdServer openttdServer = service.getOpenttdServer(process.getId()).orElse(null);
 
-        ServerInfoCommand cmd = process.executeCommand(new ServerInfoCommand(), false);
-        if (cmd.isExecuted()) {
-            if (cmd.getCurrentClients() == cmd.getCurrentSpectators()) {
-                System.out.println("Pause Server: " + process.getId());
-                PauseCommand pauseCommand = process.executeCommand(new PauseCommand(this.repository), false);
-                if (pauseCommand.isExecuted()) {
-                    openttdServer.get().setPaused(true);
-                }
-            } else {
-                System.out.println("Unpause Server: " + process.getId());
-                UnpauseCommand unpauseCommand = process.executeCommand(new UnpauseCommand(this.repository), false);
-                if (unpauseCommand.isExecuted()) {
-                    openttdServer.get().setPaused(false);
+        if(openttdServer!=null){
+            if (!openttdServer.isAutoPause()) {
+                System.out.println("Autopause is disabled for Server: " + openttdServer.getName());
+                return;
+            }
+
+            ServerInfoCommand cmd = process.executeCommand(new ServerInfoCommand(), false);
+            if (cmd.isExecuted()) {
+                if (cmd.getCurrentClients() == cmd.getCurrentSpectators()) {
+                    System.out.println("Pause Server: " + process.getId());
+                    PauseCommand pauseCommand = process.executeCommand(new PauseCommand(this.repository), false);
+                    if (pauseCommand.isExecuted()) {
+                        openttdServer.setPaused(true);
+                    }
+                } else {
+                    System.out.println("Unpause Server: " + process.getId());
+                    UnpauseCommand unpauseCommand = process.executeCommand(new UnpauseCommand(this.repository), false);
+                    if (unpauseCommand.isExecuted()) {
+                        openttdServer.setPaused(false);
+                    }
                 }
             }
         }
+
     }
 
     void handleTerminalUpdateEvent(OpenttdTerminalUpdateEvent openttdTerminalUpdateEvent) {

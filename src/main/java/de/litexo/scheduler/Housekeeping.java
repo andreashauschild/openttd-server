@@ -43,12 +43,12 @@ public class Housekeeping {
                 // oldest begins with index 0
                 List<ServerFile> autoSaveGames = openttdSaveGames.stream()
                         .filter(f -> f.getName().contains(server.getId()) && f.getName().contains(AUTO_SAVE_INFIX))
-                        .sorted(Comparator.comparingLong(ServerFile::getLastModified)).collect(Collectors.toList());
+                        .sorted(Comparator.comparingLong(ServerFile::getLastModified)).toList();
 
                 // oldest begins with index 0
                 List<ServerFile> manSaveGames = openttdSaveGames.stream()
                         .filter(f -> f.getName().contains(server.getId()) && f.getName().contains(MANUALLY_SAVE_INFIX))
-                        .sorted(Comparator.comparingLong(ServerFile::getLastModified)).collect(Collectors.toList());
+                        .sorted(Comparator.comparingLong(ServerFile::getLastModified)).toList();
 
                 if (autoSaveGames.size() > serverConfig.getNumberOfAutoSaveFilesToKeep()) {
                     List<ServerFile> toDelete = autoSaveGames.subList(0,autoSaveGames.size()- serverConfig.getNumberOfAutoSaveFilesToKeep());

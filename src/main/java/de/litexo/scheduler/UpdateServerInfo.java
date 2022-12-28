@@ -2,9 +2,7 @@ package de.litexo.scheduler;
 
 
 import de.litexo.OpenttdProcess;
-import de.litexo.commands.PauseCommand;
 import de.litexo.commands.ServerInfoCommand;
-import de.litexo.commands.UnpauseCommand;
 import de.litexo.events.EventBus;
 import de.litexo.events.OpenttdTerminalUpdateEvent;
 import de.litexo.model.external.OpenttdServer;
@@ -33,10 +31,10 @@ public class UpdateServerInfo {
     @PostConstruct
     void init() {
         System.out.println("INIT UpdateServerInfo Scheduler");
-        this.eventBus.observe(OpenttdTerminalUpdateEvent.class, this.getClass(), openttdTerminalUpdateEvent -> {
-            // Important execute this async because the subscriber is blocking the emitter of the event
-            executor.execute(() -> handleTerminalUpdateEvent(openttdTerminalUpdateEvent));
-        });
+        this.eventBus.observe(OpenttdTerminalUpdateEvent.class, this.getClass(), openttdTerminalUpdateEvent ->
+                // Important execute this async because the subscriber is blocking the emitter of the event
+                executor.execute(() -> handleTerminalUpdateEvent(openttdTerminalUpdateEvent))
+        );
     }
 
     @Scheduled(every = "120s")

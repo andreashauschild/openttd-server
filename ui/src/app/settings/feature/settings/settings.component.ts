@@ -59,7 +59,7 @@ export class SettingsComponent implements OnInit {
       this.api.updateOpenttdServerConfig({body: {password: this.adminFormGroup.value.newPassword!, oldPassword: this.adminFormGroup.value.oldPassword!}}).subscribe(
         {
           next: (v) => {
-            this.app.createInfoMessage("Password changed successfully!")
+            this.app.createInfoMessage("Password changed successfully!",3000)
           },
           error: (e: HttpErrorResponse) => {
             this.app.handleError(e);

@@ -30,8 +30,7 @@ public class ProcessOutputThread implements Runnable {
             }
             System.out.println("Finished: ProcessOutputThread");
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
         }
     }
 

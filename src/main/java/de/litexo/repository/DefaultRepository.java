@@ -24,7 +24,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static de.litexo.model.external.ServerFileType.CONFIG;
 import static de.litexo.model.external.ServerFileType.SAVE_GAME;
@@ -80,7 +79,7 @@ public class DefaultRepository {
             LOG.infof("oppenttd save game location: '%s'", this.openttdSaveDirPath.toFile().getAbsolutePath());
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ServiceRuntimeException(e);
         }
     }
 
@@ -124,9 +123,8 @@ public class DefaultRepository {
     public List<ServerFile> getOpenttdConfigs() {
         List<ServerFile> result = new ArrayList<>();
         try {
-            FileUtils.listFiles(this.openttdConfigDirPath.toFile(), null, false).forEach(f -> {
-                result.add(this.serverFile(f.getAbsolutePath(), CONFIG));
-            });
+            FileUtils.listFiles(this.openttdConfigDirPath.toFile(), null, false).forEach(f ->
+                    result.add(this.serverFile(f.getAbsolutePath(), CONFIG)));
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -140,7 +138,7 @@ public class DefaultRepository {
             Files.writeString(this.configFile, new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(serverData), StandardOpenOption.TRUNCATE_EXISTING);
             return getOpenttdServerConfig();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ServiceRuntimeException(e);
         }
     }
 
@@ -151,7 +149,7 @@ public class DefaultRepository {
             throwIfPortAllocated(server.getPort(), openttdServerData.getServers());
             openttdServerData.getServers().add(server);
             save(openttdServerData);
-            return getOpenttdServer(server.getId()).get();
+            return getOpenttdServer(server.getId()).orElse(null);
         } else {
             throw new ServiceRuntimeException("Can't add server. A server with id " + server.getId() + " already exists.");
         }
@@ -171,7 +169,7 @@ public class DefaultRepository {
         if (replaceIndex > -1) {
             OpenttdServer toUpdate = openttdServerData.getServers().get(replaceIndex);
             this.openttdServerMapper.patch(server, toUpdate);
-            throwIfPortAllocated(toUpdate.getPort(), openttdServerData.getServers().stream().filter(s -> !s.getId().equals(id)).collect(Collectors.toList()));
+            throwIfPortAllocated(toUpdate.getPort(), openttdServerData.getServers().stream().filter(s -> !s.getId().equals(id)).toList());
             openttdServerData.getServers().set(replaceIndex, toUpdate);
             save(openttdServerData);
             return getOpenttdServer(id).get();
@@ -182,7 +180,7 @@ public class DefaultRepository {
 
     public synchronized void deleteServer(String id) {
         InternalOpenttdServerConfig openttdServerData = getOpenttdServerConfig();
-        openttdServerData.setServers(openttdServerData.getServers().stream().filter(s -> !s.getId().equalsIgnoreCase(id)).collect(Collectors.toList()));
+        openttdServerData.setServers(openttdServerData.getServers().stream().filter(s -> !s.getId().equalsIgnoreCase(id)).toList());
         save(openttdServerData);
         if (Files.isDirectory(this.openttdConfigDirPath.resolve(id))) {
             FileUtils.deleteQuietly(this.openttdConfigDirPath.resolve(id).toFile());
@@ -202,10 +200,10 @@ public class DefaultRepository {
     public InternalOpenttdServerConfig getOpenttdServerConfig() {
         try {
             InternalOpenttdServerConfig openttdServerConfig = new ObjectMapper().readValue(this.configFile.toFile(), InternalOpenttdServerConfig.class);
-            openttdServerConfig.getServers().forEach(s -> updateServerFiles(s));
+            openttdServerConfig.getServers().forEach(this::updateServerFiles);
             return openttdServerConfig;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ServiceRuntimeException(e);
         }
     }
 
