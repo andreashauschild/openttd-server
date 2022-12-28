@@ -71,7 +71,7 @@ public class ProcessThread implements Runnable {
 
                         // Set length to 0 to clear string builder - don't create new one because threads holding a reference
                         this.console.setLength(0);
-                        this.eventBus.publish(new OpenttdTerminalUpdateEvent(ProcessThread.class, this.uuid, data));
+                        this.eventBus.publish(new OpenttdTerminalUpdateEvent(this, this.uuid, data));
                     }
 
                     // Quick solution to prevent out of memory if logs get to big

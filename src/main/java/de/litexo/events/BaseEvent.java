@@ -12,14 +12,14 @@ import lombok.ToString;
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
-public abstract class BaseEvent{
+public abstract class BaseEvent {
 
     private long created = System.currentTimeMillis();
 
     private final Class<? extends Object> clazz;
 
     protected BaseEvent(Object eventSource) {
-        this.clazz = ((Class) eventSource);
+        this.clazz = eventSource.getClass();
     }
 
     public String getSource() {
