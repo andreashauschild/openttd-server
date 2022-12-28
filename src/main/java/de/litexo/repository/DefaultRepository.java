@@ -91,7 +91,7 @@ public class DefaultRepository {
             FileUtils.listFiles(this.openttdSaveDirPath.toFile(), null, false).forEach(f -> {
                 ServerFile saveGame = this.serverFile(f.getAbsolutePath(), SAVE_GAME);
                 String serverId = saveGame.getName().split("_")[0];
-                servers.stream().filter(s->s.getId().startsWith(serverId)).findAny().ifPresent((s)->{
+                servers.stream().filter(s -> s.getId().startsWith(serverId)).findAny().ifPresent((s) -> {
                     saveGame.setOwnerId(s.getId());
                     saveGame.setOwnerName(s.getName());
                 });
@@ -106,7 +106,7 @@ public class DefaultRepository {
 
     public Optional<ServerFile> getSaveGame(String fileName) {
         Path savegame = this.openttdSaveDirPath.resolve(fileName);
-        if(Files.exists(savegame)){
+        if (Files.exists(savegame)) {
             return Optional.of(this.serverFile(savegame.toFile().getAbsolutePath(), SAVE_GAME));
         }
         return Optional.empty();
@@ -114,7 +114,7 @@ public class DefaultRepository {
 
     public Optional<ServerFile> getConfig(String fileName) {
         Path savegame = this.openttdConfigDirPath.resolve(fileName);
-        if(Files.exists(savegame)){
+        if (Files.exists(savegame)) {
             return Optional.of(this.serverFile(savegame.toFile().getAbsolutePath(), CONFIG));
         }
         return Optional.empty();
@@ -184,6 +184,9 @@ public class DefaultRepository {
         InternalOpenttdServerConfig openttdServerData = getOpenttdServerConfig();
         openttdServerData.setServers(openttdServerData.getServers().stream().filter(s -> !s.getId().equalsIgnoreCase(id)).collect(Collectors.toList()));
         save(openttdServerData);
+        if (Files.isDirectory(this.openttdConfigDirPath.resolve(id))) {
+            FileUtils.deleteQuietly(this.openttdConfigDirPath.resolve(id).toFile());
+        }
     }
 
 

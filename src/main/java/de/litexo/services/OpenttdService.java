@@ -214,7 +214,11 @@ public class OpenttdService {
 
     public void sendTerminalCommand(String id, String cmd) {
         if (this.processes.containsKey(id)) {
-            this.processes.get(id).getProcessThread().write(cmd);
+            if(cmd!=null && cmd.trim().equalsIgnoreCase("exit") || cmd.trim().equalsIgnoreCase("quit")){
+                this.stop(id);
+            }else{
+                this.processes.get(id).getProcessThread().write(cmd);
+            }
         }
     }
 

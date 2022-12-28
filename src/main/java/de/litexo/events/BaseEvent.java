@@ -19,7 +19,7 @@ public abstract class BaseEvent{
     private final Class<? extends Object> clazz;
 
     public BaseEvent(Object eventSource) {
-        this.clazz = eventSource.getClass();
+        this.clazz = ((Class) eventSource);
     }
 
     public String getSource() {
