@@ -25,10 +25,14 @@ public class ProccesInputThread implements Runnable {
         try {
             while (!stopped) {
                 if (!data.isEmpty()) {
-                    String dataValue = data.poll() + "\n";
-                    process.getOutputStream().write(dataValue.getBytes());
-                    process.getOutputStream().flush();
-                    console.append(dataValue + "\r\n");
+                    String dataValue = data.poll();
+                    if (dataValue != null) {
+                        dataValue += "\n";
+                        process.getOutputStream().write(dataValue.getBytes());
+                        process.getOutputStream().flush();
+                        console.append(dataValue + "\r\n");
+                    }
+
                 }
                 Thread.sleep(100);
             }
