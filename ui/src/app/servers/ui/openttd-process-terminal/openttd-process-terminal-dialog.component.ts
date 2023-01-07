@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnDestroy} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {interval, Subject, Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
 import {OpenttdProcess} from 'src/app/api/models';
@@ -7,6 +7,7 @@ import {selectProcesses, selectProcessUpdateEvent} from '../../../shared/store/s
 import {loadProcesses} from "../../../shared/store/actions/app.actions";
 import {MatDialogRef} from "@angular/material/dialog";
 import {ApplicationService} from '../../../shared/services/application.service';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'app-openttd-process-terminal',
@@ -52,12 +53,9 @@ export class OpenttdProcessTerminalDialogComponent implements AfterViewInit, OnD
       }
     }));
 
-    this.sub.add(this.store.select(selectProcessUpdateEvent).pipe().subscribe(events => {
-      if (this.openttdProcess) {
-        const result = events.find(e => e.processId === this.openttdProcess?.process?.processId)
-        if (result) {
-          this.consoleInput.next(result.text || "");
-        }
+    this.sub.add(this.store.select(selectProcessUpdateEvent).pipe(filter(e => e != null)).subscribe(event => {
+      if (this.openttdProcess && event && event!.processId === this.openttdProcess?.process?.processId) {
+        this.consoleInput.next(`${event.text}` || "");
       }
     }));
 
@@ -71,6 +69,7 @@ export class OpenttdProcessTerminalDialogComponent implements AfterViewInit, OnD
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
+    console.log("DESTORY TERMINAL")
 
   }
 }

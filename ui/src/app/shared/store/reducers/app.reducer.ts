@@ -23,16 +23,15 @@ export interface State {
   server?: OpenttdServer
   processes: OpenttdProcess[];
   files: ServerFile[];
-  processUpdateEvent: OpenttdTerminalUpdateEvent[];
+  processUpdateEvent?: OpenttdTerminalUpdateEvent;
   alerts: AppAlert[];
 }
 
 export const initialState: State = {
   servers: [],
   processes: [],
-  processUpdateEvent: [],
   files: [],
-  alerts: [],
+  alerts: []
 };
 
 export const reducer = createReducer(
@@ -50,24 +49,9 @@ export const reducer = createReducer(
   }),
 
   on(AppActions.processUpdateEvent, (state, action) => {
-
-    const event = state.processUpdateEvent.find((e) => action.event.processId === e.processId);
-    if (!event) {
-      return {
-        ...state,
-        processUpdateEvent: state.processUpdateEvent.concat(action.event)
-      }
-    } else {
-      return {
-        ...state,
-        processUpdateEvent: state.processUpdateEvent.map(e => {
-          if (e.processId !== action.event.processId) {
-            return e;
-          } else {
-            return action.event;
-          }
-        }) as OpenttdTerminalUpdateEvent[],
-      }
+    return {
+      ...state,
+      processUpdateEvent: action.event
     }
   }),
 

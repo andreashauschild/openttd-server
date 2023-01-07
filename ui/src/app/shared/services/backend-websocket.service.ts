@@ -20,22 +20,19 @@ export class BackendWebsocketService {
     })
 
     this.webSocket.onopen = (event) => {
-      console.log("onopen", event);
-      // this.store.dispatch(setAdminAuctionWebsocketState({src:AuctionWebsocketService.name,connected:true}))
+      // console.log("onopen", event);
     };
 
     this.webSocket.onerror = (event) => {
-      console.log("onerror", event);
+      // console.log("onerror", event);
 
     };
 
     this.webSocket.onclose = (event) => {
-      console.log("onclose", event);
-      // this.store.dispatch(setAdminAuctionWebsocketState({src:AuctionWebsocketService.name,connected:false}))
+      // console.log("onclose", event);
     };
 
     this.webSocket.onmessage = (event) => {
-      console.log(event)
       if (JSON.parse(event.data)?.ping) {
         console.log("received Ping", event);
       } else {
@@ -43,8 +40,6 @@ export class BackendWebsocketService {
         if (msg._type === "OpenttdTerminalUpdateEvent") {
           this.store.dispatch(processUpdateEvent({src: BackendWebsocketService.name, event: msg as OpenttdTerminalUpdateEvent}))
         }
-        // callback(JSON.parse(event.data) as AuctionPage)
-        // console.log("onmessage", event);
       }
 
     }

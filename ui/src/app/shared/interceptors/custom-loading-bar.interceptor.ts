@@ -4,6 +4,7 @@ import {HttpContextToken, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} 
 import {Observable} from 'rxjs';
 import {finalize, tap} from 'rxjs/operators';
 import {AuthResourceService} from "../../api/services/auth-resource.service";
+import {OpenttdServerResourceService} from '../../api/services/openttd-server-resource.service';
 
 export const NGX_LOADING_BAR_IGNORED = new HttpContextToken<boolean>(() => false);
 declare const ngDevMode: boolean;
@@ -31,8 +32,9 @@ export class CustomLoadingBarInterceptor implements HttpInterceptor {
 
     // Ignore loading bar if a specific url is requested
     if (
-      // ignore on keycloak token refresh
+      // ignore on auth and terminal check
       req.url.endsWith(AuthResourceService.ApiAuthVerifyLoginPostPath)
+      || req.url.endsWith(OpenttdServerResourceService.TerminalOpenInUiPath)
     ) {
       return next.handle(req);
     }
