@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-ARG OPENTTD_VERSION="12.2"
+ARG OPENTTD_VERSION="13.0"
 ARG OPENGFX_VERSION="0.6.1"
 
 RUN apt-get update
@@ -27,24 +27,51 @@ ENV JAVA_HOME ${JVM_DIR}/java-17-openjdk-x64
 
 ENV PATH=$PATH:$HOME/bin:$JAVA_HOME/bin
 
-COPY src/main/docker/prepare.sh /tmp/prepare.sh
 COPY src/main/docker/cleanup.sh /tmp/cleanup.sh
 COPY src/main/docker/buildconfig /tmp/buildconfig
 COPY --chown=1000:1000 src/main/docker/openttd.sh /openttd.sh
 
-RUN dos2unix /tmp/prepare.sh
 RUN dos2unix /tmp/cleanup.sh
 RUN dos2unix /tmp/buildconfig
 RUN dos2unix /openttd.sh
 
-RUN chmod +x /tmp/prepare.sh /tmp/cleanup.sh /openttd.sh
-RUN /tmp/prepare.sh
+RUN chmod +x /tmp/cleanup.sh /openttd.sh
+
+RUN apt update -qq
+RUN apt install -yqq --no-install-recommends -o DPkg::Options::=--force-confold -o DPkg::Options::=--force-confdef dumb-init wget unzip ca-certificates libfontconfig1 libfreetype6 libfluidsynth2 libicu-dev libpng16-16 liblzma-dev liblzo2-2 libsdl1.2debian libsdl2-2.0-0 xz-utils > /dev/null 2>&1
+
+
+## Create user
+RUN adduser --uid 1000 --shell /bin/bash --gecos "" openttd
+RUN addgroup openttd users
+RUN passwd -d openttd
+
+USER openttd
+WORKDIR /home/openttd
+RUN wget https://cdn.openttd.org/openttd-releases/13.0/openttd-13.0-linux-generic-amd64.tar.xz
+RUN wget https://cdn.openttd.org/opengfx-releases/7.1/opengfx-7.1-all.zip
+
+RUN tar -xf openttd-13.0-linux-generic-amd64.tar.xz
+
+RUN mkdir openttd-13
+RUN cp -a openttd-13.0-linux-generic-amd64/. openttd-13
+
+RUN unzip opengfx-7.1-all.zip
+RUN tar -xf opengfx-7.1.tar -C openttd-13/baseset/
+
+RUN rm -rf opengfx-*.tar opengfx-*.zip openttd-13.0*
+    ## Set entrypoint script to right user
+RUN chmod +x /openttd.sh
+
+
+
+USER root
 RUN /tmp/cleanup.sh
 
 RUN mkdir /home/openttd/server
 RUN chown 1000:1000 /home/openttd/server
 
-VOLUME /home/openttd/server
+VOLUME /home/openttd
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 

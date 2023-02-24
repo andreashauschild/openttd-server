@@ -84,7 +84,7 @@ public class SecurityService {
                 return "basic";
             }
         });
-        LOG.infof("User '%s' logged in");
+        LOG.infof("User '%s' logged in",basicAuthSession.getUser());
         this.sessions.put(basicAuthSession.getSessionId(), basicAuthSession);
         return Optional.of(basicAuthSession);
     }

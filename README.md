@@ -28,9 +28,10 @@ It provides the following features:
 # Versions
 The following table shows which docker image contains which OpenTTD version. For now, I will only support final versions (no beta).
 
-| Container                       | OpenTTD |
-|---------------------------------|---------|
-| hauschi86/openttd-server:latest | 12.2    |
+| Container                        | OpenTTD |
+|----------------------------------|---------|
+| hauschi86/openttd-server:latest  | 13.0    |
+| hauschi86/openttd-server:v13.0.0 | 13.0    |
 | hauschi86/openttd-server:v12.2.2 | 12.2    |
 
 
@@ -67,6 +68,7 @@ For the container to work you need to expose at least 2 ports. The port `8080` f
 
 # File Locations
 All data and uploads within the container are saved in the `/home/openttd/server` directory.
+Opentdd is installed on `/home/openttd/openttd-<version>` directory.
 
 # Setup
 When you start the Docker container for the OpenTTD server for the first time, it will log the password for the admin login. See fragment below.
