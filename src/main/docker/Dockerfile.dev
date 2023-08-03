@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
-ARG OPENTTD_VERSION="13.0"
-ARG OPENGFX_VERSION="0.6.1"
+ARG OPENTTD_VERSION="13.4"
+ARG OPENGFX_VERSION="0.7.1"
 
 RUN apt-get update
 RUN apt-get install dos2unix
@@ -48,13 +48,13 @@ RUN passwd -d openttd
 
 USER openttd
 WORKDIR /home/openttd
-RUN wget https://cdn.openttd.org/openttd-releases/13.0/openttd-13.0-linux-generic-amd64.tar.xz
+RUN wget https://cdn.openttd.org/openttd-releases/13.4/openttd-13.4-linux-generic-amd64.tar.xz
 RUN wget https://cdn.openttd.org/opengfx-releases/7.1/opengfx-7.1-all.zip
 
-RUN tar -xf openttd-13.0-linux-generic-amd64.tar.xz
+RUN tar -xf openttd-13.4-linux-generic-amd64.tar.xz
 
 RUN mkdir openttd-13
-RUN cp -a openttd-13.0-linux-generic-amd64/. openttd-13
+RUN cp -a openttd-13.4-linux-generic-amd64/. openttd-13
 
 RUN unzip opengfx-7.1-all.zip
 RUN tar -xf opengfx-7.1.tar -C openttd-13/baseset/
