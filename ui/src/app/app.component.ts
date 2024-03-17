@@ -27,6 +27,11 @@ export class AppComponent implements OnInit {
         path: "/settings",
         title: "Settings"
       },
+      {
+        icon: 'folder_copy',
+        path: "/explorer",
+        title: "File-Explorer"
+      },
     ]
   }
 

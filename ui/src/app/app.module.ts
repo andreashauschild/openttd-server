@@ -19,6 +19,8 @@ import {DatePipe} from '@angular/common';
 import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";
 import {CustomLoadingBarInterceptor} from "./shared/interceptors/custom-loading-bar.interceptor";
 import {LoadingBarModule} from "@ngx-loading-bar/core";
+import {DataService, INode, NAME_FUNCTION} from 'ngx-explorer';
+import {FileExplorerDataService} from './servers/feature/file-explorer/file-explorer/file-explorer-data.service';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,7 @@ import {LoadingBarModule} from "@ngx-loading-bar/core";
       //     //terminalUpdateEvent.name
       //   ]
       // }
-    {connectInZone: true}) : [],
+      {connectInZone: true}) : [],
     SidebarLayoutModule,
     AppNotificationsModule,
     MatSnackBarModule,
@@ -51,6 +53,14 @@ import {LoadingBarModule} from "@ngx-loading-bar/core";
       useClass: CustomLoadingBarInterceptor,
       multi: true,
     },
+    {
+      provide: DataService,
+      useClass: FileExplorerDataService
+    },
+    {
+      provide: NAME_FUNCTION,
+      useValue: (node: INode) => node.data['name'],
+    }
   ],
   bootstrap: [AppComponent]
 })

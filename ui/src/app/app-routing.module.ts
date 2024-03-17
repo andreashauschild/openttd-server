@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {AuthGuard} from './shared/guards/auth.guard';
+import {FileExplorerComponent} from './servers/feature/file-explorer/file-explorer/file-explorer.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,11 @@ const routes: Routes = [
     canActivate:[AuthGuard],
     loadChildren: () =>
       import('./settings/feature/settings/settings.module').then((m) => m.SettingsModule),
+  },
+  {
+    path: 'explorer',
+    canActivate:[AuthGuard],
+    component:FileExplorerComponent
   },
   {
     path: 'login',
