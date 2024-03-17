@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges
 import {FormControl} from '@angular/forms';
 import {Observable, tap} from 'rxjs';
 import {filter, map, startWith} from 'rxjs/operators';
-import {MatLegacyAutocompleteSelectedEvent as MatAutocompleteSelectedEvent} from "@angular/material/legacy-autocomplete";
+import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
 import {ServerFile} from '../../../api/models/server-file';
 import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
 import {saveData} from '../../services/utils.service';

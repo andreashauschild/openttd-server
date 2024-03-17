@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Actions, ofType} from "@ngrx/effects";
-import {MatLegacyDialog as MatDialog} from "@angular/material/legacy-dialog";
+import {MatDialog} from "@angular/material/dialog";
 import * as AppActions from '../../../shared/store/actions/app.actions';
 import {loadProcesses, loadServer} from '../../../shared/store/actions/app.actions';
 import {CreateServerDialogComponent} from '../../ui/create-server-dialog/create-server-dialog.component';
