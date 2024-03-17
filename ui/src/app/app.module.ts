@@ -38,7 +38,7 @@ import {LoadingBarModule} from "@ngx-loading-bar/core";
       //     //terminalUpdateEvent.name
       //   ]
       // }
-    ) : [],
+    {connectInZone: true}) : [],
     SidebarLayoutModule,
     AppNotificationsModule,
     MatSnackBarModule,
