@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {createAlert, removeAlert} from '../store/actions/app.actions';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
 import {AppNotificationsComponent} from '../ui/app-notifications/app-notifications.component';
 import {HttpErrorResponse} from '@angular/common/http';
 import {ServiceError} from '../../api/models/service-error';

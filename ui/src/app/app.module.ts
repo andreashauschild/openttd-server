@@ -13,7 +13,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpAuthInterceptor} from './shared/interceptors/http-auth-interceptor';
 import {SidebarLayoutModule} from './shared/ui/sidebar-layout/sidebar-layout.module';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatLegacySnackBarModule as MatSnackBarModule} from '@angular/material/legacy-snack-bar';
 import {AppNotificationsModule} from './shared/ui/app-notifications/app-notifications.module';
 import {DatePipe} from '@angular/common';
 import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";

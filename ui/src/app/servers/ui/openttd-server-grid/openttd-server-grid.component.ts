@@ -10,7 +10,7 @@ import {
 } from 'src/app/shared/store/actions/app.actions';
 import {OpenttdServer} from '../../../api/models/openttd-server';
 import {selectServers} from '../../../shared/store/selectors/app.selectors';
-import {MatDialog} from "@angular/material/dialog";
+import {MatLegacyDialog as MatDialog} from "@angular/material/legacy-dialog";
 import {OpenttdProcessTerminalDialogComponent} from "../openttd-process-terminal/openttd-process-terminal-dialog.component";
 
 @Component({

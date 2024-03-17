@@ -6,7 +6,7 @@ import {Store} from "@ngrx/store";
 import {ServerFileType} from "../../../api/models/server-file-type";
 import {addServer, loadServerFiles} from '../../../shared/store/actions/app.actions';
 import {selectFiles} from '../../../shared/store/selectors/app.selectors';
-import {MatDialogRef} from '@angular/material/dialog';
+import {MatLegacyDialogRef as MatDialogRef} from '@angular/material/legacy-dialog';
 
 @Component({
   selector: 'app-create-server-dialog',

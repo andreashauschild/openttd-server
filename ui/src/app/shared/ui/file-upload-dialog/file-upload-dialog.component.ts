@@ -13,7 +13,7 @@ import {
 } from '@andreashauschild/just-upload';
 import {environment} from 'src/environments/environment';
 import {ServerFileType} from '../../../api/models/server-file-type';
-import {MatDialogRef} from '@angular/material/dialog';
+import {MatLegacyDialogRef as MatDialogRef} from '@angular/material/legacy-dialog';
 
 
 @Component({

@@ -5,7 +5,7 @@ import {OpenttdProcess} from 'src/app/api/models';
 import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
 import {selectProcesses, selectProcessUpdateEvent} from '../../../shared/store/selectors/app.selectors';
 import {loadProcesses} from "../../../shared/store/actions/app.actions";
-import {MatDialogRef} from "@angular/material/dialog";
+import {MatLegacyDialogRef as MatDialogRef} from "@angular/material/legacy-dialog";
 import {ApplicationService} from '../../../shared/services/application.service';
 import {filter} from 'rxjs/operators';
 
