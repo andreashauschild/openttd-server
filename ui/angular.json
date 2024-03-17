@@ -73,10 +73,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "openttd-server-ui:build:production"
+              "buildTarget": "openttd-server-ui:build:production"
             },
             "development": {
-              "browserTarget": "openttd-server-ui:build:development"
+              "buildTarget": "openttd-server-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -84,7 +84,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "openttd-server-ui:build"
+            "buildTarget": "openttd-server-ui:build"
           }
         },
         "test": {
