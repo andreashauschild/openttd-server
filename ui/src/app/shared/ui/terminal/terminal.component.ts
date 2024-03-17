@@ -81,12 +81,12 @@ export class TerminalComponent implements OnInit, AfterViewInit {
       if (this.terminalControl) {
         this.terminalControl.subscribe(cmd => {
           if (cmd === "clear") {
-            this.child?.underlying.clear();
+            this.child?.underlying!.clear();
           }
         })
       }
       this.underlying = this.child.underlying;
-      this.underlying.options.fontSize = 20;
+      this.underlying!.options.fontSize = 20;
       console.debug("example: font apply");
       this.invalidate();
 
@@ -104,7 +104,7 @@ export class TerminalComponent implements OnInit, AfterViewInit {
           if (this.unsendCommand.length >= 0) {
             this.unsendCommand = this.unsendCommand.substring(0, this.unsendCommand.length - 1);
           }
-          if (this.child!.underlying.buffer.active.cursorX > 0) {
+          if (this.child!.underlying!.buffer.active.cursorX > 0) {
             this.child!.write('\b \b');
           }
         } else if (input === '\u0003') { // End of Text (When Ctrl and C are pressed)
