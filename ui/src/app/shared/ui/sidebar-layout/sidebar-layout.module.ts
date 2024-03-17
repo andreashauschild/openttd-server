@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarLayoutComponent } from './sidebar-layout.component';
 import {MatIconModule} from '@angular/material/icon';
-import {RouterLinkWithHref} from '@angular/router';
+import {RouterLink} from '@angular/router';
 
 
 
@@ -17,7 +17,7 @@ import {RouterLinkWithHref} from '@angular/router';
   imports: [
     CommonModule,
     MatIconModule,
-    RouterLinkWithHref
+    RouterLink
   ]
 })
 export class SidebarLayoutModule { }
