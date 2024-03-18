@@ -16,11 +16,10 @@ import {SidebarLayoutModule} from './shared/ui/sidebar-layout/sidebar-layout.mod
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {AppNotificationsModule} from './shared/ui/app-notifications/app-notifications.module';
 import {DatePipe} from '@angular/common';
-import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";
 import {CustomLoadingBarInterceptor} from "./shared/interceptors/custom-loading-bar.interceptor";
 import {LoadingBarModule} from "@ngx-loading-bar/core";
 import {DataService, INode, NAME_FUNCTION} from 'ngx-explorer';
-import {FileExplorerDataService} from './servers/feature/file-explorer/file-explorer/file-explorer-data.service';
+import {FileExplorerDataService} from './file-explorer/file-explorer/file-explorer-data.service';
 
 @NgModule({
   declarations: [

@@ -3,7 +3,7 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import * as AppActions from '../actions/app.actions'
 import {
   addServerSuccess,
-  deleteServerSuccess,
+  deleteServerSuccess, loadExplorerDataSuccess,
   loadProcessesSuccess,
   loadServerConfigSuccess,
   loadServerFilesSuccess,
@@ -17,10 +17,11 @@ import {catchError, EMPTY, mergeMap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
 import {ApplicationService} from '../../services/application.service';
+import {FileExplorerResourceService} from '../../../api/services/file-explorer-resource.service';
 
 @Injectable()
 export class AppEffects {
-  constructor(private app: ApplicationService, private actions$: Actions, private service: OpenttdServerResourceService) {
+  constructor(private app: ApplicationService, private actions$: Actions, private service: OpenttdServerResourceService, private explorer: FileExplorerResourceService) {
   }
 
 
@@ -46,6 +47,21 @@ export class AppEffects {
       mergeMap((a) => this.service.getOpenttdServerConfig()
         .pipe(
           map(config => loadServerConfigSuccess({src: AppEffects.name, config})),
+          catchError((err) => {
+            this.app.handleError(err);
+            return EMPTY;
+          })
+        )
+      )
+    );
+  });
+
+  loadExplorerData = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.loadExplorerData),
+      mergeMap((a) => this.explorer.explorerList()
+        .pipe(
+          map(data => loadExplorerDataSuccess({src: AppEffects.name, data})),
           catchError((err) => {
             this.app.handleError(err);
             return EMPTY;
@@ -147,9 +163,9 @@ export class AppEffects {
         .pipe(
           map(server => {
             if (server.paused) {
-              this.app.createInfoMessage("Server paused!",2000)
+              this.app.createInfoMessage("Server paused!", 2000)
             } else {
-              this.app.createInfoMessage("Server unpaused!",2000)
+              this.app.createInfoMessage("Server unpaused!", 2000)
             }
             return pauseUnpauseServerSuccess({src: AppEffects.name, server})
           }),

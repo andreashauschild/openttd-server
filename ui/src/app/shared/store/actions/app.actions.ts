@@ -6,6 +6,7 @@ import {ServerFile} from '../../../api/models/server-file';
 import {AppAlert} from '../reducers/app.reducer';
 import {OpenttdServerConfigGet} from '../../../api/models/openttd-server-config-get';
 import {OpenttdServerConfigUpdate} from '../../../api/models/openttd-server-config-update';
+import {ExplorerData} from '../../../api/models/explorer-data';
 
 export const createAlert = createAction('[App] Creates an alert', props<{ src: string; alert: AppAlert }>());
 
@@ -112,4 +113,12 @@ export const loadServerFiles = createAction(
 
 export const loadServerFilesSuccess = createAction(
   '[App] loadServerFilesSuccess', props<{ src: string, files: ServerFile[] }>()
+);
+
+export const loadExplorerData = createAction(
+  '[App] loadExplorerData', props<{ src: string }>()
+);
+
+export const loadExplorerDataSuccess = createAction(
+  '[App] loadExplorerDataSuccess', props<{ src: string, data: ExplorerData }>()
 );

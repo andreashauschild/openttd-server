@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {RP_ID} from '../../../shared/model/constants';
-import {FileExplorerComponent} from '../file-explorer/file-explorer/file-explorer.component';
 
 
 const routes: Routes = [

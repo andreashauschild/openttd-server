@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {AuthGuard} from './shared/guards/auth.guard';
-import {FileExplorerComponent} from './servers/feature/file-explorer/file-explorer/file-explorer.component';
+import {FileExplorerComponent} from './file-explorer/file-explorer/file-explorer.component';
 
 const routes: Routes = [
   {

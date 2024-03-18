@@ -13,6 +13,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import 'ngx-explorer/src/assets/icons/css/nxe.css';
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
