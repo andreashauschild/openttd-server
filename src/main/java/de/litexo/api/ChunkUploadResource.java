@@ -59,23 +59,30 @@ public class ChunkUploadResource {
      */
     @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public Response add(@QueryParam("type") ServerFileType type, @QueryParam("fileName") String fileName,
+    public Response add(@QueryParam("type") ServerFileType type, @QueryParam("targetDir") String targetDir, @QueryParam("fileName") String fileName,
                         @QueryParam("offset") int offset, @QueryParam("fileSize") int size, byte[] chunk,
                         @Context HttpRequest request) throws IOException {
         System.out.println(String.format("name: %s from:%s to:%s size:%s Auth:Header %s"
                 , fileName, offset, offset + chunk.length, size, request.getHttpHeaders().getHeaderString(HttpHeaders.AUTHORIZATION)));
 
-        if (appendWrite(type, fileName, size, offset, chunk)) {
+        if (appendWrite(type, targetDir,fileName, size, offset, chunk)) {
             return Response.status(201).build();
         }
         return Response.ok().build();
     }
 
-    private boolean appendWrite(ServerFileType type, String fileName, int size, int offset, byte[] chunk) throws IOException {
+    private boolean appendWrite(ServerFileType type,String targetDir, String fileName, int size, int offset, byte[] chunk) throws IOException {
         Path upload = null;
         switch (type) {
             case CONFIG -> upload = configDir.resolve(fileName);
             case SAVE_GAME -> upload = saveDir.resolve(fileName);
+            case ANY -> {
+                if(targetDir==null){
+                    throw new ServiceRuntimeException("Target dir must be set on upload of ANY type");
+                }
+                upload = Paths.get(targetDir).resolve(fileName);
+
+            }
             default -> throw new ServiceRuntimeException("Unknown file type for upload");
 
         }

@@ -54,6 +54,10 @@ paths:
         schema:
           format: int32
           type: integer
+      - name: targetDir
+        in: query
+        schema:
+          type: string
       - name: type
         in: query
         schema:
@@ -809,6 +813,7 @@ components:
     ServerFileType:
       enum:
       - SAVE_GAME
+      - ANY
       - CONFIG
       type: string
     ServiceError:

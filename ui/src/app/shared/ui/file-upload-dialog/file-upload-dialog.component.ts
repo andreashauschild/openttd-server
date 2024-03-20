@@ -32,6 +32,9 @@ export class FileUploadDialogComponent implements AfterViewInit {
   @Input()
   fileType: ServerFileType | undefined;
 
+  @Input()
+  targetDir: string | undefined;
+
   @ViewChild("fileUpload", {static: false})
   fileUpload: ElementRef | undefined;
 
@@ -60,6 +63,7 @@ export class FileUploadDialogComponent implements AfterViewInit {
 
   private init(): void {
     var fileType = this.fileType;
+    var targetDir = this.targetDir || '';
     this.config = {
       url: `${environment.baseUrl}/api/chunk-upload`,
       method: "POST",
@@ -74,6 +78,7 @@ export class FileUploadDialogComponent implements AfterViewInit {
         // Add query parameter to the post request
         const params: RequestParams = {
           query: {
+            targetDir,
             type: fileType!.toString(),
             offset: chunk.chunk.offset.toString(),
             fileSize: chunk.uploadFile.size.toString(),

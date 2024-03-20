@@ -54,7 +54,7 @@ import {FileExplorerDataService} from './file-explorer/file-explorer/file-explor
     },
     {
       provide: DataService,
-      useClass: FileExplorerDataService
+      useExisting: FileExplorerDataService
     },
     {
       provide: NAME_FUNCTION,

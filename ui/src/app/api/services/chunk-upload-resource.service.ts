@@ -37,6 +37,7 @@ export class ChunkUploadResourceService extends BaseService {
     fileName?: string;
     fileSize?: number;
     offset?: number;
+    targetDir?: string;
     type?: ServerFileType;
     context?: HttpContext
     body?: Blob
@@ -48,6 +49,7 @@ export class ChunkUploadResourceService extends BaseService {
       rb.query('fileName', params.fileName, {});
       rb.query('fileSize', params.fileSize, {});
       rb.query('offset', params.offset, {});
+      rb.query('targetDir', params.targetDir, {});
       rb.query('type', params.type, {});
       rb.body(params.body, 'application/octet-stream');
     }
@@ -74,6 +76,7 @@ export class ChunkUploadResourceService extends BaseService {
     fileName?: string;
     fileSize?: number;
     offset?: number;
+    targetDir?: string;
     type?: ServerFileType;
     context?: HttpContext
     body?: Blob
