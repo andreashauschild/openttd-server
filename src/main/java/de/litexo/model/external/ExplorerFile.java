@@ -12,6 +12,7 @@ public class ExplorerFile {
     String id;
     String name;
     String absolutePath;
+    String relativePath;
     String baseName;
     String extension;
 }

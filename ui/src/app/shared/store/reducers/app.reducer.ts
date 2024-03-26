@@ -22,7 +22,7 @@ export interface State {
   config?: OpenttdServerConfigGet
   servers: OpenttdServer[]
   server?: OpenttdServer
-  explorer?:ExplorerData
+  explorer?: ExplorerData
   processes: OpenttdProcess[];
   files: ServerFile[];
   processUpdateEvent?: OpenttdTerminalUpdateEvent;
@@ -38,26 +38,26 @@ export const initialState: State = {
 
 export const reducer = createReducer(
   initialState,
-  on(AppActions.createAlert, (state, action):State  => {
+  on(AppActions.createAlert, (state, action): State => {
     const newState = {...state, alerts: state.alerts.concat()};
     newState.alerts.push(action.alert);
     return newState;
   }),
-  on(AppActions.removeAlert, (state, action):State  => {
+  on(AppActions.removeAlert, (state, action): State => {
     return {
       ...state,
       alerts: state.alerts.filter((a) => a.id !== action.alertId),
     };
   }),
 
-  on(AppActions.processUpdateEvent, (state, action):State  => {
+  on(AppActions.processUpdateEvent, (state, action): State => {
     return {
       ...state,
       processUpdateEvent: action.event
     }
   }),
 
-  on(AppActions.loadProcessesSuccess, (state, action):State  => {
+  on(AppActions.loadProcessesSuccess, (state, action): State => {
 
 
     return {
@@ -67,7 +67,7 @@ export const reducer = createReducer(
 
   }),
 
-  on(AppActions.loadServerFilesSuccess, (state, action):State  => {
+  on(AppActions.loadServerFilesSuccess, (state, action): State => {
 
 
     return {
@@ -77,7 +77,7 @@ export const reducer = createReducer(
 
   }),
 
-  on(AppActions.loadServerConfigSuccess, AppActions.patchServerConfigSuccess, (state, action):State  => {
+  on(AppActions.loadServerConfigSuccess, AppActions.patchServerConfigSuccess, (state, action): State => {
     return {
       ...state,
       config: action.config,
@@ -85,14 +85,15 @@ export const reducer = createReducer(
 
     }
   }),
-  on(AppActions.loadExplorerDataSuccess, (state:State, action):State => {
-    return {
-      ...state,
-      explorer: action.data,
-    }
-  }),
+  on(AppActions.loadExplorerDataSuccess, AppActions.deleteExplorerFileSuccess
+    , AppActions.createExplorerDirSuccess, AppActions.renameExplorerFileSuccess, (state: State, action): State => {
+      return {
+        ...state,
+        explorer: action.data,
+      }
+    }),
 
-  on(AppActions.addServerSuccess, (state, action):State  => {
+  on(AppActions.addServerSuccess, (state, action): State => {
     return {
       ...state,
       servers: state.servers.concat(action.server)
@@ -100,7 +101,7 @@ export const reducer = createReducer(
   }),
 
   on(AppActions.updateServerSuccess, AppActions.startServerSuccess, AppActions.loadServerSuccess
-    , AppActions.stopServerSuccess, AppActions.pauseUnpauseServerSuccess, (state, action):State  => {
+    , AppActions.stopServerSuccess, AppActions.pauseUnpauseServerSuccess, (state, action): State => {
       return {
         ...state,
         server: action.server,
@@ -113,7 +114,7 @@ export const reducer = createReducer(
       }
     }),
 
-  on(AppActions.deleteServerSuccess, (state, action):State  => {
+  on(AppActions.deleteServerSuccess, (state, action): State => {
     return {
       ...state,
       servers: state.servers.filter(s => {
@@ -122,7 +123,7 @@ export const reducer = createReducer(
     }
   }),
 
-  on(AppActions.startServerSuccess, (state, action):State  => {
+  on(AppActions.startServerSuccess, (state, action): State => {
     return {
       ...state,
       processes: state.processes.concat(action.server.process!)

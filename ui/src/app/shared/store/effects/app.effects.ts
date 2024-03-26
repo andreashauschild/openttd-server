@@ -2,13 +2,13 @@ import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import * as AppActions from '../actions/app.actions'
 import {
-  addServerSuccess,
+  addServerSuccess, createExplorerDir, createExplorerDirSuccess, deleteExplorerFile, deleteExplorerFileSuccess,
   deleteServerSuccess, loadExplorerDataSuccess,
   loadProcessesSuccess,
   loadServerConfigSuccess,
   loadServerFilesSuccess,
   loadServerSuccess,
-  patchServerConfigSuccess, pauseUnpauseServerSuccess,
+  patchServerConfigSuccess, pauseUnpauseServerSuccess, renameExplorerFile, renameExplorerFileSuccess,
   saveServerSuccess,
   startServerSuccess, stopServerSuccess,
   updateServerSuccess
@@ -70,6 +70,52 @@ export class AppEffects {
       )
     );
   });
+
+  deleteExplorerFile = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.deleteExplorerFile),
+      mergeMap((a) => this.explorer.deleteFile({file:a.relativePath})
+        .pipe(
+          map(data => deleteExplorerFileSuccess({src: AppEffects.name, data})),
+          catchError((err) => {
+            this.app.handleError(err);
+            return EMPTY;
+          })
+        )
+      )
+    );
+  });
+
+  createExplorerDir = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.createExplorerDir),
+      mergeMap((a) => this.explorer.createDirectory({dir:a.relativeDirPath})
+        .pipe(
+          map(data => createExplorerDirSuccess({src: AppEffects.name, data})),
+          catchError((err) => {
+            this.app.handleError(err);
+            return EMPTY;
+          })
+        )
+      )
+    );
+  });
+
+  renameExplorerFile = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.renameExplorerFile),
+      mergeMap((a) => this.explorer.renameFile({file:a.relativePath,newName:a.newName})
+        .pipe(
+          map(data => renameExplorerFileSuccess({src: AppEffects.name, data})),
+          catchError((err) => {
+            this.app.handleError(err);
+            return EMPTY;
+          })
+        )
+      )
+    );
+  });
+
 
   patchServerConfig = createEffect(() => {
     return this.actions$.pipe(

@@ -2,6 +2,6 @@
 /* eslint-disable */
 export enum ServerFileType {
   SaveGame = 'SAVE_GAME',
-  Any = 'ANY',
+  OpenttdRoot = 'OPENTTD_ROOT',
   Config = 'CONFIG'
 }

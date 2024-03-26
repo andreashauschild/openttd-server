@@ -184,6 +184,82 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ExplorerData'
+  /api/openttd-server/explorer/directory:
+    post:
+      tags:
+      - File Explorer Resource
+      operationId: createDirectory
+      parameters:
+      - name: dir
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplorerData'
+  /api/openttd-server/explorer/download:
+    get:
+      tags:
+      - File Explorer Resource
+      operationId: downloadFile
+      parameters:
+      - name: downloadName
+        in: query
+        schema:
+          type: string
+      - name: fileName
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: object
+  /api/openttd-server/explorer/file:
+    delete:
+      tags:
+      - File Explorer Resource
+      operationId: deleteFile
+      parameters:
+      - name: file
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplorerData'
+  /api/openttd-server/explorer/rename:
+    post:
+      tags:
+      - File Explorer Resource
+      operationId: renameFile
+      parameters:
+      - name: file
+        in: query
+        schema:
+          type: string
+      - name: newName
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplorerData'
   /api/openttd-server/exportModel:
     get:
       tags:
@@ -594,6 +670,8 @@ components:
     ExplorerData:
       type: object
       properties:
+        root:
+          type: string
         fileSeperator:
           type: string
         directories:
@@ -609,6 +687,8 @@ components:
           type: string
         absolutePath:
           type: string
+        relativePath:
+          type: string
         files:
           type: array
           items:
@@ -621,6 +701,8 @@ components:
         name:
           type: string
         absolutePath:
+          type: string
+        relativePath:
           type: string
         baseName:
           type: string
@@ -813,7 +895,7 @@ components:
     ServerFileType:
       enum:
       - SAVE_GAME
-      - ANY
+      - OPENTTD_ROOT
       - CONFIG
       type: string
     ServiceError:

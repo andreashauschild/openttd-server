@@ -28,14 +28,19 @@ public class ChunkUploadResource {
     @ConfigProperty(name = "openttd.config.dir")
     String openttdConfigDir;
 
+    @ConfigProperty(name = "openttd.root.dir")
+    String openttdRootDir;
+
     Path configDir;
 
     Path saveDir;
+    Path openttdRoot;
 
     @PostConstruct
     void init() throws IOException {
         this.configDir = initDir(this.openttdConfigDir);
         this.saveDir = initDir(this.openttdSaveDir);
+        this.openttdRoot = initDir(this.openttdRootDir);
     }
 
     private Path initDir(String path) throws IOException {
@@ -74,13 +79,13 @@ public class ChunkUploadResource {
     private boolean appendWrite(ServerFileType type,String targetDir, String fileName, int size, int offset, byte[] chunk) throws IOException {
         Path upload = null;
         switch (type) {
-            case CONFIG -> upload = configDir.resolve(fileName);
-            case SAVE_GAME -> upload = saveDir.resolve(fileName);
-            case ANY -> {
+            case CONFIG -> upload = configDir.resolve(fileName).normalize();
+            case SAVE_GAME -> upload = saveDir.resolve(fileName).normalize();
+            case OPENTTD_ROOT -> {
                 if(targetDir==null){
                     throw new ServiceRuntimeException("Target dir must be set on upload of ANY type");
                 }
-                upload = Paths.get(targetDir).resolve(fileName);
+                upload = this.openttdRoot.resolve(targetDir).resolve(fileName).normalize();
 
             }
             default -> throw new ServiceRuntimeException("Unknown file type for upload");

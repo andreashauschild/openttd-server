@@ -12,5 +12,6 @@ public class ExplorerDirectory {
     String id;
     String name;
     String absolutePath;
+    String relativePath;
     List<ExplorerFile> files = new ArrayList<>();
 }

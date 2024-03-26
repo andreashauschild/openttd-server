@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 public class ExplorerData {
+    String root;
     String fileSeperator;
     List<ExplorerDirectory> directories = new ArrayList<>();
 }

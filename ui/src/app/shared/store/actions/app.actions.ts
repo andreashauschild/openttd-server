@@ -42,7 +42,7 @@ export const addServerSuccess = createAction(
 );
 
 export const updateServer = createAction(
-  '[App] updateServer', props<{ src: string; id:string, server: OpenttdServer }>()
+  '[App] updateServer', props<{ src: string; id: string, server: OpenttdServer }>()
 );
 
 export const updateServerSuccess = createAction(
@@ -70,7 +70,7 @@ export const pauseUnpauseServer = createAction(
 );
 
 export const pauseUnpauseServerSuccess = createAction(
-  '[App] pauseUnpauseServerSuccess', props<{ src: string, server: OpenttdServer}>()
+  '[App] pauseUnpauseServerSuccess', props<{ src: string, server: OpenttdServer }>()
 );
 
 export const saveServer = createAction(
@@ -82,7 +82,7 @@ export const saveServerSuccess = createAction(
 );
 
 export const startServer = createAction(
-  '[App] startServer', props<{ src: string; id: string}>()
+  '[App] startServer', props<{ src: string; id: string }>()
 );
 
 export const startServerSuccess = createAction(
@@ -121,4 +121,28 @@ export const loadExplorerData = createAction(
 
 export const loadExplorerDataSuccess = createAction(
   '[App] loadExplorerDataSuccess', props<{ src: string, data: ExplorerData }>()
+);
+
+export const deleteExplorerFile = createAction(
+  '[App] deleteExplorerFile', props<{ src: string, relativePath: string }>()
+);
+
+export const deleteExplorerFileSuccess = createAction(
+  '[App] deleteExplorerFileSuccess', props<{ src: string, data: ExplorerData }>()
+);
+
+export const createExplorerDir = createAction(
+  '[App] createExplorerDir', props<{ src: string, relativeDirPath: string }>()
+);
+
+export const createExplorerDirSuccess = createAction(
+  '[App] createExplorerDirSuccess', props<{ src: string, data: ExplorerData }>()
+);
+
+export const renameExplorerFile = createAction(
+  '[App] renameExplorerFile', props<{ src: string, relativePath: string, newName: string }>()
+);
+
+export const renameExplorerFileSuccess = createAction(
+  '[App] renameExplorerFileSuccess', props<{ src: string, data: ExplorerData }>()
 );

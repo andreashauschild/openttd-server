@@ -2,7 +2,7 @@ package de.litexo.model.external;
 
 public enum ServerFileType {
     SAVE_GAME,
-    ANY,
+    OPENTTD_ROOT,
     CONFIG;
 
 }

@@ -6,4 +6,5 @@ export interface ExplorerDirectory {
   files?: Array<ExplorerFile>;
   id?: string;
   name?: string;
+  relativePath?: string;
 }

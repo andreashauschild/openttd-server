@@ -33,7 +33,7 @@ export class FileExplorerComponent implements AfterViewInit, OnDestroy{
     console.log(">>>>>>>>>>>>>>>>>",this.data)
     const dialogRef = this.dialog.open(FileUploadDialogComponent, {minWidth: "800px"});
     dialogRef.componentInstance.dialogRef = dialogRef;
-    dialogRef.componentInstance.fileType = ServerFileType.Any;
+    dialogRef.componentInstance.fileType = ServerFileType.OpenttdRoot;
     dialogRef.componentInstance.targetDir = this.data.currentPath!;
     dialogRef.componentInstance.dialogTitle = "UPLOAD OPENTTD CONFIGS";
     dialogRef.componentInstance.subTitle = "Info: Don't upload files where the filename contains single/double quotes: ' or \" . This will cause problems!";
@@ -43,7 +43,7 @@ export class FileExplorerComponent implements AfterViewInit, OnDestroy{
   }
 
   ngAfterViewInit(): void {
-    this.sub.add(this.store.select(selectExplorerData).pipe(filter(d=>d!=null), take(1)).subscribe(d=>this.explorerService.refresh()));
+    this.sub.add(this.store.select(selectExplorerData).pipe(filter(d=>d!=null)).subscribe(d=>this.explorerService.refresh()));
 
     // Remove Upload Button
     document.querySelector(".nxe-menu-bar-left .nxe-upload")!.parentElement!.remove();

@@ -6,4 +6,5 @@ export interface ExplorerFile {
   extension?: string;
   id?: string;
   name?: string;
+  relativePath?: string;
 }
