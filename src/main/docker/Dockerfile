@@ -1,11 +1,12 @@
 FROM ubuntu:20.04
 
-ARG OPENTTD_VERSION="13.4"
+ARG OPENTTD_VERSION="14.0"
 ARG OPENGFX_VERSION="0.7.1"
 
 RUN apt-get update
 RUN apt-get install dos2unix
 RUN apt-get install -y wget
+RUN apt-get install libgomp1
 
 # See: https://jdk.java.net/archive/
 ENV JDK_DOWNLOAD https://download.java.net/java/GA/jdk17.0.2/dfd4a8d0985749f896bed50d7138ee7f/8/GPL/openjdk-17.0.2_linux-x64_bin.tar.gz
@@ -48,18 +49,18 @@ RUN passwd -d openttd
 
 USER openttd
 WORKDIR /home/openttd
-RUN wget https://cdn.openttd.org/openttd-releases/13.4/openttd-13.4-linux-generic-amd64.tar.xz
+RUN wget https://cdn.openttd.org/openttd-releases/14.0/openttd-14.0-linux-generic-amd64.tar.xz
 RUN wget https://cdn.openttd.org/opengfx-releases/7.1/opengfx-7.1-all.zip
 
-RUN tar -xf openttd-13.4-linux-generic-amd64.tar.xz
+RUN tar -xf openttd-14.0-linux-generic-amd64.tar.xz
 
-RUN mkdir openttd-13
-RUN cp -a openttd-13.4-linux-generic-amd64/. openttd-13
+RUN mkdir openttd-14
+RUN cp -a openttd-14.0-linux-generic-amd64/. openttd-14
 
 RUN unzip opengfx-7.1-all.zip
-RUN tar -xf opengfx-7.1.tar -C openttd-13/baseset/
+RUN tar -xf opengfx-7.1.tar -C openttd-14/baseset/
 
-RUN rm -rf opengfx-*.tar opengfx-*.zip openttd-13.0*
+RUN rm -rf opengfx-*.tar opengfx-*.zip openttd-14.0*
     ## Set entrypoint script to right user
 RUN chmod +x /openttd.sh
 
