@@ -119,6 +119,5 @@ export class FileUploadDialogComponent implements AfterViewInit {
 
   openFileDialog() {
     document.getElementById('uploadInput')!.click();
-
   }
 }
