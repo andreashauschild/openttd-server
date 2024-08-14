@@ -30,7 +30,8 @@ The following table shows which docker image contains which OpenTTD version. For
 
 | Container                        | OpenTTD |
 |----------------------------------|---------|
-| hauschi86/openttd-server:latest  | 14.0    |
+| hauschi86/openttd-server:latest  | 14.1    |
+| hauschi86/openttd-server:v14.1.0 | 14.1    |
 | hauschi86/openttd-server:v14.0.0 | 14.0    |
 | hauschi86/openttd-server:v13.4.0 | 13.4    |
 | hauschi86/openttd-server:v13.0.0 | 13.0    |
