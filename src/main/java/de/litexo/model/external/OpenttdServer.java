@@ -22,6 +22,12 @@ public class OpenttdServer {
     // Password of the server.
     private String password = null;
 
+    // Password for admin endpoint - admin_password
+    private String adminPassword = null;
+
+    // Port of the server admin
+    private Integer serverAdminPort = null;
+
     // of the server
     private Integer port = null;
 

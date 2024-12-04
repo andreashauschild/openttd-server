@@ -548,6 +548,33 @@ components:
           type: boolean
         type:
           type: string
+    DefaultRepository:
+      type: object
+      properties:
+        serverConfigDir:
+          type: string
+        openttdSaveDir:
+          type: string
+        openttdConfigDir:
+          type: string
+        openttdServerMapper:
+          $ref: '#/components/schemas/OpenttdServerMapper'
+        configFile:
+          $ref: '#/components/schemas/Path'
+        openttdSaveDirPath:
+          $ref: '#/components/schemas/Path'
+        openttdConfigDirPath:
+          $ref: '#/components/schemas/Path'
+        openttdSaveGames:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServerFile'
+        openttdConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServerFile'
+        openttdServerConfig:
+          $ref: '#/components/schemas/InternalOpenttdServerConfig'
     ExportModel:
       type: object
       properties:
@@ -559,6 +586,26 @@ components:
           $ref: '#/components/schemas/PauseCommand'
         serviceError:
           $ref: '#/components/schemas/ServiceError'
+    InternalOpenttdServerConfig:
+      type: object
+      properties:
+        path:
+          type: string
+        autoSaveMinutes:
+          format: int32
+          type: integer
+        numberOfAutoSaveFilesToKeep:
+          format: int32
+          type: integer
+        numberOfManuallySaveFilesToKeep:
+          format: int32
+          type: integer
+        passwordSha256Hash:
+          type: string
+        servers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpenttdServer'
     OpenttdProcess:
       type: object
       properties:
@@ -588,6 +635,11 @@ components:
           type: string
         password:
           type: string
+        adminPassword:
+          type: string
+        serverAdminPort:
+          format: int32
+          type: integer
         port:
           format: int32
           type: integer
@@ -656,6 +708,8 @@ components:
           type: string
         oldPassword:
           type: string
+    OpenttdServerMapper:
+      type: object
     OpenttdTerminalUpdateEvent:
       type: object
       properties:
@@ -670,6 +724,8 @@ components:
           type: string
         text:
           type: string
+    Path:
+      type: array
     PauseCommand:
       type: object
       properties:
@@ -685,6 +741,8 @@ components:
           type: boolean
         type:
           type: string
+        repository:
+          $ref: '#/components/schemas/DefaultRepository'
     ServerFile:
       type: object
       properties:
@@ -741,6 +799,8 @@ components:
           type: boolean
         type:
           type: string
+        repository:
+          $ref: '#/components/schemas/DefaultRepository'
   securitySchemes:
     SecurityScheme:
       type: http

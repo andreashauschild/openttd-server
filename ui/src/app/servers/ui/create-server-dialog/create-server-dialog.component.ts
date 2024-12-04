@@ -17,10 +17,13 @@ export class CreateServerDialogComponent implements OnInit {
   configFiles: ServerFile[] = []
   saveGameFiles: ServerFile[] = []
   showPassword=false;
+  showAdminPassword=false;
   createServerForm = this.fb.group({
     name: [''],
     port: [3979],
+    adminPort: [3977],
     password: [''],
+    adminPassword: [''],
     saveGame: <ServerFile>[{}],
     config: <ServerFile>[{}],
     configSecret: <ServerFile>[{}],
@@ -55,6 +58,8 @@ export class CreateServerDialogComponent implements OnInit {
         name: this.createServerForm.controls.name.value!,
         port: this.createServerForm.controls.port.value!,
         password: this.createServerForm.controls.password.value!,
+        serverAdminPort: this.createServerForm.controls.adminPort.value!,
+        adminPassword: this.createServerForm.controls.adminPassword.value!,
         openttdConfig: this.createServerForm.controls.config.value!,
         openttdSecretsConfig: this.createServerForm.controls.configSecret.value!,
         openttdPrivateConfig: this.createServerForm.controls.configPrivate.value!,

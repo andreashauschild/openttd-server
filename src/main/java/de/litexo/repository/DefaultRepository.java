@@ -9,6 +9,7 @@ import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.model.mapper.OpenttdServerMapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
@@ -147,6 +148,9 @@ public class DefaultRepository {
         Optional<OpenttdServer> first = getOpenttdServer(server.getId());
         if (!first.isPresent()) {
             throwIfPortAllocated(server.getPort(), openttdServerData.getServers());
+            if(StringUtils.isNotEmpty(server.getAdminPassword())){
+                throwIfAdminPortAllocated(server.getServerAdminPort(), openttdServerData.getServers());
+            }
             openttdServerData.getServers().add(server);
             save(openttdServerData);
             return getOpenttdServer(server.getId()).orElse(null);
@@ -170,6 +174,9 @@ public class DefaultRepository {
             OpenttdServer toUpdate = openttdServerData.getServers().get(replaceIndex);
             this.openttdServerMapper.patch(server, toUpdate);
             throwIfPortAllocated(toUpdate.getPort(), openttdServerData.getServers().stream().filter(s -> !s.getId().equals(id)).toList());
+            if(StringUtils.isNotEmpty(toUpdate.getAdminPassword())){
+                throwIfAdminPortAllocated(toUpdate.getServerAdminPort(), openttdServerData.getServers());
+            }
             openttdServerData.getServers().set(replaceIndex, toUpdate);
             save(openttdServerData);
             return getOpenttdServer(id).get();
@@ -248,6 +255,16 @@ public class DefaultRepository {
             Optional<OpenttdServer> allocated = servers.stream().filter(s -> s.getPort() == port).findFirst();
             if (allocated.isPresent()) {
                 throw new ServiceRuntimeException("Error: Port '" + port + " is already allocated by server '" + allocated.get().getName() + "'. You must set a different port!");
+            }
+        }
+    }
+
+    public void throwIfAdminPortAllocated(int port, List<OpenttdServer> servers) {
+        if (servers != null) {
+            Optional<OpenttdServer> allocated = servers.stream().filter(s -> s.getServerAdminPort() == port).findFirst();
+            // Admin port will only be active if a password is set. OpenTTD will not start a listener on this port when Admin password is not set.
+            if (allocated.isPresent() && StringUtils.isNotEmpty(allocated.get().getAdminPassword())) {
+                throw new ServiceRuntimeException("Error: Admin Port '" + port + " is already allocated by server '" + allocated.get().getName() + "' that have an active admin login. You must set a different port!");
             }
         }
     }

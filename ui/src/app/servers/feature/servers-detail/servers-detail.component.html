@@ -50,6 +50,32 @@
               <mat-hint align="start">This password will overwrite any default server password.</mat-hint>
             </mat-form-field>
           </div>
+          <div class="col-span-2">
+            <mat-form-field class="w-full">
+              <mat-label>Admin Port</mat-label>
+              <input name="server-port" type="number" [formControl]="serverForm.controls.adminPort" matInput placeholder="" value="">
+              <mat-error *ngIf="serverForm.controls.adminPort.hasError('required')">
+                Port is <strong>required</strong>
+              </mat-error>
+              <mat-error *ngIf="serverForm.controls.adminPort.hasError('min')">
+                Port must be >=  <strong>1</strong>
+              </mat-error>
+              <mat-hint align="start">Admin port of the server  (server_admin_port). Must be unique for all servers. Dont forget to expose the ports you
+                want to use while container startup. Please note that OpenTTD will not start a listener on this port when Admin password is not set!</mat-hint>
+            </mat-form-field>
+          </div>
+          <div class="col-span-2">
+            <mat-form-field class="w-full">
+              <mat-label>Admin Password</mat-label>
+              <input *ngIf="!showAdminPassword" name="custom-server-password" type="password" [formControl]="serverForm.controls.adminPassword"
+                     matInput>
+              <input *ngIf="showAdminPassword" name="custom-server-password" type="text" [formControl]="serverForm.controls.adminPassword"
+                     matInput>
+              <mat-icon *ngIf="!showAdminPassword" (click)="showAdminPassword=!showAdminPassword" matSuffix>visibility</mat-icon>
+              <mat-icon *ngIf="showAdminPassword" (click)="showAdminPassword=!showAdminPassword" matSuffix>visibility_off</mat-icon>
+              <mat-hint align="start">This admin password (admin_password) will overwrite any default admin server password.</mat-hint>
+            </mat-form-field>
+          </div>
           <div class="col-span-3">
             <mat-slide-toggle [formControl]="serverForm.controls.autoPause" >Auto Pause, if no player is connected to a company</mat-slide-toggle>
           </div>

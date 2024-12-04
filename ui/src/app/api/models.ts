@@ -1,11 +1,15 @@
 export { BaseProcess } from './models/base-process';
 export { Command } from './models/command';
+export { DefaultRepository } from './models/default-repository';
 export { ExportModel } from './models/export-model';
+export { InternalOpenttdServerConfig } from './models/internal-openttd-server-config';
 export { OpenttdProcess } from './models/openttd-process';
 export { OpenttdServer } from './models/openttd-server';
 export { OpenttdServerConfigGet } from './models/openttd-server-config-get';
 export { OpenttdServerConfigUpdate } from './models/openttd-server-config-update';
+export { OpenttdServerMapper } from './models/openttd-server-mapper';
 export { OpenttdTerminalUpdateEvent } from './models/openttd-terminal-update-event';
+export { Path } from './models/path';
 export { PauseCommand } from './models/pause-command';
 export { ServerFile } from './models/server-file';
 export { ServerFileType } from './models/server-file-type';
