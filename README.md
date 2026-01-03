@@ -16,7 +16,7 @@ This documentation expect a basic knowledge of docker (expose ports and volumes)
 The current state of this Project is `BETA`. Hosting works and every function was tested but as you now a developer should not test his own software. Please create an issue if something needs to be fixed.
 
 It provides the following features:
-
+Test
 - Login protected admin gui
 - Managing multiple dedicated OpenTTD server instance. You just need to expose the needed ports on container startup.
 - Upload/Download of save games and configuration files
