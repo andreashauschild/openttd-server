@@ -30,5 +30,5 @@ do
   cmd="$cmd '$var' "
 done
 
-su -l openttd -c "/home/openttd/openttd-13/openttd -D ${cmd}"
+su -l openttd -c "/home/openttd/openttd-14/openttd -D ${cmd}"
 exit 0

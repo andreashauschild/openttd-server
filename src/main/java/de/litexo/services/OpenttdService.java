@@ -147,6 +147,10 @@ public class OpenttdService {
                 Files.write(configFile, defaultConfig.getBytes());
             }
 
+            if (openttdServer.getServerAdminPort()!=null) {
+                this.replaceLine(configFile, "server_admin_port", "server_admin_port = " + openttdServer.getServerAdminPort());
+            }
+
             // Be sure that the server runs always in english, so that we can handle the terminal events like 'player joined'
             this.replaceLine(configFile, "language", "language = english_US.lng");
             openttdProcess.setConfig(configFile.toFile().getAbsolutePath());
@@ -161,6 +165,10 @@ public class OpenttdService {
 
             if (StringUtils.isNotEmpty(openttdServer.getPassword())) {
                 this.replaceLine(secretConfigFile, "server_password", "server_password = " + openttdServer.getPassword());
+            }
+
+            if (StringUtils.isNotEmpty(openttdServer.getAdminPassword())) {
+                this.replaceLine(secretConfigFile, "admin_password", "admin_password = " + openttdServer.getAdminPassword());
             }
 
             Path privateConfigFile = customConfigDir.resolve("private.cfg");

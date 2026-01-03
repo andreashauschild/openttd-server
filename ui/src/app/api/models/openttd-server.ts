@@ -3,6 +3,7 @@
 import { OpenttdProcess } from './openttd-process';
 import { ServerFile } from './server-file';
 export interface OpenttdServer {
+  adminPassword?: string;
   autoPause?: boolean;
   autoSave?: boolean;
   currentClients?: number;
@@ -21,4 +22,5 @@ export interface OpenttdServer {
   port?: number;
   process?: OpenttdProcess;
   saveGame?: ServerFile;
+  serverAdminPort?: number;
 }

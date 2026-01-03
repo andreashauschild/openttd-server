@@ -30,7 +30,10 @@ The following table shows which docker image contains which OpenTTD version. For
 
 | Container                        | OpenTTD |
 |----------------------------------|---------|
-| hauschi86/openttd-server:latest  | 13.4    |
+| hauschi86/openttd-server:latest  | 14.1    |
+| hauschi86/openttd-server:v14.1.1 | 14.1    |
+| hauschi86/openttd-server:v14.1.0 | 14.1    |
+| hauschi86/openttd-server:v14.0.0 | 14.0    |
 | hauschi86/openttd-server:v13.4.0 | 13.4    |
 | hauschi86/openttd-server:v13.0.0 | 13.0    |
 | hauschi86/openttd-server:v12.2.2 | 12.2    |
@@ -109,7 +112,7 @@ The container uses a simple file storage to store data. If you want to have pers
 ## Quarkus remote docker container development
 - Open a terminal in the `root` directory
 - `docker build -f src/main/docker/Dockerfile.dev . --progress=plain -t openttd-server`
-- `docker run -i --rm -p 8080:8080 -p 5005:5005 -p 3979:3979/tcp -p 3979:3979/udp -e QUARKUS_LAUNCH_DEVMODE=true openttd-server`
+- `docker run -i --rm -p 8080:8080 -p 5005:5005 -p 3977:3977/tcp -p 3979:3979/tcp -p 3979:3979/udp -e QUARKUS_LAUNCH_DEVMODE=true openttd-server`
 - `openttd -D -b 8bpp-optimized`  Run with possibility to do screenshots (https://www.tt-forums.net/viewtopic.php?t=88943)
 - https://quarkus.io/guides/maven-tooling#remote-development-mode
 - https://blog.sebastian-daschner.com/entries/quarkus-remote-dev-in-containers-update

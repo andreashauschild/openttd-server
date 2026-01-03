@@ -35,6 +35,32 @@
       </mat-form-field>
     </div>
 
+    <div class="col-span-6 sm:col-span-2">
+      <mat-form-field class="w-full">
+        <mat-label>Admin Port</mat-label>
+        <input type="number" [formControl]="createServerForm.controls.adminPort" matInput placeholder="port" value="3979 ">
+        <mat-hint align="start">Admin port of the server  (server_admin_port). Must be unique for all servers. Dont forget to expose the ports you
+          want to use while container startup. Please note that OpenTTD will not start a listener on this port when Admin password is not set!
+        </mat-hint>
+      </mat-form-field>
+
+    </div>
+
+    <div class="col-span-6 sm:col-span-2">
+      <mat-form-field class="w-full">
+        <mat-label>Admin Password</mat-label>
+        <input *ngIf="!showAdminPassword" name="custom-server-password" type="password"
+               [formControl]="createServerForm.controls.adminPassword"
+               matInput>
+        <input *ngIf="showAdminPassword" name="custom-server-password" type="text"
+               [formControl]="createServerForm.controls.adminPassword"
+               matInput>
+        <mat-icon *ngIf="!showAdminPassword" (click)="showAdminPassword=!showAdminPassword" matSuffix>visibility</mat-icon>
+        <mat-icon *ngIf="showAdminPassword" (click)="showAdminPassword=!showAdminPassword" matSuffix>visibility_off</mat-icon>
+        <mat-hint align="start">This admin password (admin_password) will overwrite any default admin server password.</mat-hint>
+      </mat-form-field>
+    </div>
+
     <div class="col-span-6 sm:col-span-6">
       <app-server-file-select [label]="'Save Game'" (selectedFileEvent)="selectSaveGame($event)"
                               [files]="saveGameFiles"

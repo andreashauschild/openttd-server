@@ -38,7 +38,7 @@ class OpenttdServiceTest {
     void test_0001() throws Exception {
         Path openttdConfig = configDir.toPath().resolve("openttd.cfg");
         Files.write(openttdConfig, "".getBytes());
-        OpenttdServer server = new OpenttdServer().setId("id1").setName("Name1").setPassword("Password_1");
+        OpenttdServer server = new OpenttdServer().setId("id1").setName("Name1").setPassword("Password_1").setAdminPassword("Admin_1234");
         server.setOpenttdConfig(new ServerFile().setPath(openttdConfig.toFile().getAbsolutePath()));
         OpenttdProcess process = new OpenttdProcess();
 
@@ -53,6 +53,7 @@ class OpenttdServiceTest {
 
         // Check that custom password was set to secrets.cfg
         assertTrue(secretCfg.contains("server_password = Password_1\n") || secretCfg.contains("server_password = Password_1\r"));
+        assertTrue(secretCfg.contains("admin_password = Admin_1234\n") || secretCfg.contains("server_password = Admin_1234\r"));
 
         // Check that custom server name was set to private.cfg
         assertTrue(privateCfg.contains("server_name = Name1\n") || privateCfg.contains("server_name = Name1\r"));

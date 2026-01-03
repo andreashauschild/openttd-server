@@ -23,6 +23,7 @@ export class ServersDetailComponent implements OnInit, OnDestroy {
   serverForm;
 
   showPassword=false;
+  showAdminPassword=false;
   server: OpenttdServer | undefined;
   openttdConfigs: ServerFile[] = [];
   openttdPrivateConfigs: ServerFile[] = [];
@@ -34,8 +35,10 @@ export class ServersDetailComponent implements OnInit, OnDestroy {
   constructor(private store: Store<{}>, private fb: FormBuilder, private api: OpenttdServerResourceService, private activeRoute: ActivatedRoute) {
     this.serverForm = this.fb.group({
       port: ['', [Validators.required, Validators.min(1)]],
+      adminPort: ['', [Validators.required, Validators.min(1)]],
       name: ['', [Validators.required]],
       password: [''],
+      adminPassword: [''],
       autoSave: [true, [Validators.required]],
       autoPause: [true, [Validators.required]],
     });
@@ -49,6 +52,8 @@ export class ServersDetailComponent implements OnInit, OnDestroy {
       this.server = clone(s!);
       this.serverForm.controls.name.patchValue(this.server.name || '')
       this.serverForm.controls.port.patchValue(`${this.server.port}` || '')
+      this.serverForm.controls.adminPort.patchValue(`${this.server.serverAdminPort}` || '')
+      this.serverForm.controls.adminPassword.patchValue(`${this.server.adminPassword}` || '')
       this.serverForm.controls.password.patchValue(`${this.server.password}` || '')
       this.serverForm.controls.autoSave.patchValue(this.server.autoSave!)
       this.serverForm.controls.autoPause.patchValue(this.server.autoPause!)
@@ -80,6 +85,8 @@ export class ServersDetailComponent implements OnInit, OnDestroy {
         port: parseInt(this.serverForm.controls.port.value!),
         name: this.serverForm.controls.name.value!,
         password: this.serverForm.controls.password.value!,
+        adminPassword: this.serverForm.controls.adminPassword.value!,
+        serverAdminPort: parseInt(this.serverForm.controls.adminPort.value!),
         autoSave: this.serverForm.controls.autoSave.value!,
         autoPause: this.serverForm.controls.autoPause.value!,
       }
