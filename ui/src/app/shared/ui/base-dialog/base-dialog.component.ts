@@ -2,9 +2,10 @@ import {Component, EventEmitter, Input, OnInit, Output, TemplateRef} from '@angu
 import {MatDialogRef} from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-base-dialog',
-  templateUrl: './base-dialog.component.html',
-  styleUrls: ['./base-dialog.component.scss']
+    selector: 'app-base-dialog',
+    templateUrl: './base-dialog.component.html',
+    styleUrls: ['./base-dialog.component.scss'],
+    standalone: false
 })
 export class BaseDialogComponent implements OnInit {
 

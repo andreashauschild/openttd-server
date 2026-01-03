@@ -14,9 +14,10 @@ import {clone} from '../../../shared/services/utils.service';
 import {FormBuilder, Validators} from '@angular/forms';
 
 @Component({
-  selector: 'app-servers-detail',
-  templateUrl: './servers-detail.component.html',
-  styleUrls: ['./servers-detail.component.scss']
+    selector: 'app-servers-detail',
+    templateUrl: './servers-detail.component.html',
+    styleUrls: ['./servers-detail.component.scss'],
+    standalone: false
 })
 export class ServersDetailComponent implements OnInit, OnDestroy {
   serverForm;

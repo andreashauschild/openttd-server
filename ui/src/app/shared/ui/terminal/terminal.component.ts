@@ -6,9 +6,10 @@ import {Subject} from 'rxjs';
 import {filter} from 'rxjs/operators';
 
 @Component({
-  selector: 'app-terminal',
-  templateUrl: './terminal.component.html',
-  styleUrls: ['./terminal.component.scss']
+    selector: 'app-terminal',
+    templateUrl: './terminal.component.html',
+    styleUrls: ['./terminal.component.scss'],
+    standalone: false
 })
 export class TerminalComponent implements OnInit, AfterViewInit {
   readonly title = 'openttd server console';

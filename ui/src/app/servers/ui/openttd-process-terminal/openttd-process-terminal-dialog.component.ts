@@ -10,9 +10,10 @@ import {ApplicationService} from '../../../shared/services/application.service';
 import {filter} from 'rxjs/operators';
 
 @Component({
-  selector: 'app-openttd-process-terminal',
-  templateUrl: './openttd-process-terminal-dialog.component.html',
-  styleUrls: ['./openttd-process-terminal-dialog.component.scss']
+    selector: 'app-openttd-process-terminal',
+    templateUrl: './openttd-process-terminal-dialog.component.html',
+    styleUrls: ['./openttd-process-terminal-dialog.component.scss'],
+    standalone: false
 })
 export class OpenttdProcessTerminalDialogComponent implements AfterViewInit, OnDestroy {
 

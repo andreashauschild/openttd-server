@@ -10,9 +10,10 @@ import {ServerFileType} from '../../../api/models/server-file-type';
 
 
 @Component({
-  selector: 'app-server-file-select',
-  templateUrl: './server-file-select.component.html',
-  styleUrls: ['./server-file-select.component.scss']
+    selector: 'app-server-file-select',
+    templateUrl: './server-file-select.component.html',
+    styleUrls: ['./server-file-select.component.scss'],
+    standalone: false
 })
 export class ServerFileSelectComponent implements OnInit, OnChanges {
 

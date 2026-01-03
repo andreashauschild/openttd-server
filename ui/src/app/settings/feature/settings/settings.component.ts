@@ -12,9 +12,10 @@ import {clone} from '../../../shared/services/utils.service';
 import {OpenttdServerConfigGet} from '../../../api/models/openttd-server-config-get';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss']
+    selector: 'app-settings',
+    templateUrl: './settings.component.html',
+    styleUrls: ['./settings.component.scss'],
+    standalone: false
 })
 export class SettingsComponent implements OnInit {
 

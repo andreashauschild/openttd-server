@@ -12,12 +12,10 @@ import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 
 @Component({
-  selector: 'app-file-explorer',
-  standalone: true,
-  imports: [ExplorerComponent, MatButton, MatIcon],
-
-  templateUrl: './file-explorer.component.html',
-  styleUrl: './file-explorer.component.scss'
+    selector: 'app-file-explorer',
+    imports: [ExplorerComponent, MatButton, MatIcon],
+    templateUrl: './file-explorer.component.html',
+    styleUrl: './file-explorer.component.scss'
 })
 export class FileExplorerComponent implements AfterViewInit, OnDestroy{
 

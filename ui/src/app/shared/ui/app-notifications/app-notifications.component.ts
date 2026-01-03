@@ -5,9 +5,10 @@ import {AppAlert} from '../../store/reducers/app.reducer';
 import {removeAlert} from '../../store/actions/app.actions';
 
 @Component({
-  selector: 'app-app-notifications',
-  templateUrl: './app-notifications.component.html',
-  styleUrls: ['./app-notifications.component.scss'],
+    selector: 'app-app-notifications',
+    templateUrl: './app-notifications.component.html',
+    styleUrls: ['./app-notifications.component.scss'],
+    standalone: false
 })
 export class AppNotificationsComponent implements OnInit {
 

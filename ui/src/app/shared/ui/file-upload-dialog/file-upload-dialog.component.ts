@@ -17,9 +17,10 @@ import {MatDialogRef} from '@angular/material/dialog';
 
 
 @Component({
-  selector: 'app-file-upload-dialog',
-  templateUrl: './file-upload-dialog.component.html',
-  styleUrls: ['./file-upload-dialog.component.scss']
+    selector: 'app-file-upload-dialog',
+    templateUrl: './file-upload-dialog.component.html',
+    styleUrls: ['./file-upload-dialog.component.scss'],
+    standalone: false
 })
 export class FileUploadDialogComponent implements AfterViewInit {
 

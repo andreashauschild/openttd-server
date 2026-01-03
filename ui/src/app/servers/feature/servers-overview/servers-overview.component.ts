@@ -9,9 +9,10 @@ import {FileUploadDialogComponent} from '../../../shared/ui/file-upload-dialog/f
 import {ServerFileType} from '../../../api/models/server-file-type';
 
 @Component({
-  selector: 'app-servers-overview',
-  templateUrl: './servers-overview.component.html',
-  styleUrls: ['./servers-overview.component.scss']
+    selector: 'app-servers-overview',
+    templateUrl: './servers-overview.component.html',
+    styleUrls: ['./servers-overview.component.scss'],
+    standalone: false
 })
 export class ServersOverviewComponent implements OnInit {
   init = false;

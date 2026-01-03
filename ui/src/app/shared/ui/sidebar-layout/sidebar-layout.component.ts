@@ -14,9 +14,10 @@ export type SidebarLayoutModel = {
 }
 
 @Component({
-  selector: 'app-sidbar-layout',
-  templateUrl: './sidebar-layout.component.html',
-  styleUrls: ['./sidebar-layout.component.scss']
+    selector: 'app-sidbar-layout',
+    templateUrl: './sidebar-layout.component.html',
+    styleUrls: ['./sidebar-layout.component.scss'],
+    standalone: false
 })
 export class SidebarLayoutComponent implements OnInit {
 

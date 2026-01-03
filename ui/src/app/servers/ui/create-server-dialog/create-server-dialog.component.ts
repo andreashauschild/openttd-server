@@ -9,9 +9,10 @@ import {selectFiles} from '../../../shared/store/selectors/app.selectors';
 import {MatDialogRef} from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-create-server-dialog',
-  templateUrl: './create-server-dialog.component.html',
-  styleUrls: ['./create-server-dialog.component.scss']
+    selector: 'app-create-server-dialog',
+    templateUrl: './create-server-dialog.component.html',
+    styleUrls: ['./create-server-dialog.component.scss'],
+    standalone: false
 })
 export class CreateServerDialogComponent implements OnInit {
   configFiles: ServerFile[] = []
