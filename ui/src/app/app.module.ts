@@ -18,7 +18,7 @@ import {AppNotificationsModule} from './shared/ui/app-notifications/app-notifica
 import {DatePipe} from '@angular/common';
 import {CustomLoadingBarInterceptor} from "./shared/interceptors/custom-loading-bar.interceptor";
 import {LoadingBarModule} from "@ngx-loading-bar/core";
-import {DataService, INode, NAME_FUNCTION} from 'ngx-explorer';
+import {DataService} from 'ngx-explorer';
 import {FileExplorerDataService} from './file-explorer/file-explorer/file-explorer-data.service';
 
 @NgModule({ declarations: [
@@ -50,10 +50,6 @@ import {FileExplorerDataService} from './file-explorer/file-explorer/file-explor
         {
             provide: DataService,
             useExisting: FileExplorerDataService
-        },
-        {
-            provide: NAME_FUNCTION,
-            useValue: (node: INode) => node.data['name'],
         },
         provideHttpClient(withInterceptorsFromDi())
     ] })

@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {FunctionsUsingCSI, NgTerminal} from 'ng-terminal';
 import {FormControl} from '@angular/forms';
-import {Terminal} from 'xterm';
+import {Terminal} from '@xterm/xterm';
 import {Subject} from 'rxjs';
 import {filter} from 'rxjs/operators';
 

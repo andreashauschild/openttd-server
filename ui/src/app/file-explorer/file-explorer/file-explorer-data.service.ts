@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Data, ExplorerService, IDataService} from 'ngx-explorer';
-import {from, Observable, of, Subject} from 'rxjs';
+import {Data, DataNode, ExplorerService, IDataService} from 'ngx-explorer';
+import {EMPTY, Observable, of} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {createExplorerDir, deleteExplorerFile, loadExplorerData, renameExplorerFile} from '../../shared/store/actions/app.actions';
 import {selectExplorerData} from '../../shared/store/selectors/app.selectors';
@@ -66,7 +66,7 @@ export class FileExplorerDataService implements IDataService<MyDataType> {
       }))
     }
     console.log("createDir", parent, name)
-    return Observable.create(null);
+    return EMPTY;
   }
 
   delete(targets: MyDataType[]): Observable<MyDataType> {
@@ -78,13 +78,11 @@ export class FileExplorerDataService implements IDataService<MyDataType> {
       }))
 
     }
-    return Observable.create(null);
+    return EMPTY;
   }
 
   downloadFile(target: MyDataType): Observable<MyDataType> {
-
-
-    return Observable.create(null);
+    return EMPTY;
   }
 
   getContent(data: MyDataType): Observable<{ files: MyDataType[]; dirs: MyDataType[] }> {
@@ -121,11 +119,17 @@ export class FileExplorerDataService implements IDataService<MyDataType> {
         newName
       }))
     }
-    return Observable.create(null);
+    return EMPTY;
   }
 
   uploadFiles(parent: MyDataType, files: FileList): Observable<MyDataType> {
     // not used since we hackly replaced the orginal upload button with the custom chunk upload dialog
-    return Observable.create(null);
+    return of(parent);
+  }
+
+  openTree(data: MyDataType): Observable<Array<DataNode<MyDataType>>> {
+    // Return the tree structure for the given data node
+    // This is used for tree navigation - returning empty array since tree navigation is not fully implemented
+    return of([]);
   }
 }

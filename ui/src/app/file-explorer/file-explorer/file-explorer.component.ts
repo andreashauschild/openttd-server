@@ -1,5 +1,5 @@
 import {AfterViewInit, ApplicationRef, Component, ComponentFactoryResolver, ComponentRef, Injector, OnDestroy, Renderer2} from '@angular/core';
-import {DataService, ExplorerComponent, ExplorerService, INode, NAME_FUNCTION} from 'ngx-explorer';
+import {ExplorerComponent, ExplorerService} from 'ngx-explorer';
 import {FileExplorerDataService} from './file-explorer-data.service';
 import {Store} from '@ngrx/store';
 import {selectExplorerData} from '../../shared/store/selectors/app.selectors';
