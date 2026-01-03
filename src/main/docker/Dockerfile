@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-ARG OPENTTD_VERSION="14.1"
+ARG OPENTTD_VERSION="15.0"
 ARG OPENGFX_VERSION="0.7.1"
 
 RUN apt-get update
@@ -49,18 +49,19 @@ RUN passwd -d openttd
 
 USER openttd
 WORKDIR /home/openttd
-RUN wget https://cdn.openttd.org/openttd-releases/14.1/openttd-14.1-linux-generic-amd64.tar.xz
+
+RUN wget https://cdn.openttd.org/openttd-releases/15.0/openttd-15.0-linux-generic-amd64.tar.xz
 RUN wget https://cdn.openttd.org/opengfx-releases/7.1/opengfx-7.1-all.zip
 
-RUN tar -xf openttd-14.1-linux-generic-amd64.tar.xz
+RUN tar -xf openttd-15.0-linux-generic-amd64.tar.xz
 
 RUN mkdir openttd-14
-RUN cp -a openttd-14.1-linux-generic-amd64/. openttd-14
+RUN cp -a openttd-15.0-linux-generic-amd64/. openttd-14
 
 RUN unzip opengfx-7.1-all.zip
 RUN tar -xf opengfx-7.1.tar -C openttd-14/baseset/
 
-RUN rm -rf opengfx-*.tar opengfx-*.zip openttd-14.1*
+RUN rm -rf opengfx-*.tar opengfx-*.zip openttd-15.0*
     ## Set entrypoint script to right user
 RUN chmod +x /openttd.sh
 
