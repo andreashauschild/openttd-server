@@ -9,7 +9,7 @@ import {environment} from '../environments/environment';
 import {EffectsModule} from '@ngrx/effects';
 import {AppEffects} from './shared/store/effects/app.effects';
 import {metaReducers, reducers} from './shared/store/reducers';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpAuthInterceptor} from './shared/interceptors/http-auth-interceptor';
 import {SidebarLayoutModule} from './shared/ui/sidebar-layout/sidebar-layout.module';
@@ -21,47 +21,41 @@ import {LoadingBarModule} from "@ngx-loading-bar/core";
 import {DataService, INode, NAME_FUNCTION} from 'ngx-explorer';
 import {FileExplorerDataService} from './file-explorer/file-explorer/file-explorer-data.service';
 
-@NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    LoadingBarModule,
-    BrowserAnimationsModule,
-    EffectsModule.forRoot([AppEffects]),
-    StoreModule.forRoot(reducers, {metaReducers}),
-    !environment.production ? StoreDevtoolsModule.instrument(
-      // {
-      //   actionsBlocklist: [
-      //     //terminalUpdateEvent.name
-      //   ]
-      // }
-      {connectInZone: true}) : [],
-    SidebarLayoutModule,
-    AppNotificationsModule,
-    MatSnackBarModule,
-  ],
-  providers: [
-    DatePipe,
-    {provide: HTTP_INTERCEPTORS, useClass: HttpAuthInterceptor, multi: true},
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: CustomLoadingBarInterceptor,
-      multi: true,
-    },
-    {
-      provide: DataService,
-      useExisting: FileExplorerDataService
-    },
-    {
-      provide: NAME_FUNCTION,
-      useValue: (node: INode) => node.data['name'],
-    }
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        LoadingBarModule,
+        BrowserAnimationsModule,
+        EffectsModule.forRoot([AppEffects]),
+        StoreModule.forRoot(reducers, { metaReducers }),
+        !environment.production ? StoreDevtoolsModule.instrument(
+        // {
+        //   actionsBlocklist: [
+        //     //terminalUpdateEvent.name
+        //   ]
+        // }
+        { connectInZone: true }) : [],
+        SidebarLayoutModule,
+        AppNotificationsModule,
+        MatSnackBarModule], providers: [
+        DatePipe,
+        { provide: HTTP_INTERCEPTORS, useClass: HttpAuthInterceptor, multi: true },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: CustomLoadingBarInterceptor,
+            multi: true,
+        },
+        {
+            provide: DataService,
+            useExisting: FileExplorerDataService
+        },
+        {
+            provide: NAME_FUNCTION,
+            useValue: (node: INode) => node.data['name'],
+        },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule {
 }

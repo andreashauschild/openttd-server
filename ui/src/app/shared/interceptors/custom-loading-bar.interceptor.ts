@@ -1,6 +1,6 @@
 import {LoadingBarService} from '@ngx-loading-bar/core';
 import {Injectable} from '@angular/core';
-import {HttpContextToken, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import { HttpContextToken, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {finalize, tap} from 'rxjs/operators';
 import {AuthResourceService} from "../../api/services/auth-resource.service";

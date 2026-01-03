@@ -3,7 +3,7 @@ import {FormBuilder, ValidationErrors, ValidatorFn, Validators} from '@angular/f
 import {Store} from '@ngrx/store';
 import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
 import {ApplicationService} from '../../../shared/services/application.service';
-import {HttpErrorResponse} from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import {loadServerConfig, patchServerConfig} from '../../../shared/store/actions/app.actions';
 import {Subscription} from 'rxjs';
 import {selectConfig} from '../../../shared/store/selectors/app.selectors';
