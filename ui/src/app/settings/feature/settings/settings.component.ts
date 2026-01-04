@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
+import {FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
 import {ApplicationService} from '../../../shared/services/application.service';
@@ -10,12 +10,16 @@ import {selectConfig} from '../../../shared/store/selectors/app.selectors';
 import {filter} from 'rxjs/operators';
 import {clone} from '../../../shared/services/utils.service';
 import {OpenttdServerConfigGet} from '../../../api/models/openttd-server-config-get';
+import {NgIf} from '@angular/common';
+import {MatFormField, MatLabel, MatError} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
 
 @Component({
     selector: 'app-settings',
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [NgIf, ReactiveFormsModule, MatFormField, MatLabel, MatError, MatInput]
 })
 export class SettingsComponent implements OnInit {
 

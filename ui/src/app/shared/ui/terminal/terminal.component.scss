@@ -1,5 +1,13 @@
-.outer-box{
-  min-height: 40vh;
-  /* TODO: setting max-height doesn't work with ng-terminal's fit() */
-  /* TODO: automatically resizing following an outer box */
+:host {
+  display: block;
+  height: 100%;
+}
+
+.outer-box {
+  height: 100%;
+}
+
+ng-terminal {
+  display: block;
+  height: 100%;
 }

@@ -1,18 +1,30 @@
 import {Component, OnInit} from '@angular/core';
 import {ServerFile} from "../../../api/models/server-file";
 import {OpenttdServerResourceService} from "../../../api/services/openttd-server-resource.service";
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
 import {Store} from "@ngrx/store";
 import {ServerFileType} from "../../../api/models/server-file-type";
 import {addServer, loadServerFiles} from '../../../shared/store/actions/app.actions';
 import {selectFiles} from '../../../shared/store/selectors/app.selectors';
 import {MatDialogRef} from '@angular/material/dialog';
+import {NgIf} from '@angular/common';
+import {MatFormField, MatLabel, MatHint, MatSuffix} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatIcon} from '@angular/material/icon';
+import {MatButton} from '@angular/material/button';
+import {BaseDialogComponent} from '../../../shared/ui/base-dialog/base-dialog.component';
+import {ServerFileSelectComponent} from '../../../shared/ui/server-file-select/server-file-select.component';
 
 @Component({
     selector: 'app-create-server-dialog',
     templateUrl: './create-server-dialog.component.html',
     styleUrls: ['./create-server-dialog.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [
+      NgIf, ReactiveFormsModule,
+      MatFormField, MatLabel, MatHint, MatSuffix, MatInput, MatIcon, MatButton,
+      BaseDialogComponent, ServerFileSelectComponent
+    ]
 })
 export class CreateServerDialogComponent implements OnInit {
   configFiles: ServerFile[] = []

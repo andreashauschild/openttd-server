@@ -8,12 +8,16 @@ import {loadProcesses} from "../../../shared/store/actions/app.actions";
 import {MatDialogRef} from "@angular/material/dialog";
 import {ApplicationService} from '../../../shared/services/application.service';
 import {filter} from 'rxjs/operators';
+import {NgIf} from '@angular/common';
+import {BaseDialogComponent} from '../../../shared/ui/base-dialog/base-dialog.component';
+import {TerminalComponent} from '../../../shared/ui/terminal/terminal.component';
 
 @Component({
     selector: 'app-openttd-process-terminal',
     templateUrl: './openttd-process-terminal-dialog.component.html',
     styleUrls: ['./openttd-process-terminal-dialog.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [NgIf, BaseDialogComponent, TerminalComponent]
 })
 export class OpenttdProcessTerminalDialogComponent implements AfterViewInit, OnDestroy {
 

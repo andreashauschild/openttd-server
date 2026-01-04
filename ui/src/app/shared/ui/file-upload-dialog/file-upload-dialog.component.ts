@@ -14,13 +14,24 @@ import {
 import {environment} from 'src/environments/environment';
 import {ServerFileType} from '../../../api/models/server-file-type';
 import {MatDialogRef} from '@angular/material/dialog';
+import {NgFor, NgIf} from '@angular/common';
+import {MatProgressBar} from '@angular/material/progress-bar';
+import {MatIcon} from '@angular/material/icon';
+import {MatIconButton, MatButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {BaseDialogComponent} from '../base-dialog/base-dialog.component';
 
 
 @Component({
     selector: 'app-file-upload-dialog',
     templateUrl: './file-upload-dialog.component.html',
     styleUrls: ['./file-upload-dialog.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [
+      NgFor, NgIf,
+      MatProgressBar, MatIcon, MatIconButton, MatButton, MatTooltip,
+      BaseDialogComponent
+    ]
 })
 export class FileUploadDialogComponent implements AfterViewInit {
 

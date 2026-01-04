@@ -1,26 +1,25 @@
-<div class="mt-10 sm:mt-0">
-  <div class="md:grid md:grid-cols-3 md:gap-6">
-    <div class="mt-5 md:col-span-3 md:mt-0">
-      <div class="overflow-hidden shadow sm:rounded-md">
-        <div class="bg-white px-4 py-5 sm:p-6">
-          <div class="mb-5 flex flex-row justify-between">
+<div class="h-full flex flex-col">
+  <div class="flex-1 flex flex-col min-h-0">
+    <div class="flex-1 flex flex-col min-h-0">
+      <div class="flex-1 flex flex-col overflow-hidden shadow sm:rounded-md min-h-0">
+        <div class="flex-1 flex flex-col bg-white px-4 py-5 sm:p-6 min-h-0">
+          <div class="mb-5 flex flex-row justify-between shrink-0">
             <div>
               <span class="text-2xl">{{title}}</span>
               <p class="mt-1 text-sm text-stone-400">{{subTitle}}</p>
             </div>
             <div class="cursor-pointer" (click)="close(false)">
-
               <mat-icon>close</mat-icon>
-
             </div>
           </div>
 
-          <ng-template [ngTemplateOutlet]="bodyTemplate"></ng-template>
+          <div class="flex-1 min-h-0">
+            <ng-template [ngTemplateOutlet]="bodyTemplate"></ng-template>
+          </div>
 
         </div>
-        <div class="bg-gray-50 px-4 py-3 text-right sm:px-6">
+        <div class="bg-gray-50 px-4 py-3 text-right sm:px-6 shrink-0">
           <ng-template [ngTemplateOutlet]="footerTemplate">
-
           </ng-template>
           <ng-container *ngIf="!footerTemplate">
             <button
@@ -33,4 +32,3 @@
     </div>
   </div>
 </div>
-

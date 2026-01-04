@@ -1,16 +1,19 @@
 import {Component, OnInit} from '@angular/core';
 import {BackendWebsocketService} from './shared/services/backend-websocket.service';
-import {Router} from '@angular/router';
+import {Router, RouterOutlet} from '@angular/router';
 import {AuthenticationService} from './shared/services/authentication.service';
-import {SidebarLayoutModel} from './shared/ui/sidebar-layout/sidebar-layout.component';
+import {SidebarLayoutComponent, SidebarLayoutModel} from './shared/ui/sidebar-layout/sidebar-layout.component';
 import {ApplicationService} from './shared/services/application.service';
+import {NgIf} from '@angular/common';
+import {LoadingBarModule} from '@ngx-loading-bar/core';
 
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [NgIf, RouterOutlet, SidebarLayoutComponent, LoadingBarModule]
 })
 export class AppComponent implements OnInit {
 

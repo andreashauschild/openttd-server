@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
     selector: 'app-logout',
     templateUrl: './logout.component.html',
     styleUrls: ['./logout.component.scss'],
-    standalone: false
+    standalone: true
 })
 export class LogoutComponent implements OnInit {
 

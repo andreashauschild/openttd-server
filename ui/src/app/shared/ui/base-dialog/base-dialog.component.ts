@@ -1,11 +1,15 @@
-import {Component, EventEmitter, Input, OnInit, Output, TemplateRef} from '@angular/core';
+import {Component, Input, OnInit, TemplateRef} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
+import {MatIcon} from '@angular/material/icon';
+import {MatButton} from '@angular/material/button';
+import {NgIf, NgTemplateOutlet} from '@angular/common';
 
 @Component({
     selector: 'app-base-dialog',
     templateUrl: './base-dialog.component.html',
     styleUrls: ['./base-dialog.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [NgIf, NgTemplateOutlet, MatIcon, MatButton]
 })
 export class BaseDialogComponent implements OnInit {
 

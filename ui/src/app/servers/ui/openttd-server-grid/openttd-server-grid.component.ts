@@ -12,6 +12,10 @@ import {OpenttdServer} from '../../../api/models/openttd-server';
 import {selectServers} from '../../../shared/store/selectors/app.selectors';
 import {MatDialog} from "@angular/material/dialog";
 import {OpenttdProcessTerminalDialogComponent} from "../openttd-process-terminal/openttd-process-terminal-dialog.component";
+import {NgFor, NgIf} from '@angular/common';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
+import {RouterLink} from '@angular/router';
 
 @Component({
     selector: 'app-openttd-server-grid',
@@ -24,7 +28,8 @@ import {OpenttdProcessTerminalDialogComponent} from "../openttd-process-terminal
             transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
         ]),
     ],
-    standalone: false
+    standalone: true,
+    imports: [NgFor, NgIf, MatIcon, MatTooltip, RouterLink]
 })
 export class OpenttdServerGridComponent implements OnInit {
   dataSource: OpenttdServer[] = []
@@ -66,6 +71,7 @@ export class OpenttdServerGridComponent implements OnInit {
     if (server && server.process) {
       const dialogRef = this.dialog.open(OpenttdProcessTerminalDialogComponent, {
         minWidth: '60%',
+        height: '80vh',
       });
 
       dialogRef.componentInstance.dialogRef = dialogRef;

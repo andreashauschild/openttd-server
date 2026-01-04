@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {FunctionsUsingCSI, NgTerminal} from 'ng-terminal';
+import {FunctionsUsingCSI, NgTerminal, NgTerminalModule} from 'ng-terminal';
 import {FormControl} from '@angular/forms';
 import {Terminal} from '@xterm/xterm';
 import {Subject} from 'rxjs';
@@ -9,7 +9,8 @@ import {filter} from 'rxjs/operators';
     selector: 'app-terminal',
     templateUrl: './terminal.component.html',
     styleUrls: ['./terminal.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [NgTerminalModule]
 })
 export class TerminalComponent implements OnInit, AfterViewInit {
   readonly title = 'openttd server console';

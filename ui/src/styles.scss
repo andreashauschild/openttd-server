@@ -40,3 +40,28 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   min-height: 0px !important;
   transform-origin: center;
 }
+
+// Ensure MatDialog content fills the dialog height
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.mat-mdc-dialog-container .mdc-dialog__container {
+  height: 100%;
+}
+
+.mat-mdc-dialog-container .mat-mdc-dialog-content {
+  flex: 1;
+  max-height: none !important;
+  display: flex;
+  flex-direction: column;
+}
+
+mat-dialog-container {
+  height: 100%;
+}
+
+.cdk-overlay-pane {
+  max-height: 90vh !important;
+}

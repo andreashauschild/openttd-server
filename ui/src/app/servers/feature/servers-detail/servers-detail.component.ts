@@ -11,13 +11,24 @@ import {RP_ID} from '../../../shared/model/constants';
 import {OpenttdServer} from '../../../api/models/openttd-server';
 import {filter} from 'rxjs/operators';
 import {clone} from '../../../shared/services/utils.service';
-import {FormBuilder, Validators} from '@angular/forms';
+import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {NgIf} from '@angular/common';
+import {MatFormField, MatLabel, MatHint, MatError, MatSuffix} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatIcon} from '@angular/material/icon';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
+import {ServerFileSelectComponent} from '../../../shared/ui/server-file-select/server-file-select.component';
 
 @Component({
     selector: 'app-servers-detail',
     templateUrl: './servers-detail.component.html',
     styleUrls: ['./servers-detail.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [
+      NgIf, ReactiveFormsModule,
+      MatFormField, MatLabel, MatHint, MatError, MatSuffix, MatInput, MatIcon, MatSlideToggle,
+      ServerFileSelectComponent
+    ]
 })
 export class ServersDetailComponent implements OnInit, OnDestroy {
   serverForm;
