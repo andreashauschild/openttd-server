@@ -55,11 +55,11 @@ RUN wget https://cdn.openttd.org/opengfx-releases/7.1/opengfx-7.1-all.zip
 
 RUN tar -xf openttd-15.0-linux-generic-amd64.tar.xz
 
-RUN mkdir openttd-14
-RUN cp -a openttd-15.0-linux-generic-amd64/. openttd-14
+RUN mkdir openttd-15
+RUN cp -a openttd-15.0-linux-generic-amd64/. openttd-15
 
 RUN unzip opengfx-7.1-all.zip
-RUN tar -xf opengfx-7.1.tar -C openttd-14/baseset/
+RUN tar -xf opengfx-7.1.tar -C openttd-15/baseset/
 
 RUN rm -rf opengfx-*.tar opengfx-*.zip openttd-15.0*
     ## Set entrypoint script to right user
