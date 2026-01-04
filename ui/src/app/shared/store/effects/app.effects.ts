@@ -1,6 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import * as AppActions from '../actions/app.actions'
+import {catchError, EMPTY, mergeMap} from 'rxjs';
+import {map} from 'rxjs/operators';
+
+import * as AppActions from '@store/actions/app.actions';
 import {
   addServerSuccess, createExplorerDir, createExplorerDirSuccess, deleteExplorerFile, deleteExplorerFileSuccess,
   deleteServerSuccess, loadExplorerDataSuccess,
@@ -12,12 +15,10 @@ import {
   saveServerSuccess,
   startServerSuccess, stopServerSuccess,
   updateServerSuccess
-} from '../actions/app.actions'
-import {catchError, EMPTY, mergeMap} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
-import {ApplicationService} from '../../services/application.service';
-import {FileExplorerResourceService} from '../../../api/services/file-explorer-resource.service';
+} from '@store/actions/app.actions';
+import {OpenttdServerResourceService} from '@api/services/openttd-server-resource.service';
+import {FileExplorerResourceService} from '@api/services/file-explorer-resource.service';
+import {ApplicationService} from '@shared/services/application.service';
 
 @Injectable()
 export class AppEffects {

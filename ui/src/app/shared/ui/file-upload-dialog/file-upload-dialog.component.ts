@@ -11,15 +11,16 @@ import {
   updateFileList,
   UploadState
 } from '@andreashauschild/just-upload';
-import {environment} from 'src/environments/environment';
-import {ServerFileType} from '../../../api/models/server-file-type';
 import {MatDialogRef} from '@angular/material/dialog';
 import {NgFor, NgIf} from '@angular/common';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatIcon} from '@angular/material/icon';
 import {MatIconButton, MatButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
-import {BaseDialogComponent} from '../base-dialog/base-dialog.component';
+
+import {environment} from '@env/environment';
+import {ServerFileType} from '@api/models/server-file-type';
+import {BaseDialogComponent} from '@shared/ui/base-dialog/base-dialog.component';
 
 
 @Component({

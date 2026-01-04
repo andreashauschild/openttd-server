@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {BackendWebsocketService} from './shared/services/backend-websocket.service';
 import {Router, RouterOutlet} from '@angular/router';
-import {AuthenticationService} from './shared/services/authentication.service';
-import {SidebarLayoutComponent, SidebarLayoutModel} from './shared/ui/sidebar-layout/sidebar-layout.component';
-import {ApplicationService} from './shared/services/application.service';
 import {NgIf} from '@angular/common';
 import {LoadingBarModule} from '@ngx-loading-bar/core';
+
+import {BackendWebsocketService} from '@shared/services/backend-websocket.service';
+import {AuthenticationService} from '@shared/services/authentication.service';
+import {ApplicationService} from '@shared/services/application.service';
+import {SidebarLayoutComponent, SidebarLayoutModel} from '@shared/ui/sidebar-layout/sidebar-layout.component';
 
 
 @Component({

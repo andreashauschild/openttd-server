@@ -1,6 +1,7 @@
 import {Routes} from '@angular/router';
-import {authGuard} from './shared/guards/auth.guard';
-import {FileExplorerComponent} from './file-explorer/file-explorer/file-explorer.component';
+
+import {authGuard} from '@shared/guards/auth.guard';
+import {FileExplorerComponent} from '@app/file-explorer/file-explorer/file-explorer.component';
 
 export const routes: Routes = [
   {

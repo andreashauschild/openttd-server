@@ -2,9 +2,10 @@ import {Injectable} from '@angular/core';
 import {Data, DataNode, ExplorerService, IDataService} from 'ngx-explorer';
 import {EMPTY, Observable, of} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {createExplorerDir, deleteExplorerFile, loadExplorerData, renameExplorerFile} from '../../shared/store/actions/app.actions';
-import {selectExplorerData} from '../../shared/store/selectors/app.selectors';
 import {filter, map} from 'rxjs/operators';
+
+import {createExplorerDir, deleteExplorerFile, loadExplorerData, renameExplorerFile} from '@store/actions/app.actions';
+import {selectExplorerData} from '@store/selectors/app.selectors';
 
 export interface MyDataType extends Data {
   id: number;

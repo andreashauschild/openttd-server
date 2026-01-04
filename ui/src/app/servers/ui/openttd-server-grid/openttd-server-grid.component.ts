@@ -1,21 +1,16 @@
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {Component, OnInit} from '@angular/core';
 import {Store} from "@ngrx/store";
-import {
-  deleteServer,
-  loadServerConfig, pauseUnpauseServer,
-  saveServer,
-  startServer,
-  stopServer
-} from 'src/app/shared/store/actions/app.actions';
-import {OpenttdServer} from '../../../api/models/openttd-server';
-import {selectServers} from '../../../shared/store/selectors/app.selectors';
 import {MatDialog} from "@angular/material/dialog";
-import {OpenttdProcessTerminalDialogComponent} from "../openttd-process-terminal/openttd-process-terminal-dialog.component";
 import {NgFor, NgIf} from '@angular/common';
 import {MatIcon} from '@angular/material/icon';
 import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
+
+import {deleteServer, loadServerConfig, pauseUnpauseServer, saveServer, startServer, stopServer} from '@store/actions/app.actions';
+import {selectServers} from '@store/selectors/app.selectors';
+import {OpenttdServer} from '@api/models/openttd-server';
+import {OpenttdProcessTerminalDialogComponent} from "../openttd-process-terminal/openttd-process-terminal-dialog.component";
 
 @Component({
     selector: 'app-openttd-server-grid',

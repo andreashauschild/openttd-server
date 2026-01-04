@@ -1,5 +1,6 @@
 import {Routes} from '@angular/router';
-import {RP_ID} from '../../shared/model/constants';
+
+import {RP_ID} from '@shared/model/constants';
 
 export const SERVERS_ROUTES: Routes = [
   {

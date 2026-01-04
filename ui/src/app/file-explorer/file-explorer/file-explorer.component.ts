@@ -1,15 +1,16 @@
 import {AfterViewInit, ApplicationRef, Component, ComponentFactoryResolver, ComponentRef, Injector, OnDestroy, Renderer2} from '@angular/core';
 import {ExplorerComponent, ExplorerService} from 'ngx-explorer';
-import {FileExplorerDataService} from './file-explorer-data.service';
 import {Store} from '@ngrx/store';
-import {selectExplorerData} from '../../shared/store/selectors/app.selectors';
 import {filter, take} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
-import {FileUploadDialogComponent} from '../../shared/ui/file-upload-dialog/file-upload-dialog.component';
-import {ServerFileType} from '../../api/models/server-file-type';
 import {MatDialog} from '@angular/material/dialog';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
+
+import {selectExplorerData} from '@store/selectors/app.selectors';
+import {FileUploadDialogComponent} from '@shared/ui/file-upload-dialog/file-upload-dialog.component';
+import {ServerFileType} from '@api/models/server-file-type';
+import {FileExplorerDataService} from './file-explorer-data.service';
 
 @Component({
     selector: 'app-file-explorer',

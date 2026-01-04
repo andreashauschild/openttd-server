@@ -1,7 +1,8 @@
 import {inject} from '@angular/core';
 import {CanActivateFn, Router} from '@angular/router';
-import {AuthenticationService} from '../services/authentication.service';
 import {interval} from 'rxjs';
+
+import {AuthenticationService} from '@shared/services/authentication.service';
 
 let sessionCheckInitialized = false;
 

@@ -1,16 +1,17 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {interval, Subject, Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
-import {OpenttdProcess} from 'src/app/api/models';
-import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
-import {selectProcesses, selectProcessUpdateEvent} from '../../../shared/store/selectors/app.selectors';
-import {loadProcesses} from "../../../shared/store/actions/app.actions";
 import {MatDialogRef} from "@angular/material/dialog";
-import {ApplicationService} from '../../../shared/services/application.service';
 import {filter} from 'rxjs/operators';
 import {NgIf} from '@angular/common';
-import {BaseDialogComponent} from '../../../shared/ui/base-dialog/base-dialog.component';
-import {TerminalComponent} from '../../../shared/ui/terminal/terminal.component';
+
+import {OpenttdProcess} from '@api/models';
+import {OpenttdServerResourceService} from '@api/services/openttd-server-resource.service';
+import {selectProcesses, selectProcessUpdateEvent} from '@store/selectors/app.selectors';
+import {loadProcesses} from '@store/actions/app.actions';
+import {ApplicationService} from '@shared/services/application.service';
+import {BaseDialogComponent} from '@shared/ui/base-dialog/base-dialog.component';
+import {TerminalComponent} from '@shared/ui/terminal/terminal.component';
 
 @Component({
     selector: 'app-openttd-process-terminal',
