@@ -28,17 +28,28 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   @apply text-gray-300 hover:bg-gray-700 hover:text-white flex items-center px-2 py-2 text-sm font-medium rounded-md;
 }
 
-.snackbar{
-  background: white;
-  border-radius: 4px;
-  box-sizing: border-box;
-  display: block;
-  margin: 0px !important;
-  max-width: 1200vw;
-  min-width: 800px !important;
-  padding: 0px !important;
-  min-height: 0px !important;
-  transform-origin: center;
+// Custom snackbar for notifications
+.snackbar {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: 400px;
+  max-width: 600px;
+}
+
+// Hide the snackbar container when empty
+.snackbar:empty,
+.snackbar:has(> :empty) {
+  display: none !important;
+}
+
+// Override MDC snackbar surface styles
+.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 
 // Ensure MatDialog content fills the dialog height
