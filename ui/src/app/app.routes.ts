@@ -20,6 +20,11 @@ export const routes: Routes = [
     component: FileExplorerComponent
   },
   {
+    path: 'explorer2',
+    canActivate: [authGuard],
+    loadComponent: () => import('./file-explorer/filexplorer2/filexplorer2.component').then(m => m.Filexplorer2Component)
+  },
+  {
     path: 'login',
     loadComponent: () => import('./auth/feature/login/login.component').then(m => m.LoginComponent)
   },

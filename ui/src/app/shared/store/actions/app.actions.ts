@@ -146,3 +146,27 @@ export const renameExplorerFile = createAction(
 export const renameExplorerFileSuccess = createAction(
   '[App] renameExplorerFileSuccess', props<{ src: string, data: ExplorerData }>()
 );
+
+export const moveExplorerFile = createAction(
+  '[App] moveExplorerFile', props<{ src: string, sourcePath: string, destinationPath: string, overwrite?: boolean }>()
+);
+
+export const moveExplorerFileSuccess = createAction(
+  '[App] moveExplorerFileSuccess', props<{ src: string, data: ExplorerData }>()
+);
+
+export const copyExplorerFile = createAction(
+  '[App] copyExplorerFile', props<{ src: string, sourcePath: string, destinationPath: string }>()
+);
+
+export const copyExplorerFileSuccess = createAction(
+  '[App] copyExplorerFileSuccess', props<{ src: string, data: ExplorerData }>()
+);
+
+export const downloadExplorerZip = createAction(
+  '[App] downloadExplorerZip', props<{ src: string, directoryPath: string }>()
+);
+
+export const downloadSelectedExplorerZip = createAction(
+  '[App] downloadSelectedExplorerZip', props<{ src: string, directoryPath: string, fileNames: string[] }>()
+);

@@ -86,7 +86,8 @@ export const reducer = createReducer(
     }
   }),
   on(AppActions.loadExplorerDataSuccess, AppActions.deleteExplorerFileSuccess
-    , AppActions.createExplorerDirSuccess, AppActions.renameExplorerFileSuccess, (state: State, action): State => {
+    , AppActions.createExplorerDirSuccess, AppActions.renameExplorerFileSuccess
+    , AppActions.moveExplorerFileSuccess, AppActions.copyExplorerFileSuccess, (state: State, action): State => {
       return {
         ...state,
         explorer: action.data,

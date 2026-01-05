@@ -85,8 +85,15 @@ public class ChunkUploadResource {
                 if(targetDir==null){
                     throw new ServiceRuntimeException("Target dir must be set on upload of ANY type");
                 }
+                // Strip leading slashes to ensure relative resolution
+                if (targetDir.startsWith("/") || targetDir.startsWith("\\")) {
+                    targetDir = targetDir.substring(1);
+                }
                 upload = this.openttdRoot.resolve(targetDir).resolve(fileName).normalize();
-
+                // Security check: prevent path traversal outside openttdRoot
+                if (!upload.toAbsolutePath().startsWith(this.openttdRoot.toAbsolutePath())) {
+                    throw new ServiceRuntimeException("Path traversal not allowed: " + targetDir + "/" + fileName);
+                }
             }
             default -> throw new ServiceRuntimeException("Unknown file type for upload");
 
