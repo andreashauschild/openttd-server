@@ -5,6 +5,9 @@ export interface ExplorerFile {
   baseName?: string;
   extension?: string;
   id?: string;
+  isDirectory?: boolean;
+  lastModified?: number;
   name?: string;
   relativePath?: string;
+  size?: number;
 }

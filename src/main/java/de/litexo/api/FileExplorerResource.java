@@ -4,6 +4,8 @@ package de.litexo.api;
 import de.litexo.model.external.ExplorerData;
 import de.litexo.model.external.ExplorerDirectory;
 import de.litexo.model.external.ExplorerFile;
+import de.litexo.model.external.FileOperationRequest;
+import de.litexo.model.external.MultiFileDownloadRequest;
 import de.litexo.model.external.ServerFile;
 import de.litexo.model.external.ServerFileType;
 import de.litexo.repository.DefaultRepository;
@@ -14,6 +16,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -26,10 +29,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static java.lang.String.valueOf;
 
@@ -69,9 +76,11 @@ public class FileExplorerResource {
                                     .setName(f.getName())
                                     .setAbsolutePath(f.getAbsolutePath())
                                     .setRelativePath(f.getAbsolutePath().substring(explorerData.getRoot().toString().length()))
-                                    // Hier könnten Sie baseName und extension setzen
                                     .setBaseName(FilenameUtils.getBaseName(f.getName()))
-                                    .setExtension(FilenameUtils.getExtension(f.getName()));
+                                    .setExtension(FilenameUtils.getExtension(f.getName()))
+                                    .setSize(f.length())
+                                    .setLastModified(f.lastModified())
+                                    .setIsDirectory(false);
                             directory.getFiles().add(explorerFile);
                         }
                     }
@@ -180,5 +189,176 @@ public class FileExplorerResource {
         return p;
     }
 
+    @POST
+    @Path("/explorer/move")
+    @Operation(operationId = "moveFile")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ExplorerData moveFile(FileOperationRequest request) {
+        String sourcePath = request.getSourcePath();
+        String destinationPath = request.getDestinationPath();
 
+        if (sourcePath.startsWith("/") || sourcePath.startsWith("\\")) {
+            sourcePath = sourcePath.substring(1);
+        }
+        if (destinationPath.startsWith("/") || destinationPath.startsWith("\\")) {
+            destinationPath = destinationPath.substring(1);
+        }
+
+        java.nio.file.Path source = check(Paths.get(openttdRootDir).resolve(sourcePath).normalize());
+        java.nio.file.Path destination = check(Paths.get(openttdRootDir).resolve(destinationPath).normalize());
+
+        if (!Files.exists(source)) {
+            throw new ServiceRuntimeException("Source does not exist: " + sourcePath);
+        }
+
+        try {
+            if (Files.isDirectory(source)) {
+                FileUtils.moveDirectory(source.toFile(), destination.toFile());
+            } else {
+                if (Boolean.TRUE.equals(request.getOverwrite())) {
+                    Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
+                } else {
+                    Files.move(source, destination);
+                }
+            }
+        } catch (IOException e) {
+            throw new ServiceRuntimeException("Failed to move " + sourcePath + " to " + destinationPath, e);
+        }
+
+        return this.getExplorerData();
+    }
+
+    @POST
+    @Path("/explorer/copy")
+    @Operation(operationId = "copyFile")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ExplorerData copyFile(FileOperationRequest request) {
+        String sourcePath = request.getSourcePath();
+        String destinationPath = request.getDestinationPath();
+
+        if (sourcePath.startsWith("/") || sourcePath.startsWith("\\")) {
+            sourcePath = sourcePath.substring(1);
+        }
+        if (destinationPath.startsWith("/") || destinationPath.startsWith("\\")) {
+            destinationPath = destinationPath.substring(1);
+        }
+
+        java.nio.file.Path source = check(Paths.get(openttdRootDir).resolve(sourcePath).normalize());
+        java.nio.file.Path destination = check(Paths.get(openttdRootDir).resolve(destinationPath).normalize());
+
+        if (!Files.exists(source)) {
+            throw new ServiceRuntimeException("Source does not exist: " + sourcePath);
+        }
+
+        try {
+            if (Files.isDirectory(source)) {
+                FileUtils.copyDirectory(source.toFile(), destination.toFile());
+            } else {
+                FileUtils.copyFile(source.toFile(), destination.toFile());
+            }
+        } catch (IOException e) {
+            throw new ServiceRuntimeException("Failed to copy " + sourcePath + " to " + destinationPath, e);
+        }
+
+        return this.getExplorerData();
+    }
+
+    @GET
+    @Path("/explorer/download-zip")
+    @Operation(operationId = "downloadDirectoryZip")
+    @Produces("application/zip")
+    public Response downloadDirectoryZip(@QueryParam("dir") String dir) {
+        if (dir == null || dir.isEmpty()) {
+            dir = "";
+        }
+        if (dir.startsWith("/") || dir.startsWith("\\")) {
+            dir = dir.substring(1);
+        }
+
+        java.nio.file.Path dirPath = check(Paths.get(openttdRootDir).resolve(dir).normalize());
+
+        if (!Files.exists(dirPath) || !Files.isDirectory(dirPath)) {
+            throw new ServiceRuntimeException("Directory does not exist: " + dir);
+        }
+
+        String zipName = dirPath.getFileName().toString();
+        if (zipName.isEmpty()) {
+            zipName = "download";
+        }
+
+        StreamingOutput stream = output -> {
+            try (ZipOutputStream zos = new ZipOutputStream(output)) {
+                addToZip(zos, dirPath, dirPath);
+            }
+        };
+
+        return Response
+                .ok(stream, "application/zip")
+                .header("content-disposition", "attachment; filename=\"" + zipName + ".zip\"")
+                .build();
+    }
+
+    @POST
+    @Path("/explorer/download-zip")
+    @Operation(operationId = "downloadSelectedZip")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces("application/zip")
+    public Response downloadSelectedZip(MultiFileDownloadRequest request) {
+        String dirPath = request.getDirectoryPath();
+        if (dirPath == null) {
+            dirPath = "";
+        }
+        if (dirPath.startsWith("/") || dirPath.startsWith("\\")) {
+            dirPath = dirPath.substring(1);
+        }
+
+        java.nio.file.Path basePath = check(Paths.get(openttdRootDir).resolve(dirPath).normalize());
+
+        if (!Files.exists(basePath) || !Files.isDirectory(basePath)) {
+            throw new ServiceRuntimeException("Directory does not exist: " + dirPath);
+        }
+
+        StreamingOutput stream = output -> {
+            try (ZipOutputStream zos = new ZipOutputStream(output)) {
+                for (String fileName : request.getFileNames()) {
+                    java.nio.file.Path filePath = check(basePath.resolve(fileName).normalize());
+                    if (Files.exists(filePath)) {
+                        addToZip(zos, basePath, filePath);
+                    }
+                }
+            }
+        };
+
+        return Response
+                .ok(stream, "application/zip")
+                .header("content-disposition", "attachment; filename=\"download.zip\"")
+                .build();
+    }
+
+    private void addToZip(ZipOutputStream zos, java.nio.file.Path basePath, java.nio.file.Path filePath) throws IOException {
+        if (Files.isDirectory(filePath)) {
+            String entryName = basePath.relativize(filePath).toString();
+            if (!entryName.isEmpty()) {
+                zos.putNextEntry(new ZipEntry(entryName + "/"));
+                zos.closeEntry();
+            }
+            try (DirectoryStream<java.nio.file.Path> stream = Files.newDirectoryStream(filePath)) {
+                for (java.nio.file.Path child : stream) {
+                    addToZip(zos, basePath, child);
+                }
+            }
+        } else {
+            zos.putNextEntry(new ZipEntry(basePath.relativize(filePath).toString()));
+            try (InputStream is = Files.newInputStream(filePath)) {
+                byte[] buffer = new byte[8192];
+                int len;
+                while ((len = is.read(buffer)) > 0) {
+                    zos.write(buffer, 0, len);
+                }
+            }
+            zos.closeEntry();
+        }
+    }
 }

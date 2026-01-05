@@ -1,5 +1,6 @@
 package de.litexo.model.external;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -8,10 +9,12 @@ import java.util.List;
 
 @Data
 @Accessors(chain = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ExplorerDirectory {
     String id;
     String name;
     String absolutePath;
     String relativePath;
     List<ExplorerFile> files = new ArrayList<>();
+    List<ExplorerDirectory> dirs = new ArrayList<>();
 }

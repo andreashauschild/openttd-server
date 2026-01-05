@@ -1,5 +1,4 @@
-﻿import {environment} from '../../environments/environment';
-/* tslint:disable */
+import {environment} from '../../environments/environment';/* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
 

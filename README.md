@@ -119,7 +119,7 @@ The container uses a simple file storage to store data. If you want to have pers
 - https://blog.sebastian-daschner.com/entries/quarkus-remote-dev-in-containers-update
 
 ## Debug and develop in Quarkus Container:
-
+- Quarkus debug url: http://localhost:8080/q
 - Add properties to `application.properties`
 
 ```

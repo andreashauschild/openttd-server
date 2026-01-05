@@ -172,6 +172,23 @@ paths:
       security:
       - SecurityScheme:
         - login_user
+  /api/openttd-server/explorer/copy:
+    post:
+      tags:
+      - File Explorer Resource
+      operationId: copyFile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileOperationRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplorerData'
   /api/openttd-server/explorer/data:
     get:
       tags:
@@ -222,6 +239,31 @@ paths:
             application/octet-stream:
               schema:
                 type: object
+  /api/openttd-server/explorer/download-zip:
+    get:
+      tags:
+      - File Explorer Resource
+      operationId: downloadDirectoryZip
+      parameters:
+      - name: dir
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+      - File Explorer Resource
+      operationId: downloadSelectedZip
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MultiFileDownloadRequest'
+      responses:
+        "200":
+          description: OK
   /api/openttd-server/explorer/file:
     delete:
       tags:
@@ -232,6 +274,23 @@ paths:
         in: query
         schema:
           type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplorerData'
+  /api/openttd-server/explorer/move:
+    post:
+      tags:
+      - File Explorer Resource
+      operationId: moveFile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileOperationRequest'
       responses:
         "200":
           description: OK
@@ -693,6 +752,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExplorerFile'
+        dirs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExplorerDirectory'
     ExplorerFile:
       type: object
       properties:
@@ -708,6 +771,14 @@ components:
           type: string
         extension:
           type: string
+        size:
+          format: int64
+          type: integer
+        lastModified:
+          format: int64
+          type: integer
+        isDirectory:
+          type: boolean
     ExportModel:
       type: object
       properties:
@@ -719,6 +790,15 @@ components:
           $ref: '#/components/schemas/PauseCommand'
         serviceError:
           $ref: '#/components/schemas/ServiceError'
+    FileOperationRequest:
+      type: object
+      properties:
+        sourcePath:
+          type: string
+        destinationPath:
+          type: string
+        overwrite:
+          type: boolean
     InternalOpenttdServerConfig:
       type: object
       properties:
@@ -739,6 +819,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OpenttdServer'
+    MultiFileDownloadRequest:
+      type: object
+      properties:
+        directoryPath:
+          type: string
+        fileNames:
+          type: array
+          items:
+            type: string
     OpenttdProcess:
       type: object
       properties:
@@ -768,6 +857,11 @@ components:
           type: string
         password:
           type: string
+        adminPassword:
+          type: string
+        serverAdminPort:
+          format: int32
+          type: integer
         port:
           format: int32
           type: integer
