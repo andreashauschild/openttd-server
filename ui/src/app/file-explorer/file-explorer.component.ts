@@ -33,7 +33,7 @@ interface BreadcrumbItem {
 }
 
 @Component({
-  selector: 'app-filexplorer2',
+  selector: 'app-filexplorer',
   standalone: true,
   imports: [
     CommonModule,
@@ -43,17 +43,16 @@ interface BreadcrumbItem {
     MatButton,
     MatIconButton,
     MatCheckbox,
-    MatTooltip,
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
     MatDivider,
     FormsModule
   ],
-  templateUrl: './filexplorer2.component.html',
-  styleUrls: ['./filexplorer2.component.scss']
+  templateUrl: './file-explorer.component.html',
+  styleUrls: ['./file-explorer.component.scss']
 })
-export class Filexplorer2Component implements OnInit, OnDestroy {
+export class FileExplorerComponent implements OnInit, OnDestroy {
   explorerData: ExplorerData | undefined;
   currentPath: string = '';
   breadcrumbs: BreadcrumbItem[] = [];
@@ -75,7 +74,7 @@ export class Filexplorer2Component implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.store.dispatch(loadExplorerData({src: Filexplorer2Component.name}));
+    this.store.dispatch(loadExplorerData({src: FileExplorerComponent.name}));
     this.sub.add(
       this.store.select(selectExplorerData)
         .pipe(filter(d => d != null))
@@ -200,7 +199,7 @@ export class Filexplorer2Component implements OnInit, OnDestroy {
         ? `${this.currentPath}/${folderName.trim()}`
         : folderName.trim();
       this.store.dispatch(createExplorerDir({
-        src: Filexplorer2Component.name,
+        src: FileExplorerComponent.name,
         relativeDirPath: newPath
       }));
     }
@@ -221,7 +220,7 @@ export class Filexplorer2Component implements OnInit, OnDestroy {
   }
 
   refresh(): void {
-    this.store.dispatch(loadExplorerData({src: Filexplorer2Component.name}));
+    this.store.dispatch(loadExplorerData({src: FileExplorerComponent.name}));
   }
 
   deleteSelected(): void {
@@ -237,7 +236,7 @@ export class Filexplorer2Component implements OnInit, OnDestroy {
         const relativePath = 'relativePath' in item ? item.relativePath : '';
         if (relativePath) {
           this.store.dispatch(deleteExplorerFile({
-            src: Filexplorer2Component.name,
+            src: FileExplorerComponent.name,
             relativePath: relativePath
           }));
         }
@@ -264,7 +263,7 @@ export class Filexplorer2Component implements OnInit, OnDestroy {
 
     if (fileNames.length > 0) {
       this.store.dispatch(downloadSelectedExplorerZip({
-        src: Filexplorer2Component.name,
+        src: FileExplorerComponent.name,
         directoryPath: this.currentPath,
         fileNames: fileNames
       }));
@@ -281,7 +280,7 @@ export class Filexplorer2Component implements OnInit, OnDestroy {
   downloadDirectory(dir: ExplorerDirectory): void {
     if (dir.relativePath) {
       this.store.dispatch(downloadExplorerZip({
-        src: Filexplorer2Component.name,
+        src: FileExplorerComponent.name,
         directoryPath: dir.relativePath
       }));
     }
@@ -294,7 +293,7 @@ export class Filexplorer2Component implements OnInit, OnDestroy {
     const relativePath = 'relativePath' in item ? item.relativePath : '';
     if (relativePath) {
       this.store.dispatch(deleteExplorerFile({
-        src: Filexplorer2Component.name,
+        src: FileExplorerComponent.name,
         relativePath: relativePath
       }));
     }
@@ -308,7 +307,7 @@ export class Filexplorer2Component implements OnInit, OnDestroy {
       const relativePath = 'relativePath' in item ? item.relativePath : '';
       if (relativePath) {
         this.store.dispatch(renameExplorerFile({
-          src: Filexplorer2Component.name,
+          src: FileExplorerComponent.name,
           relativePath: relativePath,
           newName: newName.trim()
         }));

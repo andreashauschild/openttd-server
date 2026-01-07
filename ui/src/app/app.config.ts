@@ -14,7 +14,6 @@ import {metaReducers, reducers} from '@store/reducers';
 import {AppEffects} from '@store/effects/app.effects';
 import {httpAuthInterceptor} from '@shared/interceptors/http-auth.interceptor';
 import {loadingBarInterceptor} from '@shared/interceptors/loading-bar.interceptor';
-import {FileExplorerDataService} from '@app/file-explorer/file-explorer/file-explorer-data.service';
 import {environment} from '@env/environment';
 
 export const appConfig: ApplicationConfig = {
@@ -27,6 +26,5 @@ export const appConfig: ApplicationConfig = {
     !environment.production ? provideStoreDevtools({connectInZone: true}) : [],
     importProvidersFrom(LoadingBarModule),
     DatePipe,
-    {provide: DataService, useExisting: FileExplorerDataService},
   ]
 };

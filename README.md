@@ -8,12 +8,12 @@
 ![Github issues](https://img.shields.io/github/issues/andreashauschild/openttd-server)
 ![Github last-commit](https://img.shields.io/github/last-commit/andreashauschild/openttd-server)
 
-# Welcome to  OpenTTD Server
+# Welcome to OpenTTD Server
 This Docker container allows you to host multiple instances of OpenTTD dedicated servers in a single container, providing an efficient and convenient environment for hosting these servers.
 
 This documentation expect a basic knowledge of docker (expose ports and volumes).
 
-The current state of this Project is `BETA`. Hosting works and every function was tested but as you now a developer should not test his own software. Please create an issue if something needs to be fixed.
+The current state of this Project is `BETA`. Hosting works and every function was tested but as you know a developer should not test his own software. Please create an issue if something needs to be fixed.
 
 It provides the following features:
 
@@ -62,10 +62,45 @@ The following table shows which docker image contains which OpenTTD version. For
 <img src="docs/images/file_upload.JPG"/>
 </a>
 
+### File Explorer for server customization like NewGRF etc.
+<a href="docs/images/openttd-fileexplorer.gif">
+<img src="docs/images/openttd-fileexplorer.gif"/>
+</a>
+
 ### Admin Login
 <a href="docs/images/admin-login.JPG">
 <img src="docs/images/admin-login.JPG"/>
 </a>
+
+### File Explorer
+The File Explorer allows you to customize your OpenTTD installation at runtime by uploading custom content directly through the web interface. This feature was added based on [Issue #4](https://github.com/andreashauschild/openttd-server/issues/4).
+
+#### Use Cases
+- Upload **NewGRF** files to add new graphics, vehicles, industries, or town names
+- Add **AI scripts** and **Game Scripts** to enhance gameplay
+- Upload **Base Graphics Sets** for custom visual styles
+- Manage configuration files and save games
+
+#### How It Works
+The File Explorer provides access to the OpenTTD installation directory (`/home/openttd/openttd-<version>`). You can:
+- **Browse** the complete directory structure
+- **Upload** files to any directory (e.g., `newgrf/`, `ai/`, `game/`)
+- **Create** new directories for organizing content
+- **Delete** files and directories
+- **Download** files or entire directories as ZIP archives
+- **Move/Copy** files between directories
+- **Rename** files and directories
+
+#### Example: Adding a NewGRF
+1. Download the NewGRF using one of these methods:
+   - **Via OpenTTD App:** Use the in-game content downloader. Files are saved to your local `content_download/newgrf` folder. See [OpenTTD Wiki](https://wiki.openttd.org/en/Manual/NewGRF#manual-install) for directory locations on your OS.
+   - **Manual Download:** Get `.grf` files from [BaNaNaS](https://bananas.openttd.org/) or [GRFCrawler](https://grfcrawler.tt-forums.net/)
+2. Open the File Explorer in the web interface
+3. Navigate to the `newgrf/` directory
+4. Upload the `.grf` file
+5. Configure your server's `openttd.cfg` to use the NewGRF or create a save game that includes it
+
+**Note:** NewGRF files should be installed before starting a new game to ensure correct operation. Changes to NewGRF settings are baked into save games.
 
 # Networking
 By default, docker does not expose the containers on your network. This must be done manually with -p parameter (see here for more details on -p). 
@@ -73,7 +108,7 @@ For the container to work you need to expose at least 2 ports. The port `8080` f
 
 # File Locations
 All data and uploads within the container are saved in the `/home/openttd/server` directory.
-Opentdd is installed on `/home/openttd/openttd-<version>` directory.
+OpenTTD is installed on `/home/openttd/openttd-<version>` directory.
 
 # Setup
 When you start the Docker container for the OpenTTD server for the first time, it will log the password for the admin login. See fragment below.
@@ -99,13 +134,13 @@ Run OpenTTD Server with 1 exposed port. In this case you can host only 1 server.
 
 `docker run -d -p 8080:8080 -p 3979:3979/tcp -p 3979:3979/udp hauschi86/openttd-server:latest`
 
-Run OpenTTD Server with 20 exposed port. In this case you can host 20 server.
+Run OpenTTD Server with 20 exposed port. In this case you can host 20 servers.
 
 `docker run -d -p 8080:8080 -p 3979-3999:3979-3999/tcp -p 3979-3999:3979-3999/udp hauschi86/openttd-server:latest`
 
 The container uses a simple file storage to store data. If you want to have persistent storage you should create a volume and bind it.
 
-`docker run -d -v openttd-server-volumne:/home/openttd/server -p 8080:8080 -p 3979-3999:3979-3999/tcp -p 3979-3999:3979-3999/udp hauschi86/openttd-server:latest`
+`docker run -d -v openttd-server-volume:/home/openttd/server -p 8080:8080 -p 3979-3999:3979-3999/tcp -p 3979-3999:3979-3999/udp hauschi86/openttd-server:latest`
 
 
 # Usage Development Mode

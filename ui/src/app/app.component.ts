@@ -36,12 +36,7 @@ export class AppComponent implements OnInit {
         icon: 'folder_copy',
         path: "/explorer",
         title: "File-Explorer"
-      },
-      {
-        icon: 'folder_open',
-        path: "/explorer2",
-        title: "File-Explorer 2"
-      },
+      }
     ]
   }
 
