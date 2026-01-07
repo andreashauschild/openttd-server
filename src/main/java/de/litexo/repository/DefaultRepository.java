@@ -105,7 +105,7 @@ public class DefaultRepository {
     }
 
     public Optional<ServerFile> getSaveGame(String fileName) {
-        Path savegame = this.openttdSaveDirPath.resolve(fileName);
+        Path savegame = validatePath(this.openttdSaveDirPath, fileName);
         if (Files.exists(savegame)) {
             return Optional.of(this.serverFile(savegame.toFile().getAbsolutePath(), SAVE_GAME));
         }
@@ -113,11 +113,28 @@ public class DefaultRepository {
     }
 
     public Optional<ServerFile> getConfig(String fileName) {
-        Path savegame = this.openttdConfigDirPath.resolve(fileName);
-        if (Files.exists(savegame)) {
-            return Optional.of(this.serverFile(savegame.toFile().getAbsolutePath(), CONFIG));
+        Path config = validatePath(this.openttdConfigDirPath, fileName);
+        if (Files.exists(config)) {
+            return Optional.of(this.serverFile(config.toFile().getAbsolutePath(), CONFIG));
         }
         return Optional.empty();
+    }
+
+    /**
+     * Validates that the resolved path is within the allowed base directory.
+     * Prevents path traversal attacks.
+     */
+    private Path validatePath(Path basePath, String fileName) {
+        // Strip leading slashes to ensure relative resolution
+        if (fileName.startsWith("/") || fileName.startsWith("\\")) {
+            fileName = fileName.substring(1);
+        }
+        Path resolved = basePath.resolve(fileName).normalize();
+        // Security check: prevent path traversal outside base directory
+        if (!resolved.toAbsolutePath().startsWith(basePath.toAbsolutePath())) {
+            throw new ServiceRuntimeException("Path traversal not allowed: " + fileName);
+        }
+        return resolved;
     }
 
 

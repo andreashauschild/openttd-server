@@ -17,8 +17,8 @@
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
     <mockito.version>4.7.0</mockito.version>
     <frontend-maven-plugin.version>1.10.0</frontend-maven-plugin.version>
-    <npmVersion>8.19.2</npmVersion>
-    <nodeVersion>v16.18.1</nodeVersion>
+    <npmVersion>11.6.2</npmVersion>
+    <nodeVersion>v24.12.0</nodeVersion>
     <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
   </properties>
   <dependencyManagement>

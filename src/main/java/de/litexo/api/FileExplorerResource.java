@@ -9,12 +9,14 @@ import de.litexo.model.external.MultiFileDownloadRequest;
 import de.litexo.model.external.ServerFile;
 import de.litexo.model.external.ServerFileType;
 import de.litexo.repository.DefaultRepository;
+import de.litexo.security.SecurityUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -41,6 +43,7 @@ import java.util.zip.ZipOutputStream;
 import static java.lang.String.valueOf;
 
 @Path("/api/openttd-server")
+@RolesAllowed("login_user")
 public class FileExplorerResource {
 
     @ConfigProperty(name = "openttd.root.dir")
@@ -175,7 +178,7 @@ public class FileExplorerResource {
         }
         return Response
                 .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
-                .header("content-disposition", "attachment; filename=" + downloadName)
+                .header("content-disposition", "attachment; filename=\"" + SecurityUtils.sanitizeFilename(downloadName) + "\"")
                 .build();
     }
 
@@ -296,7 +299,7 @@ public class FileExplorerResource {
 
         return Response
                 .ok(stream, "application/zip")
-                .header("content-disposition", "attachment; filename=\"" + zipName + ".zip\"")
+                .header("content-disposition", "attachment; filename=\"" + SecurityUtils.sanitizeFilename(zipName) + ".zip\"")
                 .build();
     }
 

@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 public class OpenttdService {
     public static final String MANUALLY_SAVE_INFIX = "_manually_save_";
     public static final String AUTO_SAVE_INFIX = "_auto_save_";
+    private static final Path DUMP_BASE_DIR = Paths.get("/tmp/openttd-dumps");
     @ConfigProperty(name = "start-server.command")
     String startServerCommand;
 
@@ -80,12 +81,32 @@ public class OpenttdService {
     public void dumpProcessData(String id, String dir) {
         if (this.processes.containsKey(id)) {
             try {
-                FileUtils.write(Paths.get(dir).resolve(id + "-" + System.currentTimeMillis() + "-dump.txt").toFile(), this.processes.get(id).getProcessThread().getLogs(), StandardCharsets.UTF_8, false);
+                // Strip leading slashes to ensure relative resolution
+                if (dir != null && (dir.startsWith("/") || dir.startsWith("\\"))) {
+                    dir = dir.substring(1);
+                }
+                // Default to "default" if no dir specified
+                if (dir == null || dir.isBlank()) {
+                    dir = "default";
+                }
+
+                Path dumpDir = DUMP_BASE_DIR.resolve(dir).normalize();
+
+                // Security check: prevent path traversal outside dump directory
+                if (!dumpDir.toAbsolutePath().startsWith(DUMP_BASE_DIR.toAbsolutePath())) {
+                    throw new ServiceRuntimeException("Path traversal not allowed: " + dir);
+                }
+
+                // Create directory if it doesn't exist
+                Files.createDirectories(dumpDir);
+
+                Path dumpFile = dumpDir.resolve(id + "-" + System.currentTimeMillis() + "-dump.txt");
+                FileUtils.write(dumpFile.toFile(), this.processes.get(id).getProcessThread().getLogs(), StandardCharsets.UTF_8, false);
             } catch (IOException e) {
                 throw new ServiceRuntimeException(e);
             }
         } else {
-            throw new ServiceRuntimeException("Process with name '" + id + "' is not running order does not exists");
+            throw new ServiceRuntimeException("Process with name '" + id + "' is not running or does not exist");
         }
     }
 

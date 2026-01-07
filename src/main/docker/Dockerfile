@@ -1,8 +1,5 @@
 FROM ubuntu:20.04
 
-ARG OPENTTD_VERSION="15.0"
-ARG OPENGFX_VERSION="0.7.1"
-
 RUN apt-get update
 RUN apt-get install dos2unix
 RUN apt-get install -y wget
@@ -51,15 +48,16 @@ USER openttd
 WORKDIR /home/openttd
 
 RUN wget https://cdn.openttd.org/openttd-releases/15.0/openttd-15.0-linux-generic-amd64.tar.xz
-RUN wget https://cdn.openttd.org/opengfx-releases/7.1/opengfx-7.1-all.zip
+RUN wget https://cdn.openttd.org/opengfx-releases/8.0/opengfx-8.0-all.zip
 
 RUN tar -xf openttd-15.0-linux-generic-amd64.tar.xz
 
 RUN mkdir openttd-15
 RUN cp -a openttd-15.0-linux-generic-amd64/. openttd-15
+RUN mkdir openttd-15/newgrf
 
-RUN unzip opengfx-7.1-all.zip
-RUN tar -xf opengfx-7.1.tar -C openttd-15/baseset/
+RUN unzip opengfx-8.0-all.zip
+RUN tar -xf opengfx-8.0.tar -C openttd-15/baseset/
 
 RUN rm -rf opengfx-*.tar opengfx-*.zip openttd-15.0*
     ## Set entrypoint script to right user

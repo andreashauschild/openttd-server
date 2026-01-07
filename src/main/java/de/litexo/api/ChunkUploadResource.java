@@ -79,8 +79,28 @@ public class ChunkUploadResource {
     private boolean appendWrite(ServerFileType type,String targetDir, String fileName, int size, int offset, byte[] chunk) throws IOException {
         Path upload = null;
         switch (type) {
-            case CONFIG -> upload = configDir.resolve(fileName).normalize();
-            case SAVE_GAME -> upload = saveDir.resolve(fileName).normalize();
+            case CONFIG -> {
+                // Strip leading slashes to ensure relative resolution
+                if (fileName.startsWith("/") || fileName.startsWith("\\")) {
+                    fileName = fileName.substring(1);
+                }
+                upload = configDir.resolve(fileName).normalize();
+                // Security check: prevent path traversal outside configDir
+                if (!upload.toAbsolutePath().startsWith(configDir.toAbsolutePath())) {
+                    throw new ServiceRuntimeException("Path traversal not allowed: " + fileName);
+                }
+            }
+            case SAVE_GAME -> {
+                // Strip leading slashes to ensure relative resolution
+                if (fileName.startsWith("/") || fileName.startsWith("\\")) {
+                    fileName = fileName.substring(1);
+                }
+                upload = saveDir.resolve(fileName).normalize();
+                // Security check: prevent path traversal outside saveDir
+                if (!upload.toAbsolutePath().startsWith(saveDir.toAbsolutePath())) {
+                    throw new ServiceRuntimeException("Path traversal not allowed: " + fileName);
+                }
+            }
             case OPENTTD_ROOT -> {
                 if(targetDir==null){
                     throw new ServiceRuntimeException("Target dir must be set on upload of ANY type");
