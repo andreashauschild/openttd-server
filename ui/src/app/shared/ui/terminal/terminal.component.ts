@@ -1,14 +1,16 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {FunctionsUsingCSI, NgTerminal} from 'ng-terminal';
+import {FunctionsUsingCSI, NgTerminal, NgTerminalModule} from 'ng-terminal';
 import {FormControl} from '@angular/forms';
-import {Terminal} from 'xterm';
+import {Terminal} from '@xterm/xterm';
 import {Subject} from 'rxjs';
 import {filter} from 'rxjs/operators';
 
 @Component({
-  selector: 'app-terminal',
-  templateUrl: './terminal.component.html',
-  styleUrls: ['./terminal.component.scss']
+    selector: 'app-terminal',
+    templateUrl: './terminal.component.html',
+    styleUrls: ['./terminal.component.scss'],
+    standalone: true,
+    imports: [NgTerminalModule]
 })
 export class TerminalComponent implements OnInit, AfterViewInit {
   readonly title = 'openttd server console';
@@ -81,12 +83,12 @@ export class TerminalComponent implements OnInit, AfterViewInit {
       if (this.terminalControl) {
         this.terminalControl.subscribe(cmd => {
           if (cmd === "clear") {
-            this.child?.underlying.clear();
+            this.child?.underlying!.clear();
           }
         })
       }
       this.underlying = this.child.underlying;
-      this.underlying.options.fontSize = 20;
+      this.underlying!.options.fontSize = 20;
       console.debug("example: font apply");
       this.invalidate();
 
@@ -104,7 +106,7 @@ export class TerminalComponent implements OnInit, AfterViewInit {
           if (this.unsendCommand.length >= 0) {
             this.unsendCommand = this.unsendCommand.substring(0, this.unsendCommand.length - 1);
           }
-          if (this.child!.underlying.buffer.active.cursorX > 0) {
+          if (this.child!.underlying!.buffer.active.cursorX > 0) {
             this.child!.write('\b \b');
           }
         } else if (input === '\u0003') { // End of Text (When Ctrl and C are pressed)

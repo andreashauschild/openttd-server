@@ -28,14 +28,19 @@ public class ChunkUploadResource {
     @ConfigProperty(name = "openttd.config.dir")
     String openttdConfigDir;
 
+    @ConfigProperty(name = "openttd.root.dir")
+    String openttdRootDir;
+
     Path configDir;
 
     Path saveDir;
+    Path openttdRoot;
 
     @PostConstruct
     void init() throws IOException {
         this.configDir = initDir(this.openttdConfigDir);
         this.saveDir = initDir(this.openttdSaveDir);
+        this.openttdRoot = initDir(this.openttdRootDir);
     }
 
     private Path initDir(String path) throws IOException {
@@ -59,23 +64,57 @@ public class ChunkUploadResource {
      */
     @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public Response add(@QueryParam("type") ServerFileType type, @QueryParam("fileName") String fileName,
+    public Response add(@QueryParam("type") ServerFileType type, @QueryParam("targetDir") String targetDir, @QueryParam("fileName") String fileName,
                         @QueryParam("offset") int offset, @QueryParam("fileSize") int size, byte[] chunk,
                         @Context HttpRequest request) throws IOException {
         System.out.println(String.format("name: %s from:%s to:%s size:%s Auth:Header %s"
                 , fileName, offset, offset + chunk.length, size, request.getHttpHeaders().getHeaderString(HttpHeaders.AUTHORIZATION)));
 
-        if (appendWrite(type, fileName, size, offset, chunk)) {
+        if (appendWrite(type, targetDir,fileName, size, offset, chunk)) {
             return Response.status(201).build();
         }
         return Response.ok().build();
     }
 
-    private boolean appendWrite(ServerFileType type, String fileName, int size, int offset, byte[] chunk) throws IOException {
+    private boolean appendWrite(ServerFileType type,String targetDir, String fileName, int size, int offset, byte[] chunk) throws IOException {
         Path upload = null;
         switch (type) {
-            case CONFIG -> upload = configDir.resolve(fileName);
-            case SAVE_GAME -> upload = saveDir.resolve(fileName);
+            case CONFIG -> {
+                // Strip leading slashes to ensure relative resolution
+                if (fileName.startsWith("/") || fileName.startsWith("\\")) {
+                    fileName = fileName.substring(1);
+                }
+                upload = configDir.resolve(fileName).normalize();
+                // Security check: prevent path traversal outside configDir
+                if (!upload.toAbsolutePath().startsWith(configDir.toAbsolutePath())) {
+                    throw new ServiceRuntimeException("Path traversal not allowed: " + fileName);
+                }
+            }
+            case SAVE_GAME -> {
+                // Strip leading slashes to ensure relative resolution
+                if (fileName.startsWith("/") || fileName.startsWith("\\")) {
+                    fileName = fileName.substring(1);
+                }
+                upload = saveDir.resolve(fileName).normalize();
+                // Security check: prevent path traversal outside saveDir
+                if (!upload.toAbsolutePath().startsWith(saveDir.toAbsolutePath())) {
+                    throw new ServiceRuntimeException("Path traversal not allowed: " + fileName);
+                }
+            }
+            case OPENTTD_ROOT -> {
+                if(targetDir==null){
+                    throw new ServiceRuntimeException("Target dir must be set on upload of ANY type");
+                }
+                // Strip leading slashes to ensure relative resolution
+                if (targetDir.startsWith("/") || targetDir.startsWith("\\")) {
+                    targetDir = targetDir.substring(1);
+                }
+                upload = this.openttdRoot.resolve(targetDir).resolve(fileName).normalize();
+                // Security check: prevent path traversal outside openttdRoot
+                if (!upload.toAbsolutePath().startsWith(this.openttdRoot.toAbsolutePath())) {
+                    throw new ServiceRuntimeException("Path traversal not allowed: " + targetDir + "/" + fileName);
+                }
+            }
             default -> throw new ServiceRuntimeException("Unknown file type for upload");
 
         }

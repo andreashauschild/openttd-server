@@ -11,15 +11,28 @@ import {
   updateFileList,
   UploadState
 } from '@andreashauschild/just-upload';
-import {environment} from 'src/environments/environment';
-import {ServerFileType} from '../../../api/models/server-file-type';
 import {MatDialogRef} from '@angular/material/dialog';
+import {NgFor, NgIf} from '@angular/common';
+import {MatProgressBar} from '@angular/material/progress-bar';
+import {MatIcon} from '@angular/material/icon';
+import {MatIconButton, MatButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+
+import {environment} from '@env/environment';
+import {ServerFileType} from '@api/models/server-file-type';
+import {BaseDialogComponent} from '@shared/ui/base-dialog/base-dialog.component';
 
 
 @Component({
-  selector: 'app-file-upload-dialog',
-  templateUrl: './file-upload-dialog.component.html',
-  styleUrls: ['./file-upload-dialog.component.scss']
+    selector: 'app-file-upload-dialog',
+    templateUrl: './file-upload-dialog.component.html',
+    styleUrls: ['./file-upload-dialog.component.scss'],
+    standalone: true,
+    imports: [
+      NgFor, NgIf,
+      MatProgressBar, MatIcon, MatIconButton, MatButton, MatTooltip,
+      BaseDialogComponent
+    ]
 })
 export class FileUploadDialogComponent implements AfterViewInit {
 
@@ -31,6 +44,9 @@ export class FileUploadDialogComponent implements AfterViewInit {
 
   @Input()
   fileType: ServerFileType | undefined;
+
+  @Input()
+  targetDir: string | undefined;
 
   @ViewChild("fileUpload", {static: false})
   fileUpload: ElementRef | undefined;
@@ -60,6 +76,7 @@ export class FileUploadDialogComponent implements AfterViewInit {
 
   private init(): void {
     var fileType = this.fileType;
+    var targetDir = this.targetDir || '';
     this.config = {
       url: `${environment.baseUrl}/api/chunk-upload`,
       method: "POST",
@@ -74,6 +91,7 @@ export class FileUploadDialogComponent implements AfterViewInit {
         // Add query parameter to the post request
         const params: RequestParams = {
           query: {
+            targetDir,
             type: fileType!.toString(),
             offset: chunk.chunk.offset.toString(),
             fileSize: chunk.uploadFile.size.toString(),

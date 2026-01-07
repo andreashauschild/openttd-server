@@ -1,22 +1,35 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
-import {loadServer, loadServerFiles, updateServer} from '../../../shared/store/actions/app.actions';
 import {Subscription} from 'rxjs';
-import {selectFiles, selectServer} from '../../../shared/store/selectors/app.selectors';
-import {ServerFile} from '../../../api/models/server-file';
-import {ServerFileType} from '../../../api/models/server-file-type';
-import {ActivatedRoute} from '@angular/router';
-import {RP_ID} from '../../../shared/model/constants';
-import {OpenttdServer} from '../../../api/models/openttd-server';
 import {filter} from 'rxjs/operators';
-import {clone} from '../../../shared/services/utils.service';
-import {FormBuilder, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {NgIf} from '@angular/common';
+import {MatFormField, MatLabel, MatHint, MatError, MatSuffix} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatIcon} from '@angular/material/icon';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
+
+import {OpenttdServerResourceService} from '@api/services/openttd-server-resource.service';
+import {ServerFile} from '@api/models/server-file';
+import {ServerFileType} from '@api/models/server-file-type';
+import {OpenttdServer} from '@api/models/openttd-server';
+import {loadServer, loadServerFiles, updateServer} from '@store/actions/app.actions';
+import {selectFiles, selectServer} from '@store/selectors/app.selectors';
+import {RP_ID} from '@shared/model/constants';
+import {clone} from '@shared/services/utils.service';
+import {ServerFileSelectComponent} from '@shared/ui/server-file-select/server-file-select.component';
 
 @Component({
-  selector: 'app-servers-detail',
-  templateUrl: './servers-detail.component.html',
-  styleUrls: ['./servers-detail.component.scss']
+    selector: 'app-servers-detail',
+    templateUrl: './servers-detail.component.html',
+    styleUrls: ['./servers-detail.component.scss'],
+    standalone: true,
+    imports: [
+      NgIf, ReactiveFormsModule,
+      MatFormField, MatLabel, MatHint, MatError, MatSuffix, MatInput, MatIcon, MatSlideToggle,
+      ServerFileSelectComponent
+    ]
 })
 export class ServersDetailComponent implements OnInit, OnDestroy {
   serverForm;

@@ -1,18 +1,32 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {FormControl} from '@angular/forms';
+import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import {Observable, tap} from 'rxjs';
 import {filter, map, startWith} from 'rxjs/operators';
-import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
-import {ServerFile} from '../../../api/models/server-file';
-import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
-import {saveData} from '../../services/utils.service';
-import {ServerFileType} from '../../../api/models/server-file-type';
+import {MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger, MatOption} from '@angular/material/autocomplete';
+import {AsyncPipe, DatePipe, NgFor, NgIf} from '@angular/common';
+import {MatFormField, MatHint, MatLabel, MatSuffix} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
+
+import {ServerFile} from '@api/models/server-file';
+import {OpenttdServerResourceService} from '@api/services/openttd-server-resource.service';
+import {ServerFileType} from '@api/models/server-file-type';
+import {saveData} from '@shared/services/utils.service';
 
 
 @Component({
-  selector: 'app-server-file-select',
-  templateUrl: './server-file-select.component.html',
-  styleUrls: ['./server-file-select.component.scss']
+    selector: 'app-server-file-select',
+    templateUrl: './server-file-select.component.html',
+    styleUrls: ['./server-file-select.component.scss'],
+    standalone: true,
+    imports: [
+      NgFor, NgIf, AsyncPipe, DatePipe,
+      ReactiveFormsModule,
+      MatFormField, MatLabel, MatHint, MatSuffix, MatInput,
+      MatAutocomplete, MatAutocompleteTrigger, MatOption,
+      MatIcon, MatTooltip
+    ]
 })
 export class ServerFileSelectComponent implements OnInit, OnChanges {
 

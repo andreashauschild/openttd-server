@@ -34,4 +34,28 @@ public class SecurityUtils {
         String password = pwdChars.stream().collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
         return password;
     }
+
+    /**
+     * Sanitizes a filename for use in Content-Disposition headers.
+     * Removes or replaces characters that could enable header injection attacks.
+     *
+     * @param filename The original filename
+     * @return A sanitized filename safe for HTTP headers
+     */
+    public static String sanitizeFilename(String filename) {
+        if (filename == null || filename.isBlank()) {
+            return "download";
+        }
+        // Remove any path separators (prevent path injection)
+        String name = filename.replace("/", "_").replace("\\", "_");
+        // Remove CR, LF, and other control characters (prevent header injection)
+        name = name.replaceAll("[\\r\\n\\t]", "");
+        // Keep only safe characters: alphanumeric, dot, hyphen, underscore, space
+        name = name.replaceAll("[^a-zA-Z0-9._\\- ]", "_");
+        // Ensure not empty after sanitization
+        if (name.isBlank()) {
+            return "download";
+        }
+        return name;
+    }
 }

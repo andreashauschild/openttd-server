@@ -1,29 +1,30 @@
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {Component, OnInit} from '@angular/core';
 import {Store} from "@ngrx/store";
-import {
-  deleteServer,
-  loadServerConfig, pauseUnpauseServer,
-  saveServer,
-  startServer,
-  stopServer
-} from 'src/app/shared/store/actions/app.actions';
-import {OpenttdServer} from '../../../api/models/openttd-server';
-import {selectServers} from '../../../shared/store/selectors/app.selectors';
 import {MatDialog} from "@angular/material/dialog";
+import {NgFor, NgIf} from '@angular/common';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
+import {RouterLink} from '@angular/router';
+
+import {deleteServer, loadServerConfig, pauseUnpauseServer, saveServer, startServer, stopServer} from '@store/actions/app.actions';
+import {selectServers} from '@store/selectors/app.selectors';
+import {OpenttdServer} from '@api/models/openttd-server';
 import {OpenttdProcessTerminalDialogComponent} from "../openttd-process-terminal/openttd-process-terminal-dialog.component";
 
 @Component({
-  selector: 'app-openttd-server-grid',
-  templateUrl: './openttd-server-grid.component.html',
-  styleUrls: ['./openttd-server-grid.component.scss'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
+    selector: 'app-openttd-server-grid',
+    templateUrl: './openttd-server-grid.component.html',
+    styleUrls: ['./openttd-server-grid.component.scss'],
+    animations: [
+        trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0' })),
+            state('expanded', style({ height: '*' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+    ],
+    standalone: true,
+    imports: [NgFor, NgIf, MatIcon, MatTooltip, RouterLink]
 })
 export class OpenttdServerGridComponent implements OnInit {
   dataSource: OpenttdServer[] = []
@@ -65,6 +66,7 @@ export class OpenttdServerGridComponent implements OnInit {
     if (server && server.process) {
       const dialogRef = this.dialog.open(OpenttdProcessTerminalDialogComponent, {
         minWidth: '60%',
+        height: '80vh',
       });
 
       dialogRef.componentInstance.dialogRef = dialogRef;

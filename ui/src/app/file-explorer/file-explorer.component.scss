@@ -1,0 +1,91 @@
+.file-explorer {
+  min-height: 0;
+
+  .header {
+    flex-shrink: 0;
+  }
+
+  .toolbar {
+    flex-shrink: 0;
+  }
+
+  .footer {
+    flex-shrink: 0;
+  }
+
+  table {
+    border-collapse: collapse;
+
+    thead {
+      th {
+        white-space: nowrap;
+      }
+    }
+
+    tbody {
+      tr {
+        transition: background-color 0.15s ease;
+      }
+    }
+  }
+
+  // Grid view items
+  .grid-item {
+    transition: all 0.15s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// Material overrides
+::ng-deep {
+  .mat-mdc-checkbox {
+    .mdc-checkbox {
+      padding: 0;
+    }
+  }
+
+  .mat-mdc-menu-item {
+    min-height: 40px;
+
+    .mat-icon {
+      margin-right: 12px;
+    }
+  }
+}
+
+// Table checkbox alignment fix
+.file-explorer table tbody {
+  td {
+    vertical-align: middle;
+  }
+
+  // Fix mat-checkbox vertical alignment in table cells
+  mat-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  ::ng-deep .mat-mdc-checkbox {
+    display: flex;
+    align-items: center;
+
+    .mdc-form-field {
+      vertical-align: middle;
+    }
+
+    .mdc-checkbox {
+      margin: 0;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .mdc-checkbox__background {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+}

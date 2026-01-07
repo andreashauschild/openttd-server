@@ -15,3 +15,4 @@ export const selectServer = createSelector(selectAppState, (state) => state.serv
 export const selectConfig = createSelector(selectAppState, (state) => state.config);
 
 export const selectFiles = createSelector(selectAppState, (state) => state.files);
+export const selectExplorerData = createSelector(selectAppState, (state) => state.explorer);

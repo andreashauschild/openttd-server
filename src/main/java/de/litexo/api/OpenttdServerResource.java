@@ -10,6 +10,7 @@ import de.litexo.model.external.ServerFile;
 import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.model.mapper.OpenttdServerConfigMapper;
 import de.litexo.repository.DefaultRepository;
+import de.litexo.security.SecurityUtils;
 import de.litexo.services.OpenttdService;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
@@ -73,7 +74,7 @@ public class OpenttdServerResource {
         }
         return Response
                 .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
-                .header("content-disposition", "attachment; filename=" + downloadName)
+                .header("content-disposition", "attachment; filename=\"" + SecurityUtils.sanitizeFilename(downloadName) + "\"")
                 .build();
     }
 
@@ -98,7 +99,7 @@ public class OpenttdServerResource {
         };
         return Response
                 .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
-                .header("content-disposition", "attachment; filename=" + openttdConfig.get().getName())
+                .header("content-disposition", "attachment; filename=\"" + SecurityUtils.sanitizeFilename(openttdConfig.get().getName()) + "\"")
                 .build();
     }
 

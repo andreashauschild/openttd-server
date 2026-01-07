@@ -1,3 +1,4 @@
+<div *ngIf="alerts.length > 0" class="notifications-container">
 <ng-container *ngFor="let alert of alerts">
   <div *ngIf="alert.type==='warning'" class="border-l-4 border-yellow-400 bg-yellow-50 p-4 mt-2 mb-2">
     <div class="flex">
@@ -60,3 +61,4 @@
   </div>
 
 </ng-container>
+</div>

@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import {AuthenticationService} from '../../../shared/services/authentication.service';
+import {Component, OnInit} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+
+import {AuthenticationService} from '@shared/services/authentication.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    standalone: true,
+    imports: [FormsModule]
 })
 export class LoginComponent implements OnInit {
 

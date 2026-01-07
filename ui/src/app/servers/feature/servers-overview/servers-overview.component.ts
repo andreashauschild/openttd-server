@@ -2,16 +2,22 @@ import {Component, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Actions, ofType} from "@ngrx/effects";
 import {MatDialog} from "@angular/material/dialog";
-import * as AppActions from '../../../shared/store/actions/app.actions';
-import {loadProcesses, loadServer} from '../../../shared/store/actions/app.actions';
+import {MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+
+import * as AppActions from '@store/actions/app.actions';
+import {loadProcesses, loadServer} from '@store/actions/app.actions';
+import {FileUploadDialogComponent} from '@shared/ui/file-upload-dialog/file-upload-dialog.component';
+import {ServerFileType} from '@api/models/server-file-type';
 import {CreateServerDialogComponent} from '../../ui/create-server-dialog/create-server-dialog.component';
-import {FileUploadDialogComponent} from '../../../shared/ui/file-upload-dialog/file-upload-dialog.component';
-import {ServerFileType} from '../../../api/models/server-file-type';
+import {OpenttdServerGridComponent} from '../../ui/openttd-server-grid/openttd-server-grid.component';
 
 @Component({
-  selector: 'app-servers-overview',
-  templateUrl: './servers-overview.component.html',
-  styleUrls: ['./servers-overview.component.scss']
+    selector: 'app-servers-overview',
+    templateUrl: './servers-overview.component.html',
+    styleUrls: ['./servers-overview.component.scss'],
+    standalone: true,
+    imports: [MatButton, MatIcon, OpenttdServerGridComponent]
 })
 export class ServersOverviewComponent implements OnInit {
   init = false;

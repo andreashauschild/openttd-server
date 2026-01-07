@@ -1,18 +1,24 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {interval, Subject, Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
-import {OpenttdProcess} from 'src/app/api/models';
-import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
-import {selectProcesses, selectProcessUpdateEvent} from '../../../shared/store/selectors/app.selectors';
-import {loadProcesses} from "../../../shared/store/actions/app.actions";
 import {MatDialogRef} from "@angular/material/dialog";
-import {ApplicationService} from '../../../shared/services/application.service';
 import {filter} from 'rxjs/operators';
+import {NgIf} from '@angular/common';
+
+import {OpenttdProcess} from '@api/models';
+import {OpenttdServerResourceService} from '@api/services/openttd-server-resource.service';
+import {selectProcesses, selectProcessUpdateEvent} from '@store/selectors/app.selectors';
+import {loadProcesses} from '@store/actions/app.actions';
+import {ApplicationService} from '@shared/services/application.service';
+import {BaseDialogComponent} from '@shared/ui/base-dialog/base-dialog.component';
+import {TerminalComponent} from '@shared/ui/terminal/terminal.component';
 
 @Component({
-  selector: 'app-openttd-process-terminal',
-  templateUrl: './openttd-process-terminal-dialog.component.html',
-  styleUrls: ['./openttd-process-terminal-dialog.component.scss']
+    selector: 'app-openttd-process-terminal',
+    templateUrl: './openttd-process-terminal-dialog.component.html',
+    styleUrls: ['./openttd-process-terminal-dialog.component.scss'],
+    standalone: true,
+    imports: [NgIf, BaseDialogComponent, TerminalComponent]
 })
 export class OpenttdProcessTerminalDialogComponent implements AfterViewInit, OnDestroy {
 

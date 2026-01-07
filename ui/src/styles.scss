@@ -1,9 +1,20 @@
 @use '@angular/material' as mat;
 
-@include mat.core();
+// TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
+//  The following line adds:
+//    1. Default typography styles for all components
+//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
+//  If you specify typography styles for the components you use elsewhere, you should delete this line.
+//  If you don't need the default component typographies but still want the hierarchy styles,
+//  you can delete this line and instead use:
+//    `@include mat.legacy-typography-hierarchy(mat.define-typography-config());`
+@include mat.all-component-typographies();
+@include mat.elevation-classes();
+@include mat.app-background();
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import 'ngx-explorer/src/assets/icons/css/nxe.css';
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
@@ -17,15 +28,51 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   @apply text-gray-300 hover:bg-gray-700 hover:text-white flex items-center px-2 py-2 text-sm font-medium rounded-md;
 }
 
-.snackbar{
-  background: white;
-  border-radius: 4px;
-  box-sizing: border-box;
-  display: block;
-  margin: 0px !important;
-  max-width: 1200vw;
-  min-width: 800px !important;
-  padding: 0px !important;
-  min-height: 0px !important;
-  transform-origin: center;
+// Custom snackbar for notifications
+.snackbar {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: 400px;
+  max-width: 600px;
+}
+
+// Hide the snackbar container when empty
+.snackbar:empty,
+.snackbar:has(> :empty) {
+  display: none !important;
+}
+
+// Override MDC snackbar surface styles
+.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+// Ensure MatDialog content fills the dialog height
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.mat-mdc-dialog-container .mdc-dialog__container {
+  height: 100%;
+}
+
+.mat-mdc-dialog-container .mat-mdc-dialog-content {
+  flex: 1;
+  max-height: none !important;
+  display: flex;
+  flex-direction: column;
+}
+
+mat-dialog-container {
+  height: 100%;
+}
+
+.cdk-overlay-pane {
+  max-height: 90vh !important;
 }

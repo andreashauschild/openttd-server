@@ -1,6 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {AuthenticationService} from '../../services/authentication.service';
-import {EventType, Router} from '@angular/router';
+import {EventType, Router, RouterLink} from '@angular/router';
+import {NgFor} from '@angular/common';
+import {MatIcon} from '@angular/material/icon';
 
 export type SidebarLayoutEntryModel = {
   title: string,
@@ -14,9 +16,11 @@ export type SidebarLayoutModel = {
 }
 
 @Component({
-  selector: 'app-sidbar-layout',
-  templateUrl: './sidebar-layout.component.html',
-  styleUrls: ['./sidebar-layout.component.scss']
+    selector: 'app-sidbar-layout',
+    templateUrl: './sidebar-layout.component.html',
+    styleUrls: ['./sidebar-layout.component.scss'],
+    standalone: true,
+    imports: [NgFor, MatIcon, RouterLink]
 })
 export class SidebarLayoutComponent implements OnInit {
 

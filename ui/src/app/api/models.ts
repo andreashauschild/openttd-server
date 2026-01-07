@@ -1,8 +1,13 @@
 export { BaseProcess } from './models/base-process';
 export { Command } from './models/command';
 export { DefaultRepository } from './models/default-repository';
+export { ExplorerData } from './models/explorer-data';
+export { ExplorerDirectory } from './models/explorer-directory';
+export { ExplorerFile } from './models/explorer-file';
 export { ExportModel } from './models/export-model';
+export { FileOperationRequest } from './models/file-operation-request';
 export { InternalOpenttdServerConfig } from './models/internal-openttd-server-config';
+export { MultiFileDownloadRequest } from './models/multi-file-download-request';
 export { OpenttdProcess } from './models/openttd-process';
 export { OpenttdServer } from './models/openttd-server';
 export { OpenttdServerConfigGet } from './models/openttd-server-config-get';

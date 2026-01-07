@@ -54,6 +54,10 @@ paths:
         schema:
           format: int32
           type: integer
+      - name: targetDir
+        in: query
+        schema:
+          type: string
       - name: type
         in: query
         schema:
@@ -168,6 +172,153 @@ paths:
       security:
       - SecurityScheme:
         - login_user
+  /api/openttd-server/explorer/copy:
+    post:
+      tags:
+      - File Explorer Resource
+      operationId: copyFile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileOperationRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplorerData'
+  /api/openttd-server/explorer/data:
+    get:
+      tags:
+      - File Explorer Resource
+      operationId: explorerList
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplorerData'
+  /api/openttd-server/explorer/directory:
+    post:
+      tags:
+      - File Explorer Resource
+      operationId: createDirectory
+      parameters:
+      - name: dir
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplorerData'
+  /api/openttd-server/explorer/download:
+    get:
+      tags:
+      - File Explorer Resource
+      operationId: downloadFile
+      parameters:
+      - name: downloadName
+        in: query
+        schema:
+          type: string
+      - name: fileName
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: object
+  /api/openttd-server/explorer/download-zip:
+    get:
+      tags:
+      - File Explorer Resource
+      operationId: downloadDirectoryZip
+      parameters:
+      - name: dir
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+      - File Explorer Resource
+      operationId: downloadSelectedZip
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MultiFileDownloadRequest'
+      responses:
+        "200":
+          description: OK
+  /api/openttd-server/explorer/file:
+    delete:
+      tags:
+      - File Explorer Resource
+      operationId: deleteFile
+      parameters:
+      - name: file
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplorerData'
+  /api/openttd-server/explorer/move:
+    post:
+      tags:
+      - File Explorer Resource
+      operationId: moveFile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileOperationRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplorerData'
+  /api/openttd-server/explorer/rename:
+    post:
+      tags:
+      - File Explorer Resource
+      operationId: renameFile
+      parameters:
+      - name: file
+        in: query
+        schema:
+          type: string
+      - name: newName
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplorerData'
   /api/openttd-server/exportModel:
     get:
       tags:
@@ -575,6 +726,59 @@ components:
             $ref: '#/components/schemas/ServerFile'
         openttdServerConfig:
           $ref: '#/components/schemas/InternalOpenttdServerConfig'
+    ExplorerData:
+      type: object
+      properties:
+        root:
+          type: string
+        fileSeperator:
+          type: string
+        directories:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExplorerDirectory'
+    ExplorerDirectory:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        absolutePath:
+          type: string
+        relativePath:
+          type: string
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExplorerFile'
+        dirs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExplorerDirectory'
+    ExplorerFile:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        absolutePath:
+          type: string
+        relativePath:
+          type: string
+        baseName:
+          type: string
+        extension:
+          type: string
+        size:
+          format: int64
+          type: integer
+        lastModified:
+          format: int64
+          type: integer
+        isDirectory:
+          type: boolean
     ExportModel:
       type: object
       properties:
@@ -586,6 +790,15 @@ components:
           $ref: '#/components/schemas/PauseCommand'
         serviceError:
           $ref: '#/components/schemas/ServiceError'
+    FileOperationRequest:
+      type: object
+      properties:
+        sourcePath:
+          type: string
+        destinationPath:
+          type: string
+        overwrite:
+          type: boolean
     InternalOpenttdServerConfig:
       type: object
       properties:
@@ -606,6 +819,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OpenttdServer'
+    MultiFileDownloadRequest:
+      type: object
+      properties:
+        directoryPath:
+          type: string
+        fileNames:
+          type: array
+          items:
+            type: string
     OpenttdProcess:
       type: object
       properties:
@@ -767,6 +989,7 @@ components:
     ServerFileType:
       enum:
       - SAVE_GAME
+      - OPENTTD_ROOT
       - CONFIG
       type: string
     ServiceError:

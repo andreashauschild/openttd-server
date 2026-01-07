@@ -29,6 +29,7 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "./node_modules/@xterm/xterm/css/xterm.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -69,14 +70,15 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "proxyConfig": "proxy.conf.json"
+            "proxyConfig": "proxy.conf.json",
+            "buildTarget": "openttd-server-ui:build:development"
           },
           "configurations": {
             "production": {
-              "browserTarget": "openttd-server-ui:build:production"
+              "buildTarget": "openttd-server-ui:build:production"
             },
             "development": {
-              "browserTarget": "openttd-server-ui:build:development"
+              "buildTarget": "openttd-server-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -84,7 +86,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "openttd-server-ui:build"
+            "buildTarget": "openttd-server-ui:build"
           }
         },
         "test": {
@@ -101,6 +103,7 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "./node_modules/@xterm/xterm/css/xterm.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -114,5 +117,31 @@
       "@ngrx/schematics"
     ],
     "analytics": "781c8748-a974-4d7e-b58b-1b9667b6367b"
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
+    }
   }
 }

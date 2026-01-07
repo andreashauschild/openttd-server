@@ -1,34 +1,31 @@
-import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
-import {AuthenticationService} from "../services/authentication.service";
-import {interval} from "rxjs";
+import {inject} from '@angular/core';
+import {CanActivateFn, Router} from '@angular/router';
+import {interval} from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthGuard implements CanActivate {
-  constructor(
-    private router: Router,
-    private authenticationService: AuthenticationService
-  ) {
-    interval(30000).subscribe(_ => {
-      this.authenticationService.isLoggedIn().then(loggedIn => {
-        console.log(loggedIn)
-        if (!loggedIn) {
-          this.router.navigate(['/login']);
-        }
-      })
+import {AuthenticationService} from '@shared/services/authentication.service';
+
+let sessionCheckInitialized = false;
+
+export const authGuard: CanActivateFn = async () => {
+  const router = inject(Router);
+  const authService = inject(AuthenticationService);
+
+  // Initialize session check on first guard activation
+  if (!sessionCheckInitialized) {
+    sessionCheckInitialized = true;
+    interval(30000).subscribe(async () => {
+      const loggedIn = await authService.isLoggedIn();
+      console.log(loggedIn);
+      if (!loggedIn) {
+        router.navigate(['/login']);
+      }
     });
   }
 
-  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (await this.authenticationService.isLoggedIn()) {
-      // logged in so return true
-      return true;
-    }
-    // not logged in so redirect to login page with the return url
-    this.router.navigate(['/login']);
-    return false;
+  if (await authService.isLoggedIn()) {
+    return true;
   }
 
-}
+  router.navigate(['/login']);
+  return false;
+};

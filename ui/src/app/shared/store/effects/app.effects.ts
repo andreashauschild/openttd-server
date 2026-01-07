@@ -1,26 +1,29 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import * as AppActions from '../actions/app.actions'
+import {catchError, EMPTY, mergeMap, tap} from 'rxjs';
+import {map} from 'rxjs/operators';
+
+import * as AppActions from '@store/actions/app.actions';
 import {
-  addServerSuccess,
-  deleteServerSuccess,
+  addServerSuccess, createExplorerDir, createExplorerDirSuccess, deleteExplorerFile, deleteExplorerFileSuccess,
+  deleteServerSuccess, loadExplorerDataSuccess,
   loadProcessesSuccess,
   loadServerConfigSuccess,
   loadServerFilesSuccess,
   loadServerSuccess,
-  patchServerConfigSuccess, pauseUnpauseServerSuccess,
+  patchServerConfigSuccess, pauseUnpauseServerSuccess, renameExplorerFile, renameExplorerFileSuccess,
   saveServerSuccess,
   startServerSuccess, stopServerSuccess,
-  updateServerSuccess
-} from '../actions/app.actions'
-import {catchError, EMPTY, mergeMap} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {OpenttdServerResourceService} from '../../../api/services/openttd-server-resource.service';
-import {ApplicationService} from '../../services/application.service';
+  updateServerSuccess,
+  moveExplorerFileSuccess, copyExplorerFileSuccess
+} from '@store/actions/app.actions';
+import {OpenttdServerResourceService} from '@api/services/openttd-server-resource.service';
+import {FileExplorerResourceService} from '@api/services/file-explorer-resource.service';
+import {ApplicationService} from '@shared/services/application.service';
 
 @Injectable()
 export class AppEffects {
-  constructor(private app: ApplicationService, private actions$: Actions, private service: OpenttdServerResourceService) {
+  constructor(private app: ApplicationService, private actions$: Actions, private service: OpenttdServerResourceService, private explorer: FileExplorerResourceService) {
   }
 
 
@@ -54,6 +57,67 @@ export class AppEffects {
       )
     );
   });
+
+  loadExplorerData = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.loadExplorerData),
+      mergeMap((a) => this.explorer.explorerList()
+        .pipe(
+          map(data => loadExplorerDataSuccess({src: AppEffects.name, data})),
+          catchError((err) => {
+            this.app.handleError(err);
+            return EMPTY;
+          })
+        )
+      )
+    );
+  });
+
+  deleteExplorerFile = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.deleteExplorerFile),
+      mergeMap((a) => this.explorer.deleteFile({file:a.relativePath})
+        .pipe(
+          map(data => deleteExplorerFileSuccess({src: AppEffects.name, data})),
+          catchError((err) => {
+            this.app.handleError(err);
+            return EMPTY;
+          })
+        )
+      )
+    );
+  });
+
+  createExplorerDir = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.createExplorerDir),
+      mergeMap((a) => this.explorer.createDirectory({dir:a.relativeDirPath})
+        .pipe(
+          map(data => createExplorerDirSuccess({src: AppEffects.name, data})),
+          catchError((err) => {
+            this.app.handleError(err);
+            return EMPTY;
+          })
+        )
+      )
+    );
+  });
+
+  renameExplorerFile = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.renameExplorerFile),
+      mergeMap((a) => this.explorer.renameFile({file:a.relativePath,newName:a.newName})
+        .pipe(
+          map(data => renameExplorerFileSuccess({src: AppEffects.name, data})),
+          catchError((err) => {
+            this.app.handleError(err);
+            return EMPTY;
+          })
+        )
+      )
+    );
+  });
+
 
   patchServerConfig = createEffect(() => {
     return this.actions$.pipe(
@@ -147,9 +211,9 @@ export class AppEffects {
         .pipe(
           map(server => {
             if (server.paused) {
-              this.app.createInfoMessage("Server paused!",2000)
+              this.app.createInfoMessage("Server paused!", 2000)
             } else {
-              this.app.createInfoMessage("Server unpaused!",2000)
+              this.app.createInfoMessage("Server unpaused!", 2000)
             }
             return pauseUnpauseServerSuccess({src: AppEffects.name, server})
           }),
@@ -233,5 +297,99 @@ export class AppEffects {
     );
   });
 
+  moveExplorerFile = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.moveExplorerFile),
+      mergeMap((a) => this.explorer.moveFile({
+        body: {
+          sourcePath: a.sourcePath,
+          destinationPath: a.destinationPath,
+          overwrite: a.overwrite
+        }
+      }).pipe(
+        map(data => {
+          this.app.createInfoMessage("File moved successfully", 2000);
+          return moveExplorerFileSuccess({src: AppEffects.name, data});
+        }),
+        catchError((err) => {
+          this.app.handleError(err);
+          return EMPTY;
+        })
+      ))
+    );
+  });
+
+  copyExplorerFile = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.copyExplorerFile),
+      mergeMap((a) => this.explorer.copyFile({
+        body: {
+          sourcePath: a.sourcePath,
+          destinationPath: a.destinationPath
+        }
+      }).pipe(
+        map(data => {
+          this.app.createInfoMessage("File copied successfully", 2000);
+          return copyExplorerFileSuccess({src: AppEffects.name, data});
+        }),
+        catchError((err) => {
+          this.app.handleError(err);
+          return EMPTY;
+        })
+      ))
+    );
+  });
+
+  downloadExplorerZip = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.downloadExplorerZip),
+      mergeMap((a) => {
+        const url = `${this.explorer.rootUrl}/api/openttd-server/explorer/download-zip?dir=${encodeURIComponent(a.directoryPath)}`;
+        window.open(url, '_blank');
+        return EMPTY;
+      })
+    );
+  }, {dispatch: false});
+
+  downloadSelectedExplorerZip = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.downloadSelectedExplorerZip),
+      mergeMap((a) => {
+        const url = `${this.explorer.rootUrl}/api/openttd-server/explorer/download-zip`;
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            directoryPath: a.directoryPath,
+            fileNames: a.fileNames
+          })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Download failed');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const downloadUrl = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = downloadUrl;
+          link.download = 'download.zip';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(downloadUrl);
+        })
+        .catch(err => {
+          this.app.handleError(err);
+        });
+
+        return EMPTY;
+      })
+    );
+  }, {dispatch: false});
 
 }
