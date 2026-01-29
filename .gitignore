@@ -37,3 +37,7 @@ pom.xml.versionsBackup
 release.properties
 server
 out
+
+
+# NixOS
+.direnv/
