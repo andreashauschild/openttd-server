@@ -30,7 +30,8 @@ The following table shows which docker image contains which OpenTTD version. For
 
 | Container                        | OpenTTD |
 |----------------------------------|---------|
-| hauschi86/openttd-server:latest  | 15.0    |
+| hauschi86/openttd-server:latest  | 15.1    |
+| hauschi86/openttd-server:v15.1.0 | 15.1    |
 | hauschi86/openttd-server:v15.0.2 | 15.0    |
 | hauschi86/openttd-server:v15.0.0 | 15.0    |
 | hauschi86/openttd-server:v14.1.1 | 14.1    |
@@ -148,7 +149,7 @@ The container uses a simple file storage to store data. If you want to have pers
 
 ## Quarkus remote docker container development
 - Open a terminal in the `root` directory
-- `docker build -f src/main/docker/Dockerfile.dev . --progress=plain -t openttd-server`
+- `docker build -f src/main/docker/Dockerfile . --progress=plain -t openttd-server`
 - `docker run -i --rm -p 8080:8080 -p 5005:5005 -p 3977:3977/tcp -p 3979:3979/tcp -p 3979:3979/udp -e QUARKUS_LAUNCH_DEVMODE=true openttd-server`
 - `openttd -D -b 8bpp-optimized`  Run with possibility to do screenshots (https://www.tt-forums.net/viewtopic.php?t=88943)
 - https://quarkus.io/guides/maven-tooling#remote-development-mode
