@@ -61,6 +61,7 @@ export class SettingsComponent implements OnInit {
   }
 
   updatePassword() {
+    this.adminFormGroup.markAllAsTouched();
     if (this.adminFormGroup.valid) {
       this.api.updateOpenttdServerConfig({body: {password: this.adminFormGroup.value.newPassword!, oldPassword: this.adminFormGroup.value.oldPassword!}}).subscribe(
         {

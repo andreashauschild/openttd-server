@@ -23,9 +23,6 @@
             <mat-error *ngIf="adminFormGroup.controls.newPassword.hasError('required')">
               New Password is <strong>required</strong>
             </mat-error>
-            <mat-error *ngIf="adminFormGroup.controls.newPassword.hasError('not-equal')">
-              New passwords <strong>don't</strong> match
-            </mat-error>
           </mat-form-field>
         </div>
 
@@ -36,13 +33,13 @@
             <mat-error *ngIf="adminFormGroup.controls.newPasswordRepeat.hasError('required')">
               New Password is <strong>required</strong>
             </mat-error>
-            <mat-error *ngIf="adminFormGroup.controls.newPasswordRepeat.hasError('not-equal')">
-              New passwords <strong>don't</strong> match
-            </mat-error>
           </mat-form-field>
+          <div *ngIf="adminFormGroup.hasError('not-equal') && adminFormGroup.touched" class="mat-mdc-form-field-error mat-mdc-form-field-bottom-align" style="font-size: 0.75rem; color: var(--mdc-theme-error, #f44336); margin-left: 16px;">
+            New passwords <strong>don't</strong> match
+          </div>
         </div>
         <div class="bg-gray-50 px-4 py-3 text-right sm:px-6 col-span-6 sm:col-span-6">
-          <button (click)="updatePassword()" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save</button>
+          <button type="button" (click)="updatePassword()" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save</button>
         </div>
       </div>
 
@@ -95,7 +92,7 @@
           </mat-form-field>
         </div>
         <div class="bg-gray-50 px-4 py-3 text-right sm:px-6 col-span-6 sm:col-span-6">
-          <button (click)="updateConfig()" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save</button>
+          <button type="button" (click)="updateConfig()" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save</button>
         </div>
       </div>
 
