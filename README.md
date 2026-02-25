@@ -9,7 +9,7 @@
 ![Github last-commit](https://img.shields.io/github/last-commit/andreashauschild/openttd-server)
 
 # Welcome to OpenTTD Server
-This Docker container allows you to host multiple instances of OpenTTD dedicated servers in a single container, providing an efficient and convenient environment for hosting these servers.
+This Docker container allows you to host multiple instances of OpenTTD (https://www.openttd.org) dedicated servers in a single container, providing an efficient and convenient environment for hosting these servers.
 
 This documentation expect a basic knowledge of docker (expose ports and volumes).
 
@@ -29,18 +29,19 @@ It provides the following features:
 The following table shows which docker image contains which OpenTTD version. For now, I will only support final versions (no beta).
 
 | Container                        | OpenTTD |
-|----------------------------------|---------|
-| hauschi86/openttd-server:latest  | 15.1    |
-| hauschi86/openttd-server:v15.1.1 | 15.1    |
-| hauschi86/openttd-server:v15.1.0 | 15.1    |
-| hauschi86/openttd-server:v15.0.2 | 15.0    |
-| hauschi86/openttd-server:v15.0.0 | 15.0    |
-| hauschi86/openttd-server:v14.1.1 | 14.1    |
-| hauschi86/openttd-server:v14.1.0 | 14.1    |
-| hauschi86/openttd-server:v14.0.0 | 14.0    |
-| hauschi86/openttd-server:v13.4.0 | 13.4    |
-| hauschi86/openttd-server:v13.0.0 | 13.0    |
-| hauschi86/openttd-server:v12.2.2 | 12.2    |
+|----------------------------------|--------|
+| hauschi86/openttd-server:latest  | 15.2   |
+| hauschi86/openttd-server:v15.2.0 | 15.2   |
+| hauschi86/openttd-server:v15.1.1 | 15.1   |
+| hauschi86/openttd-server:v15.1.0 | 15.1   |
+| hauschi86/openttd-server:v15.0.2 | 15.0   |
+| hauschi86/openttd-server:v15.0.0 | 15.0   |
+| hauschi86/openttd-server:v14.1.1 | 14.1   |
+| hauschi86/openttd-server:v14.1.0 | 14.1   |
+| hauschi86/openttd-server:v14.0.0 | 14.0   |
+| hauschi86/openttd-server:v13.4.0 | 13.4   |
+| hauschi86/openttd-server:v13.0.0 | 13.0   |
+| hauschi86/openttd-server:v12.2.2 | 12.2   |
 
 
 # Screenshots
