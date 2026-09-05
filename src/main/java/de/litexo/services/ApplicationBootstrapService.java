@@ -1,11 +1,12 @@
 package de.litexo.services;
 
-import de.litexo.OpenttdProcess;
+import de.litexo.model.external.OpenttdServer;
 import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.repository.DefaultRepository;
 import de.litexo.security.SecurityUtils;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.Startup;
+import io.quarkus.runtime.StartupEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
@@ -21,6 +22,14 @@ import java.util.Optional;
 public class ApplicationBootstrapService {
     @ConfigProperty(name = "server.initial.password")
     Optional<String> initialPassword;
+
+    /**
+     * Servers that were running when the application went down are started again. The flag is only set for servers the
+     * admin explicitly started and never stopped, so after a host reboot or an image update the expected state is
+     * "my servers are up". Set the environment variable SERVER_AUTO_START_RUNNING_SERVERS=false to opt out.
+     */
+    @ConfigProperty(name = "server.auto-start-running-servers", defaultValue = "true")
+    boolean autoStartRunningServers;
 
     private static final Logger LOG = Logger.getLogger(ApplicationBootstrapService.class);
 
@@ -55,14 +64,26 @@ public class ApplicationBootstrapService {
         }
     }
 
-    void onStop(@Observes ShutdownEvent ev) {
-        System.out.println("The application is stopping. Will terminate all open processes!");
-        for (OpenttdProcess p : service.getProcesses()) {
+    void onStart(@Observes StartupEvent ev) {
+        if (!this.autoStartRunningServers) {
+            LOG.info("Auto start of previously running servers is disabled (server.auto-start-running-servers=false)");
+            return;
+        }
+        for (OpenttdServer server : this.repository.getOpenttdServerConfig().getServers()) {
+            if (!server.isLastKnownRunning()) {
+                continue;
+            }
             try {
-                p.getProcessThread().stop();
+                LOG.infof("Server '%s' was running before the last shutdown and will be started again", server.getName());
+                this.service.startServer(server.getId());
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Failed to start server '" + server.getId() + "' automatically", e);
             }
         }
+    }
+
+    void onStop(@Observes ShutdownEvent ev) {
+        LOG.info("The application is stopping. Every running OpenTTD server will be saved and stopped.");
+        this.service.shutdownAll();
     }
 }

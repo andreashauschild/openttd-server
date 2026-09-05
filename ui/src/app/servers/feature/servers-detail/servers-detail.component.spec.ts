@@ -1,4 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { provideStore } from '@ngrx/store';
+import { metaReducers, reducers } from '@store/reducers';
 
 import { ServersDetailComponent } from './servers-detail.component';
 
@@ -8,7 +14,14 @@ describe('EditServerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ServersDetailComponent ]
+      imports: [ ServersDetailComponent ],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        provideNoopAnimations(),
+        provideStore(reducers, {metaReducers})
+      ]
     })
     .compileComponents();
 

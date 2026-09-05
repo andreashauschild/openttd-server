@@ -8,6 +8,7 @@ import de.litexo.model.internal.InternalOpenttdServerConfig;
 import de.litexo.repository.DefaultRepository;
 import de.litexo.services.OpenttdService;
 import io.quarkus.scheduler.Scheduled;
+import io.quarkus.scheduler.Scheduled.ConcurrentExecution;
 import org.apache.commons.io.FileUtils;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -30,7 +31,7 @@ public class Housekeeping {
     @Inject
     DefaultRepository repository;
 
-    @Scheduled(every = "600s")
+    @Scheduled(every = "600s", concurrentExecution = ConcurrentExecution.SKIP)
     void deleteOldAutosaves() {
         InternalOpenttdServerConfig serverConfig = this.service.getOpenttdServerConfig();
         List<ServerFile> openttdSaveGames = this.repository.getOpenttdSaveGames();

@@ -1,6 +1,5 @@
 import {createAction, props} from '@ngrx/store';
 import {OpenttdProcess} from '../../../api/models/openttd-process';
-import {OpenttdTerminalUpdateEvent} from '../../../api/models/openttd-terminal-update-event';
 import {OpenttdServer} from '../../../api/models/openttd-server';
 import {ServerFile} from '../../../api/models/server-file';
 import {AppAlert} from '../reducers/app.reducer';
@@ -19,11 +18,6 @@ export const loadProcesses = createAction(
 export const loadProcessesSuccess = createAction(
   '[App] loadProcessesSuccess', props<{ src: string, result: OpenttdProcess[] }>()
 );
-
-export const processUpdateEvent = createAction(
-  '[App] processUpdateEvent', props<{ src: string, event: OpenttdTerminalUpdateEvent }>()
-);
-
 
 export const loadServer = createAction(
   '[App] loadServer', props<{ src: string; id: string }>()

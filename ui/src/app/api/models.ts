@@ -13,6 +13,7 @@ export { OpenttdServer } from './models/openttd-server';
 export { OpenttdServerConfigGet } from './models/openttd-server-config-get';
 export { OpenttdServerConfigUpdate } from './models/openttd-server-config-update';
 export { OpenttdServerMapper } from './models/openttd-server-mapper';
+export { OpenttdTerminalSnapshotEvent } from './models/openttd-terminal-snapshot-event';
 export { OpenttdTerminalUpdateEvent } from './models/openttd-terminal-update-event';
 export { Path } from './models/path';
 export { PauseCommand } from './models/pause-command';

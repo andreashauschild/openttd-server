@@ -3,7 +3,6 @@ import * as AppActions from '../actions/app.actions';
 import {OpenttdServer} from '../../../api/models/openttd-server';
 import {OpenttdProcess} from '../../../api/models/openttd-process';
 import {ServerFile} from '../../../api/models/server-file';
-import {OpenttdTerminalUpdateEvent} from '../../../api/models/openttd-terminal-update-event';
 import {OpenttdServerConfigGet} from '../../../api/models/openttd-server-config-get';
 import {ExplorerData} from '../../../api/models/explorer-data';
 
@@ -25,7 +24,6 @@ export interface State {
   explorer?: ExplorerData
   processes: OpenttdProcess[];
   files: ServerFile[];
-  processUpdateEvent?: OpenttdTerminalUpdateEvent;
   alerts: AppAlert[];
 }
 
@@ -48,13 +46,6 @@ export const reducer = createReducer(
       ...state,
       alerts: state.alerts.filter((a) => a.id !== action.alertId),
     };
-  }),
-
-  on(AppActions.processUpdateEvent, (state, action): State => {
-    return {
-      ...state,
-      processUpdateEvent: action.event
-    }
   }),
 
   on(AppActions.loadProcessesSuccess, (state, action): State => {
@@ -125,9 +116,16 @@ export const reducer = createReducer(
   }),
 
   on(AppActions.startServerSuccess, (state, action): State => {
+    const process = action.server.process;
+    if (!process) {
+      return state;
+    }
+    // Replace instead of concat: a restarted server must not leave its dead process behind, otherwise a lookup
+    // by id finds the entry with the old process id.
+    const known = state.processes.some(p => p.id === process.id);
     return {
       ...state,
-      processes: state.processes.concat(action.server.process!)
+      processes: known ? state.processes.map(p => p.id === process.id ? process : p) : state.processes.concat(process)
     }
   }),
 );

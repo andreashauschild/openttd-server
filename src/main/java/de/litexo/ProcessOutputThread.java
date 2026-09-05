@@ -1,40 +1,41 @@
 package de.litexo;
 
+import org.jboss.logging.Logger;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.BlockingQueue;
 
+/**
+ * Reads one stream of the process line by line and hands every line over to the shared queue of the {@link ProcessThread}.
+ * There is no stop flag: the reader ends on EOF, which happens as soon as the process is gone.
+ */
 public class ProcessOutputThread implements Runnable {
-    InputStream processInputStream;
 
-    private StringBuilder data;
+    private static final Logger LOG = Logger.getLogger(ProcessOutputThread.class);
 
-    private boolean stopped = false;
+    private final InputStream processInputStream;
 
-    public ProcessOutputThread(InputStream processInputStream, StringBuilder data) {
+    private final BlockingQueue<String> lines;
+
+    public ProcessOutputThread(InputStream processInputStream, BlockingQueue<String> lines) {
         this.processInputStream = processInputStream;
-        this.data = data;
+        this.lines = lines;
     }
 
     @Override
     public void run() {
-        try {
-
-            BufferedReader inputReader = new BufferedReader(new InputStreamReader(processInputStream));
-
-            while (!this.stopped) {
-                for (int ch; (ch = inputReader.read()) != -1; ) {
-                    data.append((char) ch);
-                }
-                Thread.sleep(50);
+        // UTF-8 is mandatory: OpenTTD prefixes its console messages with a left-to-right mark (U+200E)
+        try (BufferedReader inputReader = new BufferedReader(new InputStreamReader(this.processInputStream, StandardCharsets.UTF_8))) {
+            for (String line; (line = inputReader.readLine()) != null; ) {
+                this.lines.put(line);
             }
-            System.out.println("Finished: ProcessOutputThread");
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        } catch (Exception e) {
+            LOG.warn("Failed to read a process stream", e);
         }
-    }
-
-    public void stop() {
-        this.stopped = true;
     }
 }

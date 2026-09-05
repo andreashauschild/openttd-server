@@ -2,15 +2,13 @@ package de.litexo.api;
 
 import de.litexo.model.external.ServerFileType;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.resteasy.spi.HttpRequest;
+import org.jboss.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -22,6 +20,8 @@ import java.nio.file.StandardOpenOption;
 @javax.ws.rs.Path("/api/chunk-upload")
 @RolesAllowed("login_user")
 public class ChunkUploadResource {
+    private static final Logger LOG = Logger.getLogger(ChunkUploadResource.class);
+
     @ConfigProperty(name = "openttd.save.dir")
     String openttdSaveDir;
 
@@ -58,17 +58,14 @@ public class ChunkUploadResource {
      * @param offset   offset in bytes of the current chunk
      * @param size     total size of the file that is sent
      * @param chunk    chunk of bytes of the transmitted file
-     * @param request  http request object (inject by container)
      * @return response
      * @throws IOException
      */
     @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     public Response add(@QueryParam("type") ServerFileType type, @QueryParam("targetDir") String targetDir, @QueryParam("fileName") String fileName,
-                        @QueryParam("offset") int offset, @QueryParam("fileSize") int size, byte[] chunk,
-                        @Context HttpRequest request) throws IOException {
-        System.out.println(String.format("name: %s from:%s to:%s size:%s Auth:Header %s"
-                , fileName, offset, offset + chunk.length, size, request.getHttpHeaders().getHeaderString(HttpHeaders.AUTHORIZATION)));
+                        @QueryParam("offset") int offset, @QueryParam("fileSize") int size, byte[] chunk) throws IOException {
+        LOG.debugf("Chunk upload: name=%s from=%s to=%s size=%s", fileName, offset, offset + chunk.length, size);
 
         if (appendWrite(type, targetDir,fileName, size, offset, chunk)) {
             return Response.status(201).build();

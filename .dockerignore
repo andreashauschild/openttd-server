@@ -1,0 +1,15 @@
+# Keep the build context small: only src/main/docker/ and target/quarkus-app/ are copied.
+.git
+.gitignore
+.gitattributes
+.idea
+.mvn
+docs
+ui/node_modules
+ui/node
+ui/dist
+ui/.angular
+target/*
+!target/quarkus-app
+*.log
+.claudenius*

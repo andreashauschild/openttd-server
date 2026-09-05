@@ -1,16 +1,31 @@
 <ng-template #body>
 
-  <app-terminal *ngIf="showTerminal" [terminalControl]="terminalControl" (command)="sendCommand($event)"
-                [consoleInput]="consoleInput"></app-terminal>
+  <app-terminal [terminalControl]="terminalControl" [consoleInput]="consoleInput" [disabled]="exited"
+                [serverId]="serverId" (command)="sendCommand($event)"></app-terminal>
 
 </ng-template>
 
 <ng-template #footer>
 
+  <div class="flex flex-row items-center justify-between gap-4">
+    <div class="text-left text-sm">
+      @if ((connected$ | async) === false) {
+        <span role="status" class="text-red-700">connection lost – reconnecting…</span>
+      }
+      @if (skippedCommands > 0) {
+        <span class="ml-2 text-stone-500">{{skippedCommands}} automatic commands skipped while the terminal is open</span>
+      }
+    </div>
+    <button type="button" (click)="clearTerminal()" mat-raised-button
+            class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+      Clear
+    </button>
+  </div>
+
 </ng-template>
 
 <app-base-dialog
-  [subTitle]="'While the terminal is open all auto commands (pause, unpause, server_info, etc.) will be skipped to prevent terminal pollution. Only last 20.000 characters from the terminal are displayed'"
+  [subTitle]="'Automatic status commands (server_info, pause, unpause) are skipped while the terminal is open; auto saves still run. Only the last 20.000 characters of the history are shown.'"
   [dialogRef]="dialogRef"
   [title]="dialogTitle" [bodyTemplate]="body" [footerTemplate]="footer">
 </app-base-dialog>

@@ -3,43 +3,35 @@ package de.litexo.scheduler;
 
 import de.litexo.OpenttdProcess;
 import de.litexo.commands.ServerInfoCommand;
-import de.litexo.events.EventBus;
-import de.litexo.events.OpenttdTerminalUpdateEvent;
 import de.litexo.model.external.OpenttdServer;
 import de.litexo.services.OpenttdService;
 import io.quarkus.scheduler.Scheduled;
-import org.eclipse.microprofile.context.ManagedExecutor;
+import io.quarkus.scheduler.Scheduled.ConcurrentExecution;
+import org.jboss.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.Optional;
 
 @ApplicationScoped
 public class UpdateServerInfo {
 
+    private static final Logger LOG = Logger.getLogger(UpdateServerInfo.class);
+
     @Inject
     OpenttdService service;
 
-    @Inject
-    EventBus eventBus;
-
-    @Inject
-    ManagedExecutor executor;
-
-
-    @PostConstruct
-    void init() {
-        System.out.println("INIT UpdateServerInfo Scheduler");
-        this.eventBus.observe(OpenttdTerminalUpdateEvent.class, this.getClass(), openttdTerminalUpdateEvent ->
-                // Important execute this async because the subscriber is blocking the emitter of the event
-                executor.execute(() -> handleTerminalUpdateEvent(openttdTerminalUpdateEvent))
-        );
-    }
-
-    @Scheduled(every = "120s")
-    void checkAutoPauseUnpause() {
+    /**
+     * Periodic refresh only. The event driven refresh used to live here as well, but it reacted on the same join and
+     * leave lines as {@link AutoPauseUnpause}, so two 'server_info' commands were sent to one console at the same time
+     * and their output interleaved. {@link AutoPauseUnpause} now hands its result over via {@link #applyServerInfo}.
+     */
+    @Scheduled(every = "120s", concurrentExecution = ConcurrentExecution.SKIP)
+    void refreshServerInfo() {
         for (OpenttdProcess process : service.getProcesses()) {
+            if (!process.isAlive()) {
+                LOG.debugf("Server info of server '%s' is not refreshed, its process is not running", process.getId());
+                continue;
+            }
             updateServerInfo(process);
         }
     }
@@ -48,31 +40,24 @@ public class UpdateServerInfo {
         OpenttdServer openttdServer = service.getOpenttdServer(process.getId()).orElse(null);
         if (openttdServer != null) {
             ServerInfoCommand cmd = process.executeCommand(new ServerInfoCommand(), false);
-            if (cmd.isExecuted()) {
-                openttdServer.setInviteCode(cmd.getInviteCode());
-                openttdServer.setCurrentClients(cmd.getCurrentClients());
-                openttdServer.setMaxClients(cmd.getMaxClients());
-                openttdServer.setCurrentCompanies(cmd.getCurrentCompanies());
-                openttdServer.setMaxCompanies(cmd.getMaxCompanies());
-                openttdServer.setCurrentSpectators(cmd.getCurrentSpectators());
-                this.service.updateServer(openttdServer.getId(), openttdServer);
-            }
+            applyServerInfo(openttdServer, cmd);
         }
     }
 
-    void handleTerminalUpdateEvent(OpenttdTerminalUpdateEvent openttdTerminalUpdateEvent) {
-        if (
-                openttdTerminalUpdateEvent.getText().contains("has started a new company")
-                        || openttdTerminalUpdateEvent.getText().contains("has joined company")
-                        || openttdTerminalUpdateEvent.getText().contains("has joined the game")
-                        || openttdTerminalUpdateEvent.getText().contains("has left the game")
-                        || openttdTerminalUpdateEvent.getText().contains("closed connection")
-                        || openttdTerminalUpdateEvent.getText().contains("has joined spectators")
-        ) {
-            Optional<OpenttdProcess> process = this.service.getProcesses().stream().filter(p -> p.getProcessThread().getUuid().equals(openttdTerminalUpdateEvent.getProcessId())).findAny();
-            if (process.isPresent()) {
-                updateServerInfo(process.get());
-            }
+    /**
+     * Copies the result of an already executed 'server_info' onto the server and persists it.
+     */
+    void applyServerInfo(OpenttdServer openttdServer, ServerInfoCommand cmd) {
+        if (openttdServer == null || cmd == null || !cmd.isExecuted()) {
+            return;
         }
+        openttdServer.setInviteCode(cmd.getInviteCode());
+        openttdServer.setCurrentClients(cmd.getCurrentClients());
+        openttdServer.setMaxClients(cmd.getMaxClients());
+        openttdServer.setCurrentCompanies(cmd.getCurrentCompanies());
+        openttdServer.setMaxCompanies(cmd.getMaxCompanies());
+        openttdServer.setCurrentSpectators(cmd.getCurrentSpectators());
+        this.service.updateServer(openttdServer.getId(), openttdServer);
+        LOG.debugf("Server info of server '%s' updated", openttdServer.getId());
     }
 }

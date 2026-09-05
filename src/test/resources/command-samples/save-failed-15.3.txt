@@ -1,0 +1,48 @@
+[2026-09-04 13:58:33] dbg: [net:3] Starting dedicated server, version 15.3
+[2026-09-04 13:58:33] dbg: [net:3] Starting network
+[2026-09-04 13:58:33] dbg: [net:3] Initializing UDP listeners
+[2026-09-04 13:58:33] dbg: [net:3] Network online, multiplayer available
+[2026-09-04 13:58:33] dbg: [net:3] Detected broadcast addresses:
+[2026-09-04 13:58:33] dbg: [net:3]   0) 172.25.255.255
+[2026-09-04 13:58:33] dbg: [net:3] Using certificate file: /etc/ssl/certs/ca-certificates.crt
+[2026-09-04 13:58:33] dbg: [net:3] Using certificate path: none
+OpenTTD Game Console Revision 7 - 15.3
+------------------------------------
+use "help" for more information.
+
+[2026-09-04 13:58:33] dbg: [net:1] No "client_name" has been set, using "Unnamed Client" instead. Please set this now using the "name <new name>" command
+[2026-09-04 13:58:33] dbg: [net:1] No "server_name" has been set, using "Unnamed Server" instead. Please set this now using the "server_name <new name>" command
+[2026-09-04 13:58:33] dbg: [net:3] Initializing UDP listeners
+[2026-09-04 13:58:33] dbg: [net:3] Initializing UDP listeners
+[2026-09-04 13:58:33] dbg: [net:3] Listening on 0.0.0.0:14015 (IPv4)
+[2026-09-04 13:58:33] dbg: [net:3] Listening on 0.0.0.0:14015 (IPv4)
+[2026-09-04 13:58:33] dbg: [net:3] Network revision name: 15.3
+[2026-09-04 13:58:33] dbg: [net:3] [crypto] Creating a new random key
+[2026-09-04 13:58:33] dbg: [net:3] Generating map, please wait...
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 5
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 11
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 15
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 20
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 25
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 30
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 35
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 40
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 45
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 50
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 60
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 65
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 70
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 75
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 80
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 85
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 90
+[2026-09-04 13:58:33] dbg: [net:3] Map generation percentage complete: 99
+[2026-09-04 13:58:33] dbg: [net:3] Map generated, starting game
+echo @@@@_SaveCommand_1_@@@@
+@@@@_SaveCommand_1_@@@@
+save "/home/openttd/server/save/id1_manually_save_1700000000000"
+Saving map...
+[2026-09-04 13:58:41] dbg: [sl:0] Game save failed...File not writable
+Saving map failed.
+[2026-09-04 13:58:45] dbg: [net:3] Initializing UDP listeners
+[2026-09-04 13:58:45] dbg: [net:3] Shutting down network

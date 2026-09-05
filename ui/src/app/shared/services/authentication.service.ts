@@ -3,8 +3,10 @@ import { HttpClient, HttpErrorResponse, HttpResponse } from "@angular/common/htt
 import {AuthResourceService} from '../../api/services/auth-resource.service';
 import {environment} from '../../../environments/environment';
 import {firstValueFrom} from 'rxjs';
-import {HEADER_OPENTTD_SERVER_SESSION_ID} from '../model/constants';
+import {HEADER_OPENTTD_SERVER_SESSION_ID, LEGACY_HEADER_OPENTTD_SERVER_SESSION_ID} from '../model/constants';
+import {clearSessionId, readSessionId, writeSessionId} from './session-storage';
 import {Router} from '@angular/router';
+import {BackendWebsocketService} from './backend-websocket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,26 +14,29 @@ import {Router} from '@angular/router';
 export class AuthenticationService {
 
 
-  constructor(private router: Router, private http: HttpClient) {
+  constructor(private router: Router, private http: HttpClient, private backendWebsocket: BackendWebsocketService) {
   }
 
   async login(username: string, password: string): Promise<void> {
 
-    let httpResponse = await firstValueFrom(this.http.post<any>(`${environment.baseUrl}${AuthResourceService.ApiAuthLoginPostPath}`, null, {
+    const httpResponse: HttpResponse<unknown> = await firstValueFrom(this.http.post<unknown>(`${environment.baseUrl}${AuthResourceService.ApiAuthLoginPostPath}`, null, {
       observe: 'response',
       headers: {Authorization: "Basic " + window.btoa(`${username}:${password}`)}
     }));
-    const session = httpResponse.headers.get(HEADER_OPENTTD_SERVER_SESSION_ID)
+    // The legacy header is only read here, so a new UI keeps working against a backend of the previous release.
+    const session = httpResponse.headers.get(HEADER_OPENTTD_SERVER_SESSION_ID) ?? httpResponse.headers.get(LEGACY_HEADER_OPENTTD_SERVER_SESSION_ID)
     if (session && session.length > 0) {
-      localStorage.setItem(HEADER_OPENTTD_SERVER_SESSION_ID, session)
+      writeSessionId(session)
+      this.backendWebsocket.connect()
       await this.router.navigateByUrl("/")
     }
   }
 
   async isLoggedIn(): Promise<boolean> {
-    if (localStorage.getItem(HEADER_OPENTTD_SERVER_SESSION_ID)) {
+    const sessionId = readSessionId();
+    if (sessionId) {
       const headers: any = {}
-      headers[HEADER_OPENTTD_SERVER_SESSION_ID] = localStorage.getItem(HEADER_OPENTTD_SERVER_SESSION_ID);
+      headers[HEADER_OPENTTD_SERVER_SESSION_ID] = sessionId;
       let httpResponse: HttpResponse<any | HttpErrorResponse> = await firstValueFrom(this.http.post<any>(`${environment.baseUrl}${AuthResourceService.ApiAuthVerifyLoginPostPath}`, null, {
         observe: 'response',
         headers
@@ -51,14 +56,16 @@ export class AuthenticationService {
   }
 
   logout() {
-    if (localStorage.getItem(HEADER_OPENTTD_SERVER_SESSION_ID)) {
+    this.backendWebsocket.disconnect();
+    const sessionId = readSessionId();
+    if (sessionId) {
       const headers: any = {}
-      headers[HEADER_OPENTTD_SERVER_SESSION_ID] = localStorage.getItem(HEADER_OPENTTD_SERVER_SESSION_ID);
+      headers[HEADER_OPENTTD_SERVER_SESSION_ID] = sessionId;
       this.http.post<any>(`${environment.baseUrl}${AuthResourceService.ApiAuthLogoutPostPath}`, null, {
         headers
       }).subscribe(_ => {
         this.router.navigateByUrl("/login")
-        localStorage.removeItem(HEADER_OPENTTD_SERVER_SESSION_ID)
+        clearSessionId()
       });
     } else {
       this.router.navigateByUrl("/login")

@@ -17,13 +17,15 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static de.litexo.model.external.ServerFileType.CONFIG;
@@ -32,6 +34,10 @@ import static de.litexo.model.external.ServerFileType.SAVE_GAME;
 @ApplicationScoped
 public class DefaultRepository {
     private static final Logger LOG = Logger.getLogger(DefaultRepository.class);
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final String CONFIG_FILE_NAME = "openttd-server-config.json";
+    private static final String TEMP_CONFIG_FILE_NAME = CONFIG_FILE_NAME + ".tmp";
+    private static final String BACKUP_CONFIG_FILE_NAME = CONFIG_FILE_NAME + ".bak";
 
     @ConfigProperty(name = "server.config.dir")
     String serverConfigDir;
@@ -51,20 +57,26 @@ public class DefaultRepository {
 
     Path openttdConfigDirPath;
 
+    /**
+     * In memory copy of the persisted config. Every read is served from here, every successful {@link #save} replaces it.
+     * Guarded by the monitor of this instance, like all other config mutations.
+     */
+    private InternalOpenttdServerConfig cached;
+
     @PostConstruct
     void init() {
         try {
             this.openttdSaveDirPath = Paths.get(this.openttdSaveDir);
             this.openttdConfigDirPath = Paths.get(this.openttdConfigDir);
             Path configDir = Paths.get(serverConfigDir);
-            this.configFile = configDir.resolve("openttd-server-config.json");
+            this.configFile = configDir.resolve(CONFIG_FILE_NAME);
             LOG.infof("server config location: '%s'", this.configFile.toFile().getAbsolutePath());
             if (!Files.isDirectory(configDir)) {
                 Files.createDirectories(configDir);
-                Files.createFile(this.configFile);
-                this.save(new InternalOpenttdServerConfig());
-            } else if (!Files.exists(this.configFile)) {
-                Files.createFile(this.configFile);
+            }
+            // No 'Files.createFile' here, the atomic move in 'save' creates the file. An existing but empty file is
+            // the result of a crash during an old, non atomic write and is replaced by a default config.
+            if (!Files.exists(this.configFile) || Files.size(this.configFile) == 0) {
                 this.save(new InternalOpenttdServerConfig());
             }
 
@@ -151,9 +163,24 @@ public class DefaultRepository {
     }
 
 
+    /**
+     * Writes the config to a temporary file next to the real one and moves it over the real one afterwards. That way a
+     * reader or a crash (for example a SIGKILL from 'docker stop') never sees a truncated or empty config file.
+     */
     public synchronized InternalOpenttdServerConfig save(InternalOpenttdServerConfig serverData) {
         try {
-            Files.writeString(this.configFile, new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(serverData), StandardOpenOption.TRUNCATE_EXISTING);
+            Path tempFile = this.configFile.resolveSibling(TEMP_CONFIG_FILE_NAME);
+            Files.writeString(tempFile, MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(serverData));
+            if (Files.exists(this.configFile) && Files.size(this.configFile) > 0) {
+                Files.copy(this.configFile, this.configFile.resolveSibling(BACKUP_CONFIG_FILE_NAME), StandardCopyOption.REPLACE_EXISTING);
+            }
+            try {
+                Files.move(tempFile, this.configFile, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+            } catch (AtomicMoveNotSupportedException e) {
+                LOG.debugf(e, "Atomic move is not supported for '%s', falling back to a plain replace", this.configFile);
+                Files.move(tempFile, this.configFile, StandardCopyOption.REPLACE_EXISTING);
+            }
+            this.cached = deepCopy(serverData);
             return getOpenttdServerConfig();
         } catch (IOException e) {
             throw new ServiceRuntimeException(e);
@@ -164,6 +191,8 @@ public class DefaultRepository {
         InternalOpenttdServerConfig openttdServerData = getOpenttdServerConfig();
         Optional<OpenttdServer> first = getOpenttdServer(server.getId());
         if (!first.isPresent()) {
+            // A new server is never running, no matter what the request contained
+            server.setLastKnownRunning(false);
             throwIfPortAllocated(server.getPort(), openttdServerData.getServers());
             if(StringUtils.isNotEmpty(server.getAdminPassword())){
                 throwIfAdminPortAllocated(server.getServerAdminPort(), openttdServerData.getServers());
@@ -190,9 +219,11 @@ public class DefaultRepository {
         if (replaceIndex > -1) {
             OpenttdServer toUpdate = openttdServerData.getServers().get(replaceIndex);
             this.openttdServerMapper.patch(server, toUpdate);
-            throwIfPortAllocated(toUpdate.getPort(), openttdServerData.getServers().stream().filter(s -> !s.getId().equals(id)).toList());
+            // The updated server must never conflict with itself, so it is excluded from both port checks.
+            List<OpenttdServer> others = openttdServerData.getServers().stream().filter(s -> !s.getId().equals(id)).toList();
+            throwIfPortAllocated(toUpdate.getPort(), others);
             if(StringUtils.isNotEmpty(toUpdate.getAdminPassword())){
-                throwIfAdminPortAllocated(toUpdate.getServerAdminPort(), openttdServerData.getServers());
+                throwIfAdminPortAllocated(toUpdate.getServerAdminPort(), others);
             }
             openttdServerData.getServers().set(replaceIndex, toUpdate);
             save(openttdServerData);
@@ -200,6 +231,19 @@ public class DefaultRepository {
         } else {
             throw new ServiceRuntimeException("Can't update server. A server with name " + id + " does not exists.");
         }
+    }
+
+    /**
+     * The only way to change the auto start flag. The mapper ignores it, so it can never be set by a request.
+     */
+    public synchronized void setLastKnownRunning(String id, boolean running) {
+        InternalOpenttdServerConfig openttdServerData = getOpenttdServerConfig();
+        Optional<OpenttdServer> server = openttdServerData.getServers().stream().filter(s -> s.getId().equalsIgnoreCase(id)).findFirst();
+        if (server.isEmpty() || server.get().isLastKnownRunning() == running) {
+            return;
+        }
+        server.get().setLastKnownRunning(running);
+        save(openttdServerData);
     }
 
     public synchronized void deleteServer(String id) {
@@ -221,11 +265,43 @@ public class DefaultRepository {
         return first;
     }
 
-    public InternalOpenttdServerConfig getOpenttdServerConfig() {
+    public synchronized InternalOpenttdServerConfig getOpenttdServerConfig() {
+        if (this.cached == null) {
+            this.cached = readFromDisk();
+        }
+        // Many callers mutate the returned object before they hand it back to 'save', so every read gets its own copy.
+        InternalOpenttdServerConfig openttdServerConfig = deepCopy(this.cached);
+        openttdServerConfig.getServers().forEach(this::updateServerFiles);
+        return openttdServerConfig;
+    }
+
+    /**
+     * Drops the in memory copy so that the next read goes to disk again. Only used by tests.
+     */
+    synchronized void resetCache() {
+        this.cached = null;
+    }
+
+    private InternalOpenttdServerConfig readFromDisk() {
         try {
-            InternalOpenttdServerConfig openttdServerConfig = new ObjectMapper().readValue(this.configFile.toFile(), InternalOpenttdServerConfig.class);
-            openttdServerConfig.getServers().forEach(this::updateServerFiles);
-            return openttdServerConfig;
+            return MAPPER.readValue(this.configFile.toFile(), InternalOpenttdServerConfig.class);
+        } catch (IOException e) {
+            Path backupFile = this.configFile.resolveSibling(BACKUP_CONFIG_FILE_NAME);
+            LOG.errorf(e, "Failed to read server config '%s'. Trying backup '%s'", this.configFile, backupFile);
+            try {
+                InternalOpenttdServerConfig fromBackup = MAPPER.readValue(backupFile.toFile(), InternalOpenttdServerConfig.class);
+                LOG.warnf("Server config was restored from backup '%s'", backupFile);
+                return fromBackup;
+            } catch (IOException backupFailure) {
+                // Never start with an empty config, that would silently drop the whole server list.
+                throw new ServiceRuntimeException("Server config '" + this.configFile + "' is not readable and the backup '" + backupFile + "' could not be read either", backupFailure);
+            }
+        }
+    }
+
+    private InternalOpenttdServerConfig deepCopy(InternalOpenttdServerConfig config) {
+        try {
+            return MAPPER.readValue(MAPPER.writeValueAsBytes(config), InternalOpenttdServerConfig.class);
         } catch (IOException e) {
             throw new ServiceRuntimeException(e);
         }
@@ -267,18 +343,18 @@ public class DefaultRepository {
         return openttdConfigDirPath;
     }
 
-    public void throwIfPortAllocated(int port, List<OpenttdServer> servers) {
-        if (servers != null) {
-            Optional<OpenttdServer> allocated = servers.stream().filter(s -> s.getPort() == port).findFirst();
+    public void throwIfPortAllocated(Integer port, List<OpenttdServer> servers) {
+        if (port != null && servers != null) {
+            Optional<OpenttdServer> allocated = servers.stream().filter(s -> Objects.equals(s.getPort(), port)).findFirst();
             if (allocated.isPresent()) {
                 throw new ServiceRuntimeException("Error: Port '" + port + " is already allocated by server '" + allocated.get().getName() + "'. You must set a different port!");
             }
         }
     }
 
-    public void throwIfAdminPortAllocated(int port, List<OpenttdServer> servers) {
-        if (servers != null) {
-            Optional<OpenttdServer> allocated = servers.stream().filter(s -> s.getServerAdminPort() == port).findFirst();
+    public void throwIfAdminPortAllocated(Integer port, List<OpenttdServer> servers) {
+        if (port != null && servers != null) {
+            Optional<OpenttdServer> allocated = servers.stream().filter(s -> Objects.equals(s.getServerAdminPort(), port)).findFirst();
             // Admin port will only be active if a password is set. OpenTTD will not start a listener on this port when Admin password is not set.
             if (allocated.isPresent() && StringUtils.isNotEmpty(allocated.get().getAdminPassword())) {
                 throw new ServiceRuntimeException("Error: Admin Port '" + port + " is already allocated by server '" + allocated.get().getName() + "' that have an active admin login. You must set a different port!");

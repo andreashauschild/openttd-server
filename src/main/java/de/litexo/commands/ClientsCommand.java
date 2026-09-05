@@ -53,7 +53,6 @@ public class ClientsCommand extends Command {
             client.setCompany(m.group(2));
             client.setIp(m.group(3));
         }
-        System.out.println(client);
         return client;
     }
 }

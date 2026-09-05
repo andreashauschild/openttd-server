@@ -53,6 +53,13 @@ public class OpenttdServer {
     // State flag that is set if a pause action was executed
     private boolean paused = false;
 
+    /**
+     * True while the admin has this server started. It is persisted so that the servers come back after a host reboot
+     * or an image update. It is written by the service only, never by a request: {@link de.litexo.model.mapper.OpenttdServerMapper}
+     * ignores it, so a PUT from the ui cannot reset it.
+     */
+    private boolean lastKnownRunning = false;
+
     // Server Info Command result
     private String inviteCode;
 

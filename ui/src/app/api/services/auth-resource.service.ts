@@ -81,14 +81,14 @@ export class AuthResourceService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAuthLogoutPost$Response(params?: {
-    'X-OPENTTD_SERVER_SESSION_ID'?: string;
+    'X-Openttd-Server-Session-Id'?: string;
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, AuthResourceService.ApiAuthLogoutPostPath, 'post');
     if (params) {
-      rb.header('X-OPENTTD_SERVER_SESSION_ID', params['X-OPENTTD_SERVER_SESSION_ID'], {});
+      rb.header('X-Openttd-Server-Session-Id', params['X-Openttd-Server-Session-Id'], {});
     }
 
     return this.http.request(rb.build({
@@ -110,7 +110,7 @@ export class AuthResourceService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAuthLogoutPost(params?: {
-    'X-OPENTTD_SERVER_SESSION_ID'?: string;
+    'X-Openttd-Server-Session-Id'?: string;
     context?: HttpContext
   }
 ): Observable<void> {
@@ -132,14 +132,14 @@ export class AuthResourceService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAuthVerifyLoginPost$Response(params?: {
-    'X-OPENTTD_SERVER_SESSION_ID'?: string;
+    'X-Openttd-Server-Session-Id'?: string;
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, AuthResourceService.ApiAuthVerifyLoginPostPath, 'post');
     if (params) {
-      rb.header('X-OPENTTD_SERVER_SESSION_ID', params['X-OPENTTD_SERVER_SESSION_ID'], {});
+      rb.header('X-Openttd-Server-Session-Id', params['X-Openttd-Server-Session-Id'], {});
     }
 
     return this.http.request(rb.build({
@@ -161,7 +161,7 @@ export class AuthResourceService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAuthVerifyLoginPost(params?: {
-    'X-OPENTTD_SERVER_SESSION_ID'?: string;
+    'X-Openttd-Server-Session-Id'?: string;
     context?: HttpContext
   }
 ): Observable<void> {

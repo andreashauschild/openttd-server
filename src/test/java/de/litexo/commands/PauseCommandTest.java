@@ -4,9 +4,9 @@ import de.litexo.ProcessThread;
 import de.litexo.repository.DefaultRepository;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -32,15 +32,31 @@ class PauseCommandTest {
     void beforeEach() {
         subject = new PauseCommand(repository);
         this.subject.marker = "@@@-xxx-asdasd";
+        this.subject.pollIntervalMs = 1;
     }
 
     @Test
     void test001() throws Exception {
         String logs = IOUtils.resourceToString("/command-samples/pause.txt", StandardCharsets.UTF_8);
-        when(this.process.getLogs()).thenReturn(logs);
+        when(this.process.getLogsLength()).thenReturn(0);
+        when(this.process.getLogsFrom(0)).thenReturn(logs);
 
         this.subject.execute(process, UUID.randomUUID().toString());
 
         assertTrue(this.subject.isExecuted());
+    }
+
+    @DisplayName("Test the console output of OpenTTD 15.3, which prefixes the message with U+200E")
+    @Test
+    void test002_openttd15Sample() throws Exception {
+        String logs = IOUtils.resourceToString("/command-samples/pause-15.3.txt", StandardCharsets.UTF_8);
+        this.subject.marker = "@@@@_PauseCommand_1_@@@@";
+        when(this.process.getLogsLength()).thenReturn(0);
+        when(this.process.getLogsFrom(0)).thenReturn(logs);
+
+        this.subject.execute(process, UUID.randomUUID().toString());
+
+        assertTrue(this.subject.isExecuted());
+        assertTrue(logs.contains("‎*** Game paused (manual)"), "The left-to-right mark of OpenTTD 15.3 was lost");
     }
 }

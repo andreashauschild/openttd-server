@@ -23,10 +23,13 @@
           <dd class="mt-3">
             <span
               class="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">Port: {{server.port}}</span>
-            <span *ngIf="server.process" class="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">Running</span>
-            <span *ngIf="server.process && server.paused"
+            <span *ngIf="isRunning(server)"
+                  class="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">Running</span>
+            <span *ngIf="isRunning(server) && server.paused"
                   class="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-800">Paused</span>
             <span *ngIf="!server.process" class="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-800">Offline</span>
+            <span *ngIf="isExited(server)"
+                  class="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-800">exited (code {{server.process?.process?.exitCode}})</span>
             <span *ngIf="!server.autoSave" class="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-800">Auto-Save: off</span>
             <span *ngIf="server.autoSave"
                   class="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">Auto-Save: on</span>
@@ -38,7 +41,7 @@
       </div>
       <div>
         <div class="-mt-px flex divide-x divide-gray-200 text-sm">
-          <div (click)="startServer(server)" *ngIf="!server.process" class="flex w-0 flex-1 hover:bg-gray-100">
+          <div (click)="startServer(server)" *ngIf="!isRunning(server)" class="flex w-0 flex-1 hover:bg-gray-100">
             <div
               class="cursor-pointer relative -mr-px inline-flex w-0 flex-1 items-center justify-center rounded-bl-lg border border-transparent py-4 text-sm font-medium text-gray-700 hover:text-gray-500">
               <mat-icon class="h-5 w-5 text-gray-400">play_circle</mat-icon>
@@ -50,7 +53,7 @@
               <mat-icon class="h-5 w-5 text-gray-400">stop_circle</mat-icon>
             </div>
           </div>
-          <div (click)="pauseServer(server)" *ngIf="server.process" class="flex w-0 flex-1 hover:bg-gray-100">
+          <div (click)="pauseServer(server)" *ngIf="isRunning(server)" class="flex w-0 flex-1 hover:bg-gray-100">
             <div
               class="cursor-pointer relative -mr-px inline-flex w-0 flex-1 items-center justify-center rounded-bl-lg border border-transparent py-4 text-sm font-medium text-gray-700 hover:text-gray-500">
               <mat-icon *ngIf="!server.paused" matTooltip="Send pause signal to running server"
@@ -61,7 +64,7 @@
               </mat-icon>
             </div>
           </div>
-          <div (click)="save(server)" *ngIf="server.process" class="flex w-0 flex-1 hover:bg-gray-100">
+          <div (click)="save(server)" *ngIf="isRunning(server)" class="flex w-0 flex-1 hover:bg-gray-100">
             <div
               class="cursor-pointer relative -mr-px inline-flex w-0 flex-1 items-center justify-center rounded-bl-lg border border-transparent py-4 text-sm font-medium text-gray-700 hover:text-gray-500">
               <mat-icon matTooltip="Triggers 'save game' manually" class="h-5 w-5 text-gray-400">save</mat-icon>
@@ -73,7 +76,7 @@
               <mat-icon matTooltip="Edits server configuration" class="h-5 w-5 text-gray-400">edit_note</mat-icon>
             </div>
           </div>
-          <div *ngIf="server.process" (click)="loadTerminal(server)" class="-ml-px flex w-0 flex-1 hover:bg-gray-100">
+          <div *ngIf="isRunning(server)" (click)="loadTerminal(server)" class="-ml-px flex w-0 flex-1 hover:bg-gray-100">
             <div
               class="cursor-pointer relative -mr-px inline-flex w-0 flex-1 items-center justify-center rounded-bl-lg border border-transparent py-4 text-sm font-medium text-gray-700 hover:text-gray-500">
               <mat-icon matTooltip="Opens server Terminal" class="h-5 w-5 text-gray-400">terminal</mat-icon>

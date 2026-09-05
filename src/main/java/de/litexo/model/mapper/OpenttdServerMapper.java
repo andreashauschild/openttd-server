@@ -16,6 +16,9 @@ public abstract class OpenttdServerMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "process", ignore = true)
+    // Primitive, so NullValuePropertyMappingStrategy.IGNORE does not apply: without this a PUT from the ui would
+    // always reset the flag to false and the server would not come back after a restart.
+    @Mapping(target = "lastKnownRunning", ignore = true)
     // @formatter:on
     public abstract void patch(OpenttdServer external, @MappingTarget OpenttdServer internal);
 

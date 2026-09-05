@@ -1,0 +1,41 @@
+# Manually build and publish a Docker image under an explicit tag.
+#
+# Why the automatic '-arm64' / '-amd64' tag suffix?
+# The regular tags ('latest', 'main', 'vX.Y.Z') point at a multi-arch manifest list that contains one entry per
+# platform. Publishing a single-platform build under one of those tags does not add to that manifest list, it
+# replaces it: the tag would then resolve to an arm64-only (or amd64-only) image and every user on the other
+# architecture would get "no matching manifest for linux/amd64" on their next 'docker pull'.
+# So whenever a single platform is selected, the tag gets a suffix and the multi-arch tags stay untouched.
+# Only a run with both platforms publishes the requested tag as-is, as a proper manifest list.
+name: Manual image build
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag to publish, e.g. v15.3.1-rc1'
+        required: true
+        type: string
+      platforms:
+        description: 'Platforms to build (a single platform gets a -arm64 / -amd64 tag suffix)'
+        required: true
+        default: 'linux/amd64,linux/arm64'
+        type: choice
+        options:
+          - 'linux/amd64,linux/arm64'
+          - 'linux/arm64'
+          - 'linux/amd64'
+      push:
+        description: 'Push the built image to Docker Hub'
+        required: true
+        default: true
+        type: boolean
+
+jobs:
+  docker:
+    uses: ./.github/workflows/docker-image.yml
+    with:
+      push: ${{ inputs.push }}
+      platforms: ${{ inputs.platforms }}
+      tag: ${{ inputs.tag }}${{ inputs.platforms == 'linux/arm64' && '-arm64' || inputs.platforms == 'linux/amd64' && '-amd64' || '' }}
+    secrets: inherit

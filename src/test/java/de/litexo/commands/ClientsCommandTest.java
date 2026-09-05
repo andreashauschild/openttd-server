@@ -3,6 +3,7 @@ package de.litexo.commands;
 import de.litexo.ProcessThread;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -10,8 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,12 +27,14 @@ class ClientsCommandTest {
     @BeforeEach
     void beforeEach() {
         this.subject.marker = "@@@-xxx-asdasd";
+        this.subject.pollIntervalMs = 1;
     }
 
     @Test
     void test001() throws Exception {
         String logs = IOUtils.resourceToString("/command-samples/clients.txt", StandardCharsets.UTF_8);
-        when(this.process.getLogs()).thenReturn(logs);
+        when(this.process.getLogsLength()).thenReturn(0);
+        when(this.process.getLogsFrom(0)).thenReturn(logs);
 
         ClientsCommand execute = (ClientsCommand) this.subject.execute(process, UUID.randomUUID().toString());
 
@@ -54,8 +55,23 @@ class ClientsCommandTest {
         assertEquals("Unnamed Client #1",execute.getClients().get(2).getName());
         assertEquals("255",execute.getClients().get(2).getCompany());
         assertEquals("10.0.2.15",execute.getClients().get(2).getIp());
-
-        System.out.println(execute.getClients());
     }
 
+    @DisplayName("Test the 'clients' output of an idle OpenTTD 15.3 server")
+    @Test
+    void test002_openttd15Sample() throws Exception {
+        String logs = IOUtils.resourceToString("/command-samples/echo-marker-15.3.txt", StandardCharsets.UTF_8);
+        this.subject.marker = "@@@@_ServerInfoCommand_7_@@@@";
+        when(this.process.getLogsLength()).thenReturn(0);
+        when(this.process.getLogsFrom(0)).thenReturn(logs);
+
+        ClientsCommand execute = (ClientsCommand) this.subject.execute(process, UUID.randomUUID().toString());
+
+        assertTrue(execute.isExecuted());
+        assertEquals(1, execute.getClients().size());
+        assertEquals("1", execute.getClients().get(0).getIndex());
+        assertEquals("Unnamed Client", execute.getClients().get(0).getName());
+        assertEquals("255", execute.getClients().get(0).getCompany());
+        assertEquals("server", execute.getClients().get(0).getIp());
+    }
 }

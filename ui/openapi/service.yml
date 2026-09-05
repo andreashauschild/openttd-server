@@ -16,7 +16,7 @@ paths:
       tags:
       - Auth Resource
       parameters:
-      - name: X-OPENTTD_SERVER_SESSION_ID
+      - name: X-Openttd-Server-Session-Id
         in: header
         schema:
           type: string
@@ -28,7 +28,7 @@ paths:
       tags:
       - Auth Resource
       parameters:
-      - name: X-OPENTTD_SERVER_SESSION_ID
+      - name: X-Openttd-Server-Session-Id
         in: header
         schema:
           type: string
@@ -684,6 +684,13 @@ components:
           type: string
         processData:
           type: string
+        exitCode:
+          format: int32
+          type: integer
+          nullable: true
+        skippedCommands:
+          format: int32
+          type: integer
     Command:
       type: object
       properties:
@@ -784,6 +791,8 @@ components:
       properties:
         openttdTerminalUpdateEvent:
           $ref: '#/components/schemas/OpenttdTerminalUpdateEvent'
+        openttdTerminalSnapshotEvent:
+          $ref: '#/components/schemas/OpenttdTerminalSnapshotEvent'
         unpauseCommand:
           $ref: '#/components/schemas/UnpauseCommand'
         pauseCommand:
@@ -932,6 +941,27 @@ components:
           type: string
     OpenttdServerMapper:
       type: object
+    OpenttdTerminalSnapshotEvent:
+      type: object
+      properties:
+        created:
+          format: int64
+          type: integer
+        clazz:
+          type: object
+        source:
+          type: string
+        processId:
+          type: string
+        text:
+          type: string
+        endOffset:
+          format: int64
+          type: integer
+        exitCode:
+          format: int32
+          type: integer
+          nullable: true
     OpenttdTerminalUpdateEvent:
       type: object
       properties:
@@ -946,6 +976,13 @@ components:
           type: string
         text:
           type: string
+        offset:
+          format: int64
+          type: integer
+        exitCode:
+          format: int32
+          type: integer
+          nullable: true
     Path:
       type: array
     PauseCommand:

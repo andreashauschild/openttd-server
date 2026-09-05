@@ -7,6 +7,7 @@ import {BackendWebsocketService} from '@shared/services/backend-websocket.servic
 import {AuthenticationService} from '@shared/services/authentication.service';
 import {ApplicationService} from '@shared/services/application.service';
 import {SidebarLayoutComponent, SidebarLayoutModel} from '@shared/ui/sidebar-layout/sidebar-layout.component';
+import {readSessionId} from '@shared/services/session-storage';
 
 
 @Component({
@@ -45,9 +46,10 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.backendWebsocketService.connect();
-
-
+    // Without a session the socket would only be closed by the backend again; the login opens it instead.
+    if (readSessionId()) {
+      this.backendWebsocketService.connect();
+    }
   }
 
 

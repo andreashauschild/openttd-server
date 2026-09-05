@@ -1,13 +1,15 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+import {toWebSocketRoot} from './ws-root';
+
 const devPort = 8080
 const l = location
 
 export const environment = {
   production: false,
   baseUrl: l.protocol + '//' + l.hostname + ':' + devPort,
-  wsServerRoot: 'ws://' + l.hostname + ':' + devPort
+  wsServerRoot: toWebSocketRoot({protocol: l.protocol, host: l.hostname + ':' + devPort})
 };
 
 /*

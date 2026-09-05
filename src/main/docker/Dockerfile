@@ -1,79 +1,49 @@
-FROM ubuntu:20.04
+# syntax=docker/dockerfile:1
+ARG OPENTTD_VERSION=15.3
+ARG OPENGFX_VERSION=8.0
 
-RUN apt-get update
-RUN apt-get install dos2unix
-RUN apt-get install -y wget
-RUN apt-get install libgomp1
+# --- Stage A: build the OpenTTD dedicated server from source (cdn.openttd.org has no linux arm64 binary) ---
+FROM ubuntu:24.04 AS openttd-build
+ARG OPENTTD_VERSION
+ARG OPENGFX_VERSION
+ARG OPENTTD_SHA256=5ea21eea7d59c78a42071924ac18c6bc0116088f2e96b14cfee9369175973be7
+ARG OPENGFX_SHA256=43a0c1dabf39cb865394f3a6cc36d4da5c10ecfaaf55652043104806810903be
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      build-essential cmake ninja-build pkg-config ca-certificates curl unzip xz-utils \
+      zlib1g-dev liblzma-dev liblzo2-dev libpng-dev libcurl4-openssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /build
+RUN curl -fsSLO "https://cdn.openttd.org/openttd-releases/${OPENTTD_VERSION}/openttd-${OPENTTD_VERSION}-source.tar.xz" \
+    && echo "${OPENTTD_SHA256}  openttd-${OPENTTD_VERSION}-source.tar.xz" | sha256sum -c - \
+    && tar -xJf "openttd-${OPENTTD_VERSION}-source.tar.xz"
+RUN cmake -S "openttd-${OPENTTD_VERSION}" -B build -G Ninja \
+      -DCMAKE_BUILD_TYPE=Release -DOPTION_DEDICATED=ON -DOPTION_INSTALL_FHS=OFF \
+      -DCMAKE_INSTALL_PREFIX=/opt/openttd \
+    && cmake --build build -j"$(nproc)" \
+    && cmake --install build
+RUN curl -fsSLO "https://cdn.openttd.org/opengfx-releases/${OPENGFX_VERSION}/opengfx-${OPENGFX_VERSION}-all.zip" \
+    && echo "${OPENGFX_SHA256}  opengfx-${OPENGFX_VERSION}-all.zip" | sha256sum -c - \
+    && unzip -q "opengfx-${OPENGFX_VERSION}-all.zip" \
+    && tar -xf "opengfx-${OPENGFX_VERSION}.tar" -C /opt/openttd/baseset/ \
+    && mkdir /opt/openttd/newgrf \
+    && ldd /opt/openttd/openttd
 
-# See: https://jdk.java.net/archive/
-ENV JDK_DOWNLOAD https://download.java.net/java/GA/jdk17.0.2/dfd4a8d0985749f896bed50d7138ee7f/8/GPL/openjdk-17.0.2_linux-x64_bin.tar.gz
-
-# Install OpenJDK Java 17 SDK
-ENV JVM_DIR /usr/lib/jvm
-RUN mkdir -p "${JVM_DIR}"
-
-
-RUN wget -q --no-cookies --no-check-certificate \
-  -O "${DOWNLOAD_DIR}/openjdk-17.0.2_linux-x64_bin.tar.gz" "${JDK_DOWNLOAD}" \
-  && cd "${JVM_DIR}" \
-  && tar --no-same-owner -xzf "${DOWNLOAD_DIR}/openjdk-17.0.2_linux-x64_bin.tar.gz" \
-  && rm -f "${DOWNLOAD_DIR}/openjdk-17.0.2_linux-x64_bin.tar.gz" \
-  && mv "${JVM_DIR}/jdk-17.0.2" "${JVM_DIR}/java-17.0.2-openjdk-x64" \
-  && ln -s "${JVM_DIR}/java-17.0.2-openjdk-x64" "${JVM_DIR}/java-17-openjdk-x64"
-
-ENV JAVA_HOME ${JVM_DIR}/java-17-openjdk-x64
-
-ENV PATH=$PATH:$HOME/bin:$JAVA_HOME/bin
-
-COPY src/main/docker/cleanup.sh /tmp/cleanup.sh
-COPY src/main/docker/buildconfig /tmp/buildconfig
-COPY --chown=1000:1000 src/main/docker/openttd.sh /openttd.sh
-
-RUN dos2unix /tmp/cleanup.sh
-RUN dos2unix /tmp/buildconfig
-RUN dos2unix /openttd.sh
-
-RUN chmod +x /tmp/cleanup.sh /openttd.sh
-
-RUN apt update -qq
-RUN apt install -yqq --no-install-recommends -o DPkg::Options::=--force-confold -o DPkg::Options::=--force-confdef dumb-init wget unzip ca-certificates libfontconfig1 libfreetype6 libfluidsynth2 libicu-dev libpng16-16 liblzma-dev liblzo2-2 libsdl1.2debian libsdl2-2.0-0 xz-utils > /dev/null 2>&1
-
-
-## Create user
-RUN adduser --uid 1000 --shell /bin/bash --gecos "" openttd
-RUN addgroup openttd users
-RUN passwd -d openttd
-
-USER openttd
-WORKDIR /home/openttd
-
-RUN wget https://cdn.openttd.org/openttd-releases/15.3/openttd-15.3-linux-generic-amd64.tar.xz
-RUN wget https://cdn.openttd.org/opengfx-releases/8.0/opengfx-8.0-all.zip
-
-RUN tar -xf openttd-15.3-linux-generic-amd64.tar.xz
-
-RUN mkdir openttd-15
-RUN cp -a openttd-15.3-linux-generic-amd64/. openttd-15
-RUN mkdir openttd-15/newgrf
-
-RUN unzip opengfx-8.0-all.zip
-RUN tar -xf opengfx-8.0.tar -C openttd-15/baseset/
-
-RUN rm -rf opengfx-*.tar opengfx-*.zip openttd-15.3*
-    ## Set entrypoint script to right user
-RUN chmod +x /openttd.sh
-
-
-
-USER root
-RUN /tmp/cleanup.sh
-
-RUN mkdir /home/openttd/server
-RUN chown 1000:1000 /home/openttd/server
-
+# --- Stage B: runtime ---
+FROM eclipse-temurin:21-jre-noble
+ARG DEBIAN_FRONTEND=noninteractive
+# temurin noble already ships zlib1g liblzma5 libpng16-16t64 libcurl4t64 libstdc++6
+RUN apt-get update && apt-get install -y --no-install-recommends tini liblzo2-2 \
+    && rm -rf /var/lib/apt/lists/*
+# noble has a default 'ubuntu' user on uid 1000 -> replace it with 'openttd' (uid/gid 1000, as before)
+RUN userdel -r ubuntu \
+    && groupadd --gid 1000 openttd \
+    && useradd --uid 1000 --gid 1000 --create-home --shell /bin/bash openttd \
+    && usermod -aG users openttd && passwd -d openttd \
+    && mkdir -p /home/openttd/server && chown -R 1000:1000 /home/openttd
+COPY --from=openttd-build --chown=1000:1000 /opt/openttd /home/openttd/openttd-15
+COPY --chown=1000:1000 --chmod=755 src/main/docker/openttd.sh /openttd.sh
 VOLUME /home/openttd
-
-ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 
 # We make four distinct layers so if there are application changes the library layers can be re-used
 COPY --chown=1000 target/quarkus-app/lib/ /deployments/lib/
@@ -82,11 +52,16 @@ COPY --chown=1000 target/quarkus-app/app/ /deployments/app/
 COPY --chown=1000 target/quarkus-app/quarkus/ /deployments/quarkus/
 
 USER 1000
+WORKDIR /home/openttd
 
-ENV start-server.command="/openttd.sh"
+# Explicit, so 'docker stop' gives the application the chance to save the running servers before it is killed.
+# Give it enough time with 'docker stop --stop-timeout 60' or 'stop_grace_period: 60s' (see README).
+STOPSIGNAL SIGTERM
 
-ENV openttd.save.dir=/home/openttd/server/save
-ENV openttd.config.dir=/home/openttd/server/config
-ENV server.config.dir=/home/openttd/server
+ENV start-server.command="/openttd.sh" \
+    openttd.save.dir=/home/openttd/server/save \
+    openttd.config.dir=/home/openttd/server/config \
+    server.config.dir=/home/openttd/server
 
+ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["java", "-jar", "/deployments/quarkus-run.jar"]
