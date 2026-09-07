@@ -20,10 +20,11 @@ import {
 import {OpenttdServerResourceService} from '@api/services/openttd-server-resource.service';
 import {FileExplorerResourceService} from '@api/services/file-explorer-resource.service';
 import {ApplicationService} from '@shared/services/application.service';
+import {DownloadService} from '@shared/services/download.service';
 
 @Injectable()
 export class AppEffects {
-  constructor(private app: ApplicationService, private actions$: Actions, private service: OpenttdServerResourceService, private explorer: FileExplorerResourceService) {
+  constructor(private app: ApplicationService, private actions$: Actions, private service: OpenttdServerResourceService, private explorer: FileExplorerResourceService, private downloads: DownloadService) {
   }
 
 
@@ -343,52 +344,28 @@ export class AppEffects {
   downloadExplorerZip = createEffect(() => {
     return this.actions$.pipe(
       ofType(AppActions.downloadExplorerZip),
-      mergeMap((a) => {
-        const url = `${this.explorer.rootUrl}/api/openttd-server/explorer/download-zip?dir=${encodeURIComponent(a.directoryPath)}`;
-        window.open(url, '_blank');
-        return EMPTY;
-      })
+      mergeMap((a) => this.downloads.downloadDirectoryZip(a.directoryPath)
+        .pipe(
+          catchError((err) => {
+            this.app.handleError(err);
+            return EMPTY;
+          })
+        )
+      )
     );
   }, {dispatch: false});
 
   downloadSelectedExplorerZip = createEffect(() => {
     return this.actions$.pipe(
       ofType(AppActions.downloadSelectedExplorerZip),
-      mergeMap((a) => {
-        const url = `${this.explorer.rootUrl}/api/openttd-server/explorer/download-zip`;
-
-        fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            directoryPath: a.directoryPath,
-            fileNames: a.fileNames
+      mergeMap((a) => this.downloads.downloadSelectedZip(a.directoryPath, a.fileNames)
+        .pipe(
+          catchError((err) => {
+            this.app.handleError(err);
+            return EMPTY;
           })
-        })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Download failed');
-          }
-          return response.blob();
-        })
-        .then(blob => {
-          const downloadUrl = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = downloadUrl;
-          link.download = 'download.zip';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(downloadUrl);
-        })
-        .catch(err => {
-          this.app.handleError(err);
-        });
-
-        return EMPTY;
-      })
+        )
+      )
     );
   }, {dispatch: false});
 

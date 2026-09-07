@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CommonModule, DatePipe, UpperCasePipe} from '@angular/common';
+import {HttpErrorResponse} from '@angular/common/http';
 import {MatIcon} from '@angular/material/icon';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatCheckbox} from '@angular/material/checkbox';
@@ -24,6 +25,8 @@ import {
   loadExplorerData,
   renameExplorerFile
 } from '@store/actions/app.actions';
+import {ApplicationService} from '@shared/services/application.service';
+import {DownloadService} from '@shared/services/download.service';
 import {FileUploadDialogComponent} from '@shared/ui/file-upload-dialog/file-upload-dialog.component';
 import {ServerFileType} from '@api/models/server-file-type';
 
@@ -70,7 +73,9 @@ export class FileExplorerComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: Store<{}>,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private downloads: DownloadService,
+    private app: ApplicationService
   ) {}
 
   ngOnInit(): void {
@@ -272,8 +277,9 @@ export class FileExplorerComponent implements OnInit, OnDestroy {
 
   downloadFile(file: ExplorerFile): void {
     if (file.relativePath) {
-      const url = `/api/openttd-server/explorer/download?fileName=${encodeURIComponent(file.relativePath)}`;
-      window.open(url, '_blank');
+      this.downloads.downloadFile(file.relativePath).subscribe({
+        error: (err: HttpErrorResponse) => this.app.handleError(err)
+      });
     }
   }
 
