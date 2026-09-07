@@ -127,6 +127,25 @@ When you start the Docker container for the OpenTTD server for the first time, i
 You can use the admin user to log in to the web app, which runs on http://localhost:8080 by default.
 Once logged in, you can access the web app's settings to change the admin password.
 
+## Upgrading from an older image (Portainer users especially)
+
+Two things from a container created with an older image break the new one when the container is *recreated* instead
+of created from scratch:
+
+- **Stale environment variables.** Old containers carried `PATH` and `JAVA_HOME` pointing at `/usr/lib/jvm/java-17-openjdk-x64`.
+  Portainer's *Duplicate/Edit* copies them into the new container, where they override the image and the start fails with
+  `[FATAL tini (7)] exec java failed: No such file or directory`. Remove `PATH`, `JAVA_HOME`, `JDK_DOWNLOAD` and `JVM_DIR`
+  from the container's environment (or create the container from scratch).
+- **A volume mounted at `/home/openttd`.** Older images declared the whole home directory as a volume. Such a volume also
+  shadows the OpenTTD installation in `/home/openttd/openttd-15`, so you keep running the old OpenTTD binary and never
+  receive a version update. Mount your data at `/home/openttd/server` only; your existing data is in the `server/`
+  sub folder of the old volume:
+
+  ```
+  docker volume create openttd-server-data
+  docker run --rm -v <old-volume-name>:/old -v openttd-server-data:/new alpine sh -c 'cp -a /old/server/. /new/'
+  ```
+
 ## Graceful shutdown
 
 When the container is stopped, the application saves every running dedicated server (if auto save is enabled for it)

@@ -43,7 +43,9 @@ RUN userdel -r ubuntu \
     && mkdir -p /home/openttd/server && chown -R 1000:1000 /home/openttd
 COPY --from=openttd-build --chown=1000:1000 /opt/openttd /home/openttd/openttd-15
 COPY --chown=1000:1000 --chmod=755 src/main/docker/openttd.sh /openttd.sh
-VOLUME /home/openttd
+# Only the data directory is a volume. The former 'VOLUME /home/openttd' also shadowed the OpenTTD installation in
+# /home/openttd/openttd-15, so existing installations on an anonymous volume never received a new OpenTTD binary on upgrade.
+VOLUME /home/openttd/server
 
 # We make four distinct layers so if there are application changes the library layers can be re-used
 COPY --chown=1000 target/quarkus-app/lib/ /deployments/lib/
@@ -64,4 +66,5 @@ ENV start-server.command="/openttd.sh" \
     server.config.dir=/home/openttd/server
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["java", "-jar", "/deployments/quarkus-run.jar"]
+# Absolute path on purpose: a PATH override in a compose file or a management ui must not break the start.
+CMD ["/opt/java/openjdk/bin/java", "-jar", "/deployments/quarkus-run.jar"]
