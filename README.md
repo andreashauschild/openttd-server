@@ -34,7 +34,7 @@ one automatically; older tags are `linux/amd64` only.
 | Container                        | OpenTTD |
 |----------------------------------|--------|
 | hauschi86/openttd-server:latest  | 15.3   |
-| hauschi86/openttd-server:v15.3.0 | 15.3   |
+| hauschi86/openttd-server:v15.3.3 | 15.3   |
 | hauschi86/openttd-server:v15.2.0 | 15.2   |
 | hauschi86/openttd-server:v15.1.1 | 15.1   |
 | hauschi86/openttd-server:v15.1.0 | 15.1   |
