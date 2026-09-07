@@ -76,10 +76,8 @@
               <mat-hint align="start">This admin password (admin_password) will overwrite any default admin server password.</mat-hint>
             </mat-form-field>
           </div>
-          <div class="col-span-3">
-            <mat-slide-toggle [formControl]="serverForm.controls.autoPause" >Auto Pause, if no player is connected to a company</mat-slide-toggle>
-          </div>
-          <div class="col-span-3">
+          <div class="col-span-6 flex flex-wrap gap-8 items-center pt-2">
+            <mat-slide-toggle [formControl]="serverForm.controls.autoPause" >Auto Pause, if no player is connected</mat-slide-toggle>
             <mat-slide-toggle [formControl]="serverForm.controls.autoSave">Auto Save</mat-slide-toggle>
           </div>
 

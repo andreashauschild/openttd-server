@@ -6,6 +6,7 @@ import {provideStore} from '@ngrx/store';
 import {provideEffects} from '@ngrx/effects';
 import {provideStoreDevtools} from '@ngrx/store-devtools';
 import {DatePipe} from '@angular/common';
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {DataService} from 'ngx-explorer';
 import {LoadingBarModule} from '@ngx-loading-bar/core';
 
@@ -26,5 +27,6 @@ export const appConfig: ApplicationConfig = {
     !environment.production ? provideStoreDevtools({connectInZone: true}) : [],
     importProvidersFrom(LoadingBarModule),
     DatePipe,
+    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {subscriptSizing: 'dynamic'}},
   ]
 };

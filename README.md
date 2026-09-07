@@ -22,7 +22,7 @@ It provides the following features:
 - Upload/Download of save games and configuration files
 - Password protection for dedicated servers
 - Auto save of running servers
-- Auto pause and unpause on inactive servers. If no player is playing the server is running but paused. Server unpauses if a player joins a company.
+- Auto pause and unpause on inactive servers. The game is paused while no player is connected; it unpauses as soon as a client connects, no matter whether that client joins a company or watches as a spectator.
 - Simple terminal to send commands directly to the dedicated server
 
 # Versions
